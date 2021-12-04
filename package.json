@@ -1,20 +1,8 @@
 {
   "name": "connect-apriori",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/rizqyn9/connect-apriori.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/rizqyn9/connect-apriori/issues"
-  },
-  "homepage": "https://github.com/rizqyn9/connect-apriori#readme"
+  "repository": "https://github.com/rizqyn9/connect-apriori.git",
+  "author": "rizqyn9 <54632504+rizqyn9@users.noreply.github.com>",
+  "license": "MIT"
 }
