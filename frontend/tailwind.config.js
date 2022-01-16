@@ -1,9 +1,24 @@
+const plugin = require("tailwindcss/plugin");
+
 module.exports = {
 	mode: "jit",
 	purge: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
 	darkMode: false, // or 'media' or 'class'
 	theme: {
 		extend: {
+			gridTemplateAreas: {
+				layout: [
+					"header header header",
+					"nav    main   main",
+					"nav    footer footer",
+				],
+			},
+			gridTemplateColumns: {
+				layout: "24rem 1fr 2rem",
+			},
+			gridTemplateRows: {
+				layout: "6rem 3rem 1fr auto",
+			},
 			boxShadow: {
 				DEFAULT:
 					"0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px 0 rgba(0, 0, 0, 0.02)",
@@ -52,4 +67,21 @@ module.exports = {
 			},
 		},
 	},
+	plugin: [
+		// eslint-disable-next-line global-require
+		require("@tailwindcss/forms"),
+		require("@savvywombat/tailwindcss-grid-areas"),
+
+		// add custom variant for expanding sidebar
+		plugin(({ addVariant, e }) => {
+			addVariant("sidebar-expanded", ({ modifySelectors, separator }) => {
+				modifySelectors(
+					({ className }) =>
+						`.sidebar-expanded .${e(
+							`sidebar-expanded${separator}${className}`,
+						)}`,
+				);
+			});
+		}),
+	],
 };

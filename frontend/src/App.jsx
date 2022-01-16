@@ -1,9 +1,7 @@
 import React from "react";
-import Navbar from "./components/Navbar";
-import { BrowserRouter, Switch, Route, useLocation } from "react-router-dom";
-import Home from "./pages/Home";
-import About from "./pages/About";
-import Auth from "./pages/Auth";
+import { Switch, Route } from "react-router-dom";
+import { SignIn, SignUp } from "./pages/Auth";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
 	// const location = useLocation();
@@ -15,9 +13,11 @@ function App() {
 	// }, [location.pathname]); // triggered on route change
 
 	return (
-		<BrowserRouter>
-			<Auth />
-		</BrowserRouter>
+		<Switch>
+			<Route path="/auth/signin" component={SignIn} exact />
+			<Route path="/auth/signup" component={SignUp} exact />
+			<Route path="/" component={Dashboard} />
+		</Switch>
 	);
 }
 
