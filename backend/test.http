@@ -1,0 +1,8 @@
+POST {{host}}/auth/signup
+content-type: application/json
+
+{
+    "email": "rizqy@gmail.com",
+    "password" : "test123",
+    "username" : "rizqyn9"
+}

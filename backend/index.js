@@ -2,6 +2,10 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const { MongoConnect } = require("./utils/mongoConnect");
+const bodyParser = require("body-parser");
+
+// application/json
+app.use(bodyParser.json());
 
 // Auth
 app.use("/auth", require("./routes/auth.routes"));
