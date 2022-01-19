@@ -1,4 +1,5 @@
 import React from "react";
+import { signIn } from "../services/auth-service";
 
 function Auth({ children }) {
 	return (
@@ -11,17 +12,27 @@ function Auth({ children }) {
 }
 
 export function SignIn() {
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		await signIn().then((res) => {
+			alert(JSON.stringify(res));
+		});
+	};
+
 	return (
 		<Auth>
 			{/* TITLE */}
 			<h1 className="h4 py-3 mb-5 text-center">MASUK</h1>
 			{/* FORM */}
-			<form action="" className="flex flex-col gap-5">
+			<form onSubmit={handleSubmit} className="flex flex-col gap-5">
 				<AuthInput name={"test"} type={"email"} label={"Email"} />
 				<AuthInput type={"password"} label={"Password"} />
 				{/* BTN */}
 				<div className="flex w-full p-3 items-center justify-center">
-					<button className="text-md bg-gray-600 text-white py-2 px-10 hover:bg-gray-800">
+					<button
+						type="submit"
+						className="text-md bg-gray-600 text-white py-2 px-10 hover:bg-gray-800"
+					>
 						Submit
 					</button>
 				</div>
