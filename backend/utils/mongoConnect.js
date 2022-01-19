@@ -2,7 +2,10 @@ const mongoose = require("mongoose");
 
 exports.MongoConnect = async (uri) => {
 	return await mongoose
-		.connect(uri)
+		.connect(uri, {
+			useNewUrlParser: true,
+			useUnifiedTopology: true,
+		})
 		.then(() => {
 			console.log("Connected to MongoDB");
 		})
