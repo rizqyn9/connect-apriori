@@ -9,6 +9,11 @@ const cors = require("cors");
 app.use(bodyParser.json());
 app.use(cors());
 
+app.use((req, res, next) => {
+	// console.log(req.headers);
+	next();
+});
+
 // Auth
 app.use("/auth", require("./routes/auth.routes"));
 

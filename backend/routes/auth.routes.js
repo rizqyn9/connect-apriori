@@ -2,26 +2,38 @@ const app = require("express").Router();
 const User = require("../models/User.model");
 
 app.get("/", (req, res) => {
-	res.send("Auth");
+	res.json({
+		test: "auth",
+	});
 });
 
-app.post("/signup", (req, res) => {
-	let errors;
+app.post("/signup", async (req, res) => {
 	try {
-		const valid_keys = ["email", "password", "username"];
+		const valid_keys = ["email", "password", "name"];
 
 		// required fields
 		for (const key of valid_keys) {
-			errors = ["key"];
 			if (!req.body[key]) throw new Error(`${key} is required !`);
 		}
 
-		res.json({
-			success: true,
+		//Destruct
+		const { name, email, password } = req.body;
+
+		// Check existing email
+		if (await User.exists({ email })) throw new Error("Email exist");
+
+		// Create new User
+		await User.create({ name, email, password }).then((res) => {
+			console.log(res);
+		});
+
+		res.status(201).json({
+			data: { name, email },
 		});
 	} catch (error) {
-		res.status(500).json({
-			err: errors,
+		console.log(error);
+		res.status(400).json({
+			err: error.message,
 		});
 	}
 });
