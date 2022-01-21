@@ -1,15 +1,15 @@
 // @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 
 body {
-	// font-family: "Montserrat", sans-serif;
-	font-family: "Inter", sans-serif;
+    // font-family: "Montserrat", sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 // Additional styles
-@import "./additional-styles/utility-patterns";
-@import "./additional-styles/range-slider";
+@import './additional-styles/utility-patterns';
+@import './additional-styles/range-slider';
 // @import "additional-styles/toggle-switch.scss";
 // @import "additional-styles/flatpickr.scss";
 // @import "additional-styles/theme.scss";
