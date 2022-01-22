@@ -2,15 +2,18 @@ require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 const { MongoConnect } = require("./utils/mongoConnect");
 
 const app = express();
 
+app.use(cookieParser());
 // application/json
 app.use(bodyParser.json());
 app.use(cors());
 
 app.use((req, res, next) => {
+	// console.log(req.cookies);
 	// console.log(req.headers);
 	next();
 });
