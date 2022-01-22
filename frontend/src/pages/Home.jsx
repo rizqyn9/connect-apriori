@@ -1,5 +1,5 @@
-import React from 'react'
-import Sidebar from './Sidebar'
+import React, { useState } from 'react'
+import Sidebar from '../components/Sidebar'
 
 function Home() {
     const [sideBarOpen, setSideBarOpen] = useState(false)

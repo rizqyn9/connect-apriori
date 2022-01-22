@@ -5,11 +5,22 @@ import { NavLink } from 'react-router-dom'
 
 export default function Sidebar() {
     return (
-        <div className="w-[15rem] p-6 flex flex-col gap-5">
+        <div className="h-full rounded-md flex flex-col gap-3">
+            <UserContainer />
             <NavItem to="/" title="Dashboard" />
+            <NavItem to="/product" title="Input" />
             <NavItem />
             <NavItem />
-            <NavItem />
+        </div>
+    )
+}
+
+function UserContainer() {
+    return (
+        <div className="w-full py-7 mb-5 flex flex-col items-center justify-center gap-2 bg-blue-100 rounded-lg">
+            <div className="bg-blue-600 w-[8rem] h-[8rem] rounded-full"></div>
+            <p>Name</p>
+            <p>Name</p>
         </div>
     )
 }
@@ -18,14 +29,21 @@ function NavItem({ to, title }) {
     const location = useLocation()
     const { pathname } = location
 
-    let isActive = pathname == to
+    let isActive = pathname === to
 
     return (
         <NavLink
             to={to || 'mock'}
             className={clsx(
-                'w-full font-semibold block bg-white p-2 px-3 text-indigo-900 rounded-md hover:bg-indigo-100 transition duration-200',
-                isActive && 'bg-indigo-200 text-indigo-900 '
+                'w-full font-semibold block  p-2 px-3 rounded-md transition-all duration-200',
+                {
+                    'bg-blue-600 text-white shadow-inner shadow-blue-900 border-2 border-white':
+                        isActive,
+                },
+                {
+                    'bg-blue-50 text-gray-900 hover:bg-blue-400 hover:text-white':
+                        !isActive,
+                }
             )}
         >
             {/* Logo */}
