@@ -1,11 +1,9 @@
 import React, { forwardRef, useState } from 'react'
-import { Link, Route, Switch } from 'react-router-dom'
-import axios from 'axios'
-import { BASE_URL } from '../config'
+import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
-import instance from '../utils'
+import { signInService, signUpService } from '../services'
 
 function Auth({ children }) {
     return (
@@ -18,6 +16,8 @@ function Auth({ children }) {
 }
 
 export function SignUp() {
+    const navigate = useNavigate()
+
     const schema = yup
         .object({
             name: yup.string().required(),
@@ -40,14 +40,16 @@ export function SignUp() {
     })
 
     const onSubmit = async (data) => {
-        console.log(data)
-        try {
-            let res = await instance.post('/auth/signup', data)
-        } catch (e) {
-            setError('email', {
-                message: 'Email already registered',
-            })
-        }
+        await signUpService(data).then((res) => {
+            if (res.status === 'success') {
+                navigate('/auth/signin', { replace: true })
+            } else if (res.status === 'fail') {
+                console.log(res)
+                setError('email', {
+                    message: 'Email already registered',
+                })
+            }
+        })
     }
 
     return (
@@ -101,6 +103,7 @@ export function SignUp() {
 }
 
 export function SignIn() {
+    const navigate = useNavigate()
     const schema = yup
         .object({
             email: yup.string().email('Email not valid').required(),
@@ -116,7 +119,19 @@ export function SignIn() {
         resolver: yupResolver(schema),
     })
 
-    const onSubmit = () => {}
+    const onSubmit = async (data) => {
+        await signInService(data).then((res) => {
+            if (res.status === 'success') {
+                console.log(res)
+                navigate('/', { replace: true })
+            } else if (res.status === 'fail') {
+                console.log(res)
+                // setError('email', {
+                //     message: 'Email already registered',
+                // })
+            }
+        })
+    }
 
     return (
         <Auth>

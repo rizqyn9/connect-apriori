@@ -1,23 +1,24 @@
-import React from 'react'
-import { Switch, Route } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { Routes, Route } from 'react-router-dom'
 import { SignIn, SignUp } from './pages/Auth'
 import Dashboard from './pages/Dashboard'
+import { CookiesProvider, useCookies } from 'react-cookie'
 
 function App() {
-    // const location = useLocation();
+    const [cookies, setCookies] = useCookies(['token'])
 
-    // useEffect(() => {
-    // 	document.querySelector("html").style.scrollBehavior = "auto";
-    // 	window.scroll({ top: 0 });
-    // 	document.querySelector("html").style.scrollBehavior = "";
-    // }, [location.pathname]); // triggered on route change
+    useEffect(() => {
+        setCookies('token', 'tes')
+    }, [])
 
     return (
-        <Switch>
-            <Route path="/auth/signin" component={SignIn} exact />
-            <Route path="/auth/signup" component={SignUp} exact />
-            <Route path="/" component={Dashboard} />
-        </Switch>
+        <CookiesProvider>
+            <Routes>
+                <Route path="/auth/signin" element={<SignIn />} exact />
+                <Route path="/auth/signup" element={<SignUp />} exact />
+                <Route path="/" element={<Dashboard />} />
+            </Routes>
+        </CookiesProvider>
     )
 }
 

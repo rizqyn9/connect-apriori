@@ -1,9 +1,12 @@
 import axios from 'axios'
+import authHeader from './auth-header'
 
 axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8'
 
-const instance = axios.create({
+const api = axios.create({
     baseURL: 'http://localhost:5000',
+    headers: authHeader(),
 })
 
-export default instance
+export default api
+export * from './auth.service'
