@@ -20,6 +20,9 @@ app.use((req, res, next) => {
 
 // Auth
 app.use("/auth", require("./routes/auth.routes"));
+app.use("/user", require("./routes/user.routes"));
+app.use("/products", require("./routes/product.routes"));
+app.use("/admin", require("./routes/admin.routes"));
 
 app.use("*", (req, res) => {
 	res.send("Once");
