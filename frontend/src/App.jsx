@@ -6,6 +6,7 @@ import { SignIn, SignUp } from './pages/Auth'
 import DashboardLayout from './pages/DashboardLayout'
 import InputProduct from './pages/InputProduct'
 import Catalog from './components/Catalog'
+import AccountManagement from './pages/AccountManagement'
 
 function App() {
     const [cookies, setCookies] = useCookies(['token'])
@@ -22,6 +23,10 @@ function App() {
                 <Route path="/" element={<DashboardLayout />}>
                     <Route index element={<Catalog />} />
                     <Route path={'/product'} element={<InputProduct />} />
+                    <Route
+                        path={'/admin/account-management'}
+                        element={<AccountManagement />}
+                    />
                 </Route>
                 <Route path={'*'} element={<div>Notfound</div>} />
             </Routes>

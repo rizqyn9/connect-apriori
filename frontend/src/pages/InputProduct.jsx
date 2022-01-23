@@ -3,6 +3,13 @@ import ReactImageUploading from 'react-images-uploading'
 import clsx from 'clsx'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
+
+const schema = yup.object({
+    name: yup.string('req').required('req'),
+    price: yup.array().required(),
+    image: yup.object().required(),
+})
 
 export default function InputProduct() {
     const {
@@ -12,7 +19,7 @@ export default function InputProduct() {
         setValue,
         formState: { errors },
     } = useForm({
-        // resolver: yupResolver(schema),
+        resolver: yupResolver(schema),
     })
 
     const handleImageForm = (res) => setValue('image', res[res.length - 1])
@@ -23,12 +30,62 @@ export default function InputProduct() {
 
     return (
         <div className={'bg-white py-3 px-5 rounded-lg'}>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form
+                onSubmit={handleSubmit(onSubmit)}
+                className={'flex flex-col justify-center items-center'}
+            >
                 <h1 className={'h3'}>Input Product</h1>
                 <ImageInput onChange={handleImageForm} />
+                <div className={'w-[50%] mt-5'}>
+                    <FormInput
+                        name={'name'}
+                        register={register}
+                        label={'Title'}
+                        errors={errors.name?.message}
+                    />
+                    <FormInput
+                        name={'Title'}
+                        register={register}
+                        label={'title'}
+                        errors={errors.title?.message}
+                    />
+                    <FormInput
+                        name={'Title'}
+                        register={register}
+                        label={'title'}
+                        errors={errors.title?.message}
+                    />
+                    <FormInput
+                        name={'Title'}
+                        register={register}
+                        label={'title'}
+                        errors={errors.title?.message}
+                    />
+                </div>
                 <button type={'submit'}>Submit</button>
             </form>
         </div>
+    )
+}
+
+function FormInput({ name, register, label, errors, type = 'text' }) {
+    return (
+        <label
+            htmlFor={name}
+            className={'w-full flex items-center justify-around gap-5 m-2'}
+        >
+            <p className="ml-1 pb-1 text-sm font-medium">{label}</p>
+            <input
+                id={name}
+                name={name}
+                type={type}
+                {...register(name)}
+                className={clsx(
+                    'py-2 px-3 rounded-md text-white bg-gray-600 outline-2 outline-offset-5 outline-red-200 outline-none',
+                    { 'bg-red-200 border-2 border-red-500': errors }
+                )}
+            />
+        </label>
     )
 }
 
@@ -49,7 +106,7 @@ function ImageInput({ onChange }) {
         >
             {({ isDragging, dragProps, onImageUpdate, onImageRemove }) => (
                 <div
-                    className={`flex justify-center mt-8 ${
+                    className={`flex justify-center mt-8 w-[40rem] ${
                         isDragging ? 'bg-green-400' : ''
                     }`}
                     {...dragProps}
