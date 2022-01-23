@@ -6,3 +6,30 @@ content-type: application/json
     "password" : "test123",
     "username" : "rizqyn9"
 }
+
+
+###
+GET {{host}}/admin
+
+
+###
+GET {{host}}/admin/accounts
+
+### 
+GET {{host}}/user/61ebc7f765ae50a21c7ce2e5
+
+
+###
+GET {{host}}/products
+
+
+###
+POST {{host}}/products/create
+content-type: application/json
+
+{
+    "name": "asdas"
+}
+
+###
+POST {{host}}/products/3434

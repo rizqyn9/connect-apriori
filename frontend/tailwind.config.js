@@ -9,29 +9,18 @@ module.exports = {
         extend: {
             colors: {
                 violet: colors.violet,
-            },
-            gridTemplateAreas: {
-                layout: [
-                    'header header header',
-                    'nav    main   main',
-                    'nav    footer footer',
-                ],
-            },
-            gridTemplateColumns: {
-                layout: '24rem 1fr 2rem',
-            },
-            gridTemplateRows: {
-                layout: '6rem 3rem 1fr auto',
-            },
-            boxShadow: {
-                DEFAULT:
-                    '0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px 0 rgba(0, 0, 0, 0.02)',
-                md: '0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
-                lg: '0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.01)',
-                xl: '0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.01)',
-            },
-            outline: {
-                blue: '2px solid rgba(0, 112, 244, 0.5)',
+                blue: {
+                    50: '#f3f8f9',
+                    100: '#daf1fa',
+                    200: '#afe0f5',
+                    300: '#7cc2e7',
+                    400: '#479ed3',
+                    500: '#357dc0',
+                    600: '#2d62a9',
+                    700: '#254a87',
+                    800: '#1b3260',
+                    900: '#101f3f',
+                },
             },
             fontFamily: {
                 inter: ['Inter', 'sans-serif'],
