@@ -9,11 +9,11 @@ export default function Sidebar() {
             <UserContainer />
             <NavItem to="/" title="Dashboard" />
             <NavItem to="/product" title="Input" />
+            <NavItem to="/product-management" title="Product Management" />
             <NavItem
                 to="/admin/account-management"
                 title="Account Management"
             />
-            <NavItem />
         </div>
     )
 }
