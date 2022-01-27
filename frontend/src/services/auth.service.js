@@ -15,3 +15,11 @@ export async function signUpService(data) {
         console.log(e)
     }
 }
+
+export const logout = () => {
+    localStorage.removeItem('user')
+}
+
+export const getCurrentUser = () => {
+    return JSON.parse(localStorage.getItem('user'))
+}
