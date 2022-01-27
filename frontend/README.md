@@ -1,9 +1,15 @@
-Task :
-Run with docker
+##Task :
+- Run with docker
+- Documentation
+- Feat: Add to billing
+- Payment method
+- User Context
+- Cart Context
 
-Page :
+##Page :
 - Account validation
 - Post Product
 - Table product
 - Editable product
 - Admin authorization
+
