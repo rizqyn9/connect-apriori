@@ -31,10 +31,16 @@ body {
         }
 
         .catalog-order {
-            width: 30rem;
+            width: 35rem;
             //display: none;
             transition: all .5s ease-in-out;
         }
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
     }
 }
 
