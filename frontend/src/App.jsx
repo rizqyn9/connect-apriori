@@ -8,6 +8,7 @@ import InputProduct from './pages/InputProduct'
 import Catalog from './components/Catalog'
 import AccountManagement from './pages/AccountManagement'
 import ProductManagement from './pages/ProductManagement'
+import Analytics from './pages/Analytics'
 
 function App() {
     const [cookies, setCookies] = useCookies(['token'])
@@ -26,7 +27,7 @@ function App() {
                     <Route path={'/product'} element={<InputProduct />} />
                     <Route
                         path={'/product-management'}
-                        element={<ProductManagement />}
+                        element={<Analytics />}
                     />
                     <Route
                         path={'/admin/account-management'}

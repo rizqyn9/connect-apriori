@@ -6,12 +6,12 @@ export default function DashboardLayout({ children }) {
     const [sideBarOpen, setSideBarOpen] = useState(false)
 
     return (
-        <div className="w-screen h-screen flex bg-gradient-to-tl from-blue-400 via-purple-900 to-blue-800">
+        <div className="w-screen h-screen flex bg-dark-1">
             {/* Sidebar */}
-            <div className="min-w-[15rem] p-5 bg-blue-300 border-r-2 border-blue-300 shadow-xl shadow-red-900 bg-gradient-to-b from-blue-300 to-violet-300">
+            <div className="min-w-[5rem] p-5 bg-dark-2">
                 <Sidebar />
             </div>
-            <div className="flex-grow p-5">
+            <div className="flex-grow">
                 <Outlet />
             </div>
         </div>

@@ -14,4 +14,34 @@ body {
 // @import "additional-styles/flatpickr.scss";
 // @import "additional-styles/theme.scss";
 
+@layer components {
+    .nav__active {
+        box-shadow: 0px 8px 24px rgba(234, 124, 105, 0.32);
+    }
+
+    .catalog {
+        //background-color: red;
+        height: 100%;
+        width: 100%;
+
+        display: flex;
+
+        .catalog-main {
+            flex-grow: 1;
+        }
+
+        .catalog-order {
+            width: 35rem;
+            //display: none;
+            transition: all .5s ease-in-out;
+        }
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+}
+
 @tailwind utilities;
