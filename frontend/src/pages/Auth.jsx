@@ -1,11 +1,19 @@
-import React, { forwardRef, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { forwardRef, useEffect, useState } from 'react'
+import { Link, useNavigate, Navigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { signInService, signUpService } from '../services'
+import {
+    getToken,
+    signInService,
+    signUpService,
+    validateToken,
+} from '../services'
 
 function Auth({ children }) {
+    const [isAuth, setAuth] = useState(getToken())
+    const navigate = useNavigate()
+
     return (
         <div className="bg-dark-2 flex h-screen overflow-hidden justify-center text-white">
             <div className="py-7 px-8 flex flex-col gap-2 bg-dark-1 w-3/5 min-w-max max-w-sm min-h-[10rem] self-center rounded-xl">
@@ -120,7 +128,6 @@ export function SignIn() {
     const onSubmit = async (data) => {
         await signInService(data).then((res) => {
             if (res.status === 'success') {
-                console.log(res)
                 navigate('/', { replace: true })
             } else if (res.status === 'fail') {
                 console.log(res)
@@ -188,7 +195,7 @@ function FormInput({ name, register, label, errors, type = 'text' }) {
                 }
             />
             {errors && (
-                <p className={'text-xs mt-1 italic text-red-500'}>{errors}</p>
+                <p className={'text-xs mt-1 italic text-red-300'}>{errors}</p>
             )}
         </label>
     )

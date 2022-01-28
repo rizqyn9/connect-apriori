@@ -1,8 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Card from './Card'
-import Icon from './Icon'
+import { GetAllProducts } from '../services/product.service'
 
 export default function Catalog() {
+    useEffect(async () => {
+        await GetAllProducts()
+    }, [])
+
     return (
         <div className="w-full text-white catalog">
             <div className="h-full catalog-main p-5">
