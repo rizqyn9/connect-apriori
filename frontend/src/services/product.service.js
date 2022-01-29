@@ -1,10 +1,22 @@
 import api from './index'
 
 export async function GetAllProducts() {
-    api.get('/products').then((data) => console.log(data))
+    try {
+        return await api.get('/products').then((res) => res.data)
+    } catch (e) {
+        alert(e)
+    }
 }
 
-export async function PostProduct() {}
+export async function PostProduct(data) {
+    try {
+        await api.post('/products', data).then((res) => {
+            console.log(res)
+        })
+    } catch (e) {
+        alert(e)
+    }
+}
 
 export async function EditProduct() {}
 

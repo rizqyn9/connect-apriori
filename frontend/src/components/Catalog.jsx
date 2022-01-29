@@ -3,8 +3,11 @@ import Card from './Card'
 import { GetAllProducts } from '../services/product.service'
 
 export default function Catalog() {
+    const [products, setProducts] = useState([])
     useEffect(async () => {
-        await GetAllProducts()
+        let result = await GetAllProducts()
+        console.log(result)
+        if (result.data && result.data.length !== 0) setProducts(result.data)
     }, [])
 
     return (
@@ -18,13 +21,9 @@ export default function Catalog() {
                 </div>
                 <hr className="border-dark-line w-full my-5" />
                 <div className="h-[80vh] flex flex-wrap gap-5 align-start justify-start overflow-scroll">
-                    <Card />
-                    <Card />
-                    <Card />
-                    <Card />
-                    <Card />
-                    <Card />
-                    <Card />
+                    {products.map((val, i) => (
+                        <Card key={i} menu={val.menu} image={val.image.data} />
+                    ))}
                 </div>
             </div>
             <div className="flex flex-col h-screen catalog-order bg-dark-2 p-5">
