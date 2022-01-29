@@ -11,14 +11,19 @@ app.get("/", (req, res) => {
 	} catch (error) {}
 });
 
-app.post("/create", (req, res) => {
+app.post("/", (req, res) => {
 	try {
-		const valid_keys = ["name"];
+		const valid_keys = ["menu"];
 
 		for (const key of valid_keys) {
 			if (!req.body[key])
 				return responses.fail(res, (message = `${key} is required`));
 		}
+
+		console.log(req.body.image.file);
+		Product.create({ ...req.body }).then((data, val) => {
+			console.log(val);
+		});
 
 		return responses.success(res, "created success");
 	} catch (error) {}

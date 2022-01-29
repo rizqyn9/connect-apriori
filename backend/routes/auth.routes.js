@@ -44,12 +44,40 @@ app.post("/signin", async (req, res) => {
 		// Get User
 		await User.findOne({ email }).then((data) => {
 			if (data) {
-				let payload = jwt.sign(data.email, process.env.SECRET_TOKEN);
-				return responses.success(res, { token: payload });
+				let payload = jwt.sign(
+					{ email: data.email, id: data._id },
+					process.env.SECRET_TOKEN,
+				);
+
+				return responses.success(res, {
+					token: payload,
+					user: { email: data.email, name: data.name, isAdmin: data.isAdmin },
+				});
 			}
 		});
 	} catch (error) {
 		return responses.error(res, error);
+	}
+});
+
+app.post("/validate", (req, res) => {
+	try {
+		jwt.verify(
+			JSON.parse(req.body.token),
+			process.env.SECRET_TOKEN,
+			(err, decoded) => {
+				if (err) return new Error("Token not valid");
+
+				User.findById(decoded.id).then((data) => {
+					if (data) {
+						data.password = undefined;
+						return responses.success(res, { isAuth: true, data });
+					} else throw new Error("Not authenticated");
+				});
+			},
+		);
+	} catch (error) {
+		return responses.error(res, error.message);
 	}
 });
 
