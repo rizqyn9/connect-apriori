@@ -5,7 +5,7 @@ import reactRefresh from '@vitejs/plugin-react-refresh'
 export default defineConfig({
     plugins: [reactRefresh()],
     root: '.',
-    assetsInclude: ['*'],
+    // assetsInclude: ['*'],
     envDir: '/',
     // build: {
     //     rollupOptions: {

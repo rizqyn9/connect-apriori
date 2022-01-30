@@ -8,7 +8,7 @@ import { PostProduct } from '../services/product.service'
 
 const schema = yup.object({
     menu: yup.string('req').required('req'),
-    harga: yup.number().required(),
+    price: yup.number().required(),
     // image: yup.object().required(),
 })
 
@@ -65,10 +65,15 @@ export default function InputProduct() {
                             errors={errors.menu?.message}
                         />{' '}
                         <FormInput
-                            name={'harga'}
+                            name={'price'}
                             register={register}
                             label={'Harga'}
-                            errors={errors['harga']?.message}
+                            errors={errors.price?.message}
+                            other={{
+                                type: 'number',
+                                min: 5000,
+                                step: '500',
+                            }}
                         />
                         <button
                             type={'submit'}
@@ -83,7 +88,14 @@ export default function InputProduct() {
     )
 }
 
-function FormInput({ name, register, label, errors, type = 'text' }) {
+function FormInput({
+    name,
+    register,
+    label,
+    errors,
+    type = 'text',
+    other = {},
+}) {
     return (
         <label
             htmlFor={name}
@@ -95,6 +107,7 @@ function FormInput({ name, register, label, errors, type = 'text' }) {
                 name={name}
                 type={type}
                 {...register(name)}
+                {...other}
                 className={clsx(
                     'py-2 px-3 rounded-md text-white bg-form outline-2 outline-offset-5 outline-red-200 outline-none',
                     { 'border-2 border-red-500': errors }

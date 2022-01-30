@@ -1,5 +1,14 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import OrderCard from './OrderCard'
+import { atom, useAtom } from 'jotai'
+
+let OrderModels = {
+    discount: 0,
+    total: 0,
+    totalOrder: 0,
+    menuOrder: [],
+    payment: null,
+}
 
 export default function Order() {
     return (
@@ -10,16 +19,12 @@ export default function Order() {
             {/*Order Products*/}
             <div
                 className={
-                    'mt-5 max-h-[60%] overflow-scroll border-b-2 border-t-2 py-3 flex flex-col gap-3 border-dark-line'
+                    'mt-5 h-[60%] overflow-scroll border-b-2 border-t-2 py-3 flex flex-col gap-3 border-dark-line'
                 }
             >
-                <OrderCard />
-                <OrderCard />
-                <OrderCard />
-                <OrderCard />
-                <OrderCard />
-                <OrderCard />
-                <OrderCard />
+                {/*{orders.map((val, i) => {*/}
+                {/*    return <OrderCard key={i} />*/}
+                {/*})}*/}
             </div>
             <div className={'mt-5 text-sm text-white/70'}>
                 <div>Discount</div>
