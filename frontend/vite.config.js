@@ -6,7 +6,7 @@ export default defineConfig({
     plugins: [reactRefresh()],
     root: '.',
     // assetsInclude: ['*'],
-    envDir: '/',
+    envDir: './',
     // build: {
     //     rollupOptions: {
     //         output: {

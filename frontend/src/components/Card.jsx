@@ -3,7 +3,7 @@ import clsx from 'clsx'
 import { useOrder } from '../utils/cart'
 
 export default function Card({ menu, image, price, id }) {
-    const { test } = useOrder()
+    const { addOrder } = useOrder()
 
     const [type, setType] = useState('hot')
     const handleType = (typeOrder) => {
@@ -11,7 +11,7 @@ export default function Card({ menu, image, price, id }) {
         setType(type)
     }
 
-    console.log(`render : ${id}`)
+    // console.log(`render : ${id}`)
 
     return (
         <div
@@ -44,7 +44,7 @@ export default function Card({ menu, image, price, id }) {
             </div>
             <button
                 className="text-xs bg-primary p-2 w-full text-center rounded-lg hover:opacity-80"
-                onClick={test}
+                onClick={() => addOrder({ id, type, image, price })}
             >
                 Add to billing
             </button>

@@ -1,28 +1,32 @@
 import { atom, useAtom } from 'jotai'
-
-export const OrderEnum = Object.freeze({
-    ADD: 0,
-    REMOVE: 1,
-})
+import { useEffect, useState } from 'react'
 
 let dummy = {
-    ['id']: {},
+    ['id']: {
+        quantity: 1,
+        notes: '',
+    },
 }
 
-export const OrderControlContext = atom({})
-
 export function useOrder() {
-    // if (!action || !data) return
-    //
-    // // useAtom(OrderControlContext)
-    // switch (action) {
-    //     case OrderEnum.ADD: {
-    //         console.log('add :', data)
-    //     }
-    // }
+    const [orders, setOrders] = useState({})
+    const [priceTotal, setPriceTotal] = useState(0)
+
+    useEffect(() => {
+        // let priceCalc =
+        console.log('render', orders)
+    }, [orders])
+
+    const addOrder = (data) => {
+        let id = `${data.type}-${data.id}`
+        setOrders((val) => {
+            return { ...val, [id]: data }
+        })
+    }
+
     const test = () => {
         console.log('test')
     }
 
-    return { test }
+    return { test, addOrder, orders, setOrders, priceTotal, setPriceTotal }
 }
