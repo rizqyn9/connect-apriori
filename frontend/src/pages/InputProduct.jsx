@@ -4,11 +4,12 @@ import clsx from 'clsx'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
+import { PostProduct } from '../services/product.service'
 
 const schema = yup.object({
-    name: yup.string('req').required('req'),
-    price: yup.array().required(),
-    image: yup.object().required(),
+    menu: yup.string('req').required('req'),
+    price: yup.number().required(),
+    // image: yup.object().required(),
 })
 
 export default function InputProduct() {
@@ -22,10 +23,13 @@ export default function InputProduct() {
         resolver: yupResolver(schema),
     })
 
-    const handleImageForm = (res) => setValue('image', res[res.length - 1])
+    const handleImageForm = (res) => {
+        setValue('image', res)
+    }
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         console.log(data)
+        await PostProduct({ ...data })
     }
 
     return (
@@ -55,53 +59,22 @@ export default function InputProduct() {
                         }
                     >
                         <FormInput
-                            name={'name'}
+                            name={'menu'}
                             register={register}
-                            label={'Title'}
-                            errors={errors.name?.message}
+                            label={'Nama Menu'}
+                            errors={errors.menu?.message}
                         />{' '}
                         <FormInput
-                            name={'name'}
+                            name={'price'}
                             register={register}
-                            label={'Title'}
-                            errors={errors.name?.message}
+                            label={'Harga'}
+                            errors={errors.price?.message}
+                            other={{
+                                type: 'number',
+                                min: 5000,
+                                step: '500',
+                            }}
                         />
-                        <FormInput
-                            name={'Title'}
-                            register={register}
-                            label={'title'}
-                            errors={errors.title?.message}
-                        />
-                        <FormInput
-                            name={'Title'}
-                            register={register}
-                            label={'title'}
-                            errors={errors.title?.message}
-                        />
-                        <FormInput
-                            name={'Title'}
-                            register={register}
-                            label={'title'}
-                            errors={errors.title?.message}
-                        />
-                        <button
-                            type={'submit'}
-                            className={'bg-primary p-3 w-full rounded-lg mt-5'}
-                        >
-                            Submit
-                        </button>
-                        <button
-                            type={'submit'}
-                            className={'bg-primary p-3 w-full rounded-lg mt-5'}
-                        >
-                            Submit
-                        </button>
-                        <button
-                            type={'submit'}
-                            className={'bg-primary p-3 w-full rounded-lg mt-5'}
-                        >
-                            Submit
-                        </button>
                         <button
                             type={'submit'}
                             className={'bg-primary p-3 w-full rounded-lg mt-5'}
@@ -115,7 +88,14 @@ export default function InputProduct() {
     )
 }
 
-function FormInput({ name, register, label, errors, type = 'text' }) {
+function FormInput({
+    name,
+    register,
+    label,
+    errors,
+    type = 'text',
+    other = {},
+}) {
     return (
         <label
             htmlFor={name}
@@ -127,9 +107,10 @@ function FormInput({ name, register, label, errors, type = 'text' }) {
                 name={name}
                 type={type}
                 {...register(name)}
+                {...other}
                 className={clsx(
                     'py-2 px-3 rounded-md text-white bg-form outline-2 outline-offset-5 outline-red-200 outline-none',
-                    { 'bg-red-200 border-2 border-red-500': errors }
+                    { 'border-2 border-red-500': errors }
                 )}
             />
         </label>
@@ -140,9 +121,9 @@ function ImageInput({ onChange }) {
     const [image, setImage] = useState([])
 
     const handleChange = (a, b) => {
-        // console.log({ a, b })
+        let imageData = a[a.length - 1]
         setImage(a)
-        if (onChange) onChange(a)
+        if (onChange) onChange(imageData)
     }
 
     return (

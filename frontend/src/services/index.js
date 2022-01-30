@@ -4,7 +4,7 @@ import authHeader from './auth-header'
 axios.defaults.headers.common['Content-Type'] = 'application/json;charset=UTF-8'
 
 const api = axios.create({
-    baseURL: 'http://localhost:5000',
+    baseURL: import.meta.env.VITE_SERVER,
     headers: authHeader(),
 })
 

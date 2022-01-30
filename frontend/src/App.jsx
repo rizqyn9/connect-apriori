@@ -9,6 +9,7 @@ import Catalog from './components/Catalog'
 import AccountManagement from './pages/AccountManagement'
 import ProductManagement from './pages/ProductManagement'
 import Analytics from './pages/Analytics'
+import { RequireAuth } from './components/WithAuth'
 
 function App() {
     const [cookies, setCookies] = useCookies(['token'])
@@ -22,7 +23,7 @@ function App() {
             <Routes>
                 <Route path="/auth/signin" element={<SignIn />} exact />
                 <Route path="/auth/signup" element={<SignUp />} exact />
-                <Route path="/" element={<DashboardLayout />}>
+                <Route path="/" element={RequireAuth(<DashboardLayout />)}>
                     <Route index element={<Catalog />} />
                     <Route path={'/product'} element={<InputProduct />} />
                     <Route

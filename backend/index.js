@@ -4,12 +4,13 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const { MongoConnect } = require("./utils/mongoConnect");
+const { VerifyToken } = require("./middleware/token");
 
 const app = express();
 
 app.use(cookieParser());
 // application/json
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: "50mb" }));
 app.use(cors());
 
 app.use((req, res, next) => {
@@ -20,6 +21,8 @@ app.use((req, res, next) => {
 
 // Auth
 app.use("/auth", require("./routes/auth.routes"));
+
+app.use(VerifyToken);
 app.use("/user", require("./routes/user.routes"));
 app.use("/products", require("./routes/product.routes"));
 app.use("/admin", require("./routes/admin.routes"));

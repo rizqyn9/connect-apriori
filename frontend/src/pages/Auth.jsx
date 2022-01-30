@@ -1,14 +1,22 @@
-import React, { forwardRef, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { forwardRef, useEffect, useState } from 'react'
+import { Link, useNavigate, Navigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { signInService, signUpService } from '../services'
+import {
+    getToken,
+    signInService,
+    signUpService,
+    validateToken,
+} from '../services'
 
 function Auth({ children }) {
+    const [isAuth, setAuth] = useState(getToken())
+    const navigate = useNavigate()
+
     return (
-        <div className="bg-violet-800 flex h-screen overflow-hidden justify-center">
-            <div className="py-7 px-8 flex flex-col gap-2 bg-white w-3/5 min-w-max max-w-sm min-h-[10rem] self-center rounded-xl">
+        <div className="bg-dark-2 flex h-screen overflow-hidden justify-center text-white">
+            <div className="py-7 px-8 flex flex-col gap-2 bg-dark-1 w-3/5 min-w-max max-w-sm min-h-[10rem] self-center rounded-xl">
                 {children}
             </div>
         </div>
@@ -58,7 +66,7 @@ export function SignUp() {
             <h1 className="h4 py-3 mb-5 text-center">DAFTAR</h1>
             {/* FORM */}
             <form
-                className={'w-full flex flex-col gap-2'}
+                className={'w-full flex flex-col gap-5'}
                 onSubmit={handleSubmit(onSubmit)}
             >
                 <FormInput
@@ -86,14 +94,12 @@ export function SignUp() {
                     type={'submit'}
                     value={'Sign Up'}
                     className={
-                        'py-2 mt-8 rounded-lg bg-indigo-700 text-white hover:bg-indigo-800 cursor-pointer'
+                        'py-2 mt-8 rounded-lg bg-primary hover:bg-primary/80 cursor-pointer'
                     }
                 />
                 <Link
                     to={'/auth/signin'}
-                    className={
-                        'text-sm text-indigo-400 hover:text-indigo-600 italic mt-3'
-                    }
+                    className={'text-sm hover:text-white/80 italic mt-3'}
                 >
                     Already have account ?
                 </Link>
@@ -122,7 +128,6 @@ export function SignIn() {
     const onSubmit = async (data) => {
         await signInService(data).then((res) => {
             if (res.status === 'success') {
-                console.log(res)
                 navigate('/', { replace: true })
             } else if (res.status === 'fail') {
                 console.log(res)
@@ -139,7 +144,7 @@ export function SignIn() {
             <h1 className="h4 py-3 mb-5 text-center">MASUK</h1>
             {/* FORM */}
             <form
-                className={'w-full flex flex-col gap-2'}
+                className={'w-full flex flex-col gap-4'}
                 onSubmit={handleSubmit(onSubmit)}
             >
                 <FormInput
@@ -160,13 +165,13 @@ export function SignIn() {
                     type={'submit'}
                     value={'Sign In'}
                     className={
-                        'py-2 mt-8 rounded-lg bg-indigo-700 text-white hover:bg-indigo-800 cursor-pointer'
+                        'py-2 mt-8 rounded-lg bg-primary hover:bg-primary/80 cursor-pointer'
                     }
                 />
                 <Link
                     to={'/auth/signup'}
                     className={
-                        'text-sm text-indigo-400 hover:text-indigo-600 italic mt-3'
+                        'text-sm text-white hover:text-white/80 italic mt-3'
                     }
                 >
                     Create new account ?
@@ -186,11 +191,11 @@ function FormInput({ name, register, label, errors, type = 'text' }) {
                 type={type}
                 {...register(name)}
                 className={
-                    'py-2 px-3 rounded-md text-white bg-gray-600 outline-2 outline-offset-5 outline-red-200 '
+                    'py-2 px-3 rounded-md text-white bg-form outline-2 border-2 border-dark-line outline-offset-5 outline-red-200 '
                 }
             />
             {errors && (
-                <p className={'text-xs mt-1 italic text-red-500'}>{errors}</p>
+                <p className={'text-xs mt-1 italic text-red-300'}>{errors}</p>
             )}
         </label>
     )

@@ -8,7 +8,6 @@ body {
     font-family: 'Inter', sans-serif;
 }
 // Additional styles
-@import './additional-styles/utility-patterns';
 @import './additional-styles/range-slider';
 // @import "additional-styles/toggle-switch.scss";
 // @import "additional-styles/flatpickr.scss";
@@ -35,6 +34,12 @@ body {
             //display: none;
             transition: all .5s ease-in-out;
         }
+    }
+
+    input[type=number] {
+        -moz-appearance: textfield;
+        appearance: textfield;
+        margin: 0;
     }
 
     input[type=number]::-webkit-inner-spin-button,
