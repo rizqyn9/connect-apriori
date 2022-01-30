@@ -5,12 +5,9 @@ const ProductSchema = new Schema({
 		type: String,
 		required: true,
 	},
-	harga: {
+	price: {
 		type: Number,
 		required: true,
-	},
-	quantity: {
-		type: Number,
 	},
 	image: {
 		type: Object,
