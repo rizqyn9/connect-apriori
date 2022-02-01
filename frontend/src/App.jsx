@@ -10,6 +10,7 @@ import AccountManagement from './pages/AccountManagement'
 import ProductManagement from './pages/ProductManagement'
 import Analytics from './pages/Analytics'
 import { RequireAuth } from './components/WithAuth'
+import { OrderProvider } from './context/order-context'
 
 function App() {
     const [cookies, setCookies] = useCookies(['token'])
@@ -20,23 +21,25 @@ function App() {
 
     return (
         <CookiesProvider>
-            <Routes>
-                <Route path="/auth/signin" element={<SignIn />} exact />
-                <Route path="/auth/signup" element={<SignUp />} exact />
-                <Route path="/" element={RequireAuth(<DashboardLayout />)}>
-                    <Route index element={<Catalog />} />
-                    <Route path={'/product'} element={<InputProduct />} />
-                    <Route
-                        path={'/product-management'}
-                        element={<Analytics />}
-                    />
-                    <Route
-                        path={'/admin/account-management'}
-                        element={<AccountManagement />}
-                    />
-                </Route>
-                <Route path={'*'} element={<div>Notfound</div>} />
-            </Routes>
+            <OrderProvider>
+                <Routes>
+                    <Route path="/auth/signin" element={<SignIn />} exact />
+                    <Route path="/auth/signup" element={<SignUp />} exact />
+                    <Route path="/" element={RequireAuth(<DashboardLayout />)}>
+                        <Route index element={<Catalog />} />
+                        <Route path={'/product'} element={<InputProduct />} />
+                        <Route
+                            path={'/product-management'}
+                            element={<Analytics />}
+                        />
+                        <Route
+                            path={'/admin/account-management'}
+                            element={<AccountManagement />}
+                        />
+                    </Route>
+                    <Route path={'*'} element={<div>Notfound</div>} />
+                </Routes>
+            </OrderProvider>
         </CookiesProvider>
     )
 }

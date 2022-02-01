@@ -1,19 +1,20 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Sidebar from '../components/Sidebar'
-import { Routes, Route, Outlet } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
+import { OrderProvider } from '../context/order-context'
 
-export default function DashboardLayout({ children }) {
-    const [sideBarOpen, setSideBarOpen] = useState(false)
-
+export default function DashboardLayout() {
     return (
-        <div className="w-screen h-screen flex bg-dark-1">
-            {/* Sidebar */}
-            <div className="min-w-[5rem] p-5 bg-dark-2">
-                <Sidebar />
+        <OrderProvider>
+            <div className="w-screen h-screen flex bg-dark-1">
+                {/* Sidebar */}
+                <div className="min-w-[5rem] p-5 bg-dark-2">
+                    <Sidebar />
+                </div>
+                <div className="flex-grow">
+                    <Outlet />
+                </div>
             </div>
-            <div className="flex-grow">
-                <Outlet />
-            </div>
-        </div>
+        </OrderProvider>
     )
 }

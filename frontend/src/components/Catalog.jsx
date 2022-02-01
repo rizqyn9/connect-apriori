@@ -2,14 +2,13 @@ import React, { useEffect, useState } from 'react'
 import Card from './Card'
 import { GetAllProducts } from '../services/product.service'
 import Order from './Order'
-import { useAtom } from 'jotai'
 
 export default function Catalog() {
     const [products, setProducts] = useState([])
 
     useEffect(async () => {
         let result = await GetAllProducts()
-        console.log(result)
+        // console.log(result)
         if (result.data && result.data.length !== 0) setProducts(result.data)
     }, [])
 
@@ -31,7 +30,6 @@ export default function Catalog() {
                             price={val.price}
                             menu={val.menu}
                             image={val.image.data}
-                            // handleAddToCart={handleAddCart}
                         />
                     ))}
                 </div>

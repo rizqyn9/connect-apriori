@@ -8,5 +8,10 @@ const api = axios.create({
     headers: authHeader(),
 })
 
+// Handle Error
+api.interceptors.response.use((response) => {
+    return response
+})
+
 export default api
 export * from './auth.service'

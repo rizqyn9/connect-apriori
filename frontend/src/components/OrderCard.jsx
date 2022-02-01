@@ -1,33 +1,39 @@
 import React, { useState } from 'react'
+import { useOrder } from '../context/order-context'
+import Icon from './Icon'
 
-export default function OrderCard({ id, image, price, type }) {
-    const [total, setTotal] = useState(1)
+export default function OrderCard({ id, menu, image, price, type, quantity }) {
+    const { updateOrder, removeOrder } = useOrder()
+    console.log('render :', id)
 
-    const handle = (isIncrement) => {
-        if (isIncrement) setTotal(total + 1)
-        else {
-            if (total === 1) return
-            setTotal(total - 1)
+    const handleQuantity = (isIncrement) => {
+        if (isIncrement) {
+            updateOrder(id, {
+                quantity: quantity + 1,
+            })
+        } else {
+            updateOrder(id, {
+                quantity: quantity - 1,
+            })
         }
     }
-
-    console.log('render :', id)
 
     return (
         <div className="bg-dark-1 p-2 rounded-md flex gap-5">
             {/*Product Image*/}
-            <div className="w-20 h-20 overflow-hidden">
-                <img src={image} className="mt-[-2.5rem]" />
+            <div className="w-20 h-20 rounded-lg border-2 border-white/50 overflow-hidden">
+                <img src={image} className="mt-[-2.5rem]" alt={''} />
             </div>
             <div>
-                <h2 className="font-bold text-sm">Product Name</h2>
-                <h2 className="text-xs">Rp. {parseInt(price) * total}</h2>
+                <h2 className="font-bold text-sm">{menu}</h2>
+                <h2 className="text-xs">Rp. {parseInt(price) * quantity}</h2>
                 <h2>{type}</h2>
             </div>
+
             {/*Increment Decrement*/}
             <div className={'h-6 flex overflow-hidden rounded-md'}>
                 <button
-                    onClick={() => handle(false)}
+                    onClick={() => handleQuantity(false)}
                     className={
                         'bg-primary flex items-center justify-center p-2 h-full'
                     }
@@ -39,10 +45,10 @@ export default function OrderCard({ id, image, price, type }) {
                         'bg-dark-2 text-white flex items-center justify-center p-2 h-full text-xs'
                     }
                 >
-                    {total}
+                    {quantity}
                 </p>
                 <button
-                    onClick={() => handle(true)}
+                    onClick={() => handleQuantity(true)}
                     className={
                         'bg-primary flex items-center justify-center p-2 h-full'
                     }
@@ -50,9 +56,9 @@ export default function OrderCard({ id, image, price, type }) {
                     +
                 </button>
             </div>
-            {/*<button className="w-3 h-3">*/}
-            {/*    <Icon.Delete />*/}
-            {/*</button>*/}
+            <button className="w-3 h-3" onClick={() => removeOrder(id)}>
+                <Icon.Delete />
+            </button>
         </div>
     )
 }

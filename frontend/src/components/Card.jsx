@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import clsx from 'clsx'
-import { useOrder } from '../utils/cart'
+import { useOrder } from '../context/order-context'
 
 export default function Card({ menu, image, price, id }) {
+    const [type, setType] = useState('hot')
+
     const { addOrder } = useOrder()
 
-    const [type, setType] = useState('hot')
     const handleType = (typeOrder) => {
         if (typeOrder === type) return
         setType(type)
@@ -44,7 +45,9 @@ export default function Card({ menu, image, price, id }) {
             </div>
             <button
                 className="text-xs bg-primary p-2 w-full text-center rounded-lg hover:opacity-80"
-                onClick={() => addOrder({ id, type, image, price })}
+                onClick={() => {
+                    addOrder({ type, menu, id, price, image })
+                }}
             >
                 Add to billing
             </button>
