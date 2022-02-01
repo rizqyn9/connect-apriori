@@ -1,20 +1,23 @@
 import * as React from 'react'
-import { isValidElement } from 'react'
-
-export const ORDER = Object.freeze({
-    ADD: 1,
-    REMOVE: 2,
-    UPDATE: 3,
-})
+import { useState } from 'react'
 
 const OrderContext = React.createContext({})
 
 export function OrderProvider({ children }) {
+    const [transaction, setTransaction] = useState({})
     const [orders, setOrders] = React.useState({})
 
     React.useEffect(() => {
-        console.log('Order changes :', orders)
+        updateTransaction()
     }, [orders])
+
+    function updateTransaction() {
+        let total = 0
+        for (const key in orders) {
+            total += orders[key].quantity * orders[key].price
+        }
+        return setTransaction({ ...transaction, priceTotal: total })
+    }
 
     function addOrder(data) {
         let id = `${data.type}-${data.id}`
@@ -42,6 +45,8 @@ export function OrderProvider({ children }) {
         setOrders({ ...orders, [id]: { ...orders[id], ...data } })
     }
 
+    function resetOrder() {}
+
     return (
         <OrderContext.Provider
             value={{
@@ -49,6 +54,8 @@ export function OrderProvider({ children }) {
                 addOrder,
                 removeOrder,
                 updateOrder,
+                transaction,
+                setTransaction,
             }}
         >
             {children}

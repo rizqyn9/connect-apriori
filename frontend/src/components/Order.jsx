@@ -11,7 +11,7 @@ let OrderModels = {
 }
 
 export default function Order() {
-    const { orders } = useOrder()
+    const { orders, transaction } = useOrder()
     return (
         <div
             className={'w-full h-[80%] flex-grow flex flex-col justify-around'}
@@ -42,9 +42,9 @@ export default function Order() {
 
             <div className={'mt-5 text-sm text-white/70'}>
                 <div>Discount</div>
-                <div>
+                <div className={'flex justify-around'}>
                     <p>Sub Total</p>
-                    {/*<p>{priceTotal}</p>*/}
+                    <p>{transaction.priceTotal}</p>
                 </div>
             </div>
             <button
