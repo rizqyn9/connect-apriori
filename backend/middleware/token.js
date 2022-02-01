@@ -3,7 +3,6 @@ const responses = require("../utils/responses");
 
 const VerifyToken = (req, res, next) => {
 	try {
-		console.log("dfd");
 		if (req.headers["x-access-token"]) {
 			jwt.verify(
 				req.headers["x-access-token"],
@@ -14,7 +13,7 @@ const VerifyToken = (req, res, next) => {
 					next();
 				},
 			);
-		} else new Error("Not validated");
+		} else throw new Error("Not validated");
 	} catch (error) {
 		return responses.fail(res, error.message);
 	}
