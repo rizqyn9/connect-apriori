@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useOrder } from '../context/order-context'
 import OrderCard from './OrderCard'
 
@@ -12,6 +12,8 @@ let OrderModels = {
 
 export default function Order() {
     const { orders, transaction } = useOrder()
+    const [showOrder, setShowOrder] = useState(true)
+
     return (
         <div
             className={
@@ -25,7 +27,8 @@ export default function Order() {
                     'relative mt-5 flex-1 overflow-scroll border-b-2 border-t-2 py-3 flex flex-col gap-3 border-dark-line'
                 }
             >
-                {orders &&
+                {showOrder &&
+                    orders &&
                     Object.keys(orders).map((val, i) => {
                         let data = orders[val]
                         return (
@@ -40,6 +43,7 @@ export default function Order() {
                             />
                         )
                     })}
+                {!showOrder && <Transaction showTransaction={setShowOrder} />}
             </div>
 
             <div className={'my-5 text-sm text-white/70 flex flex-col gap-3'}>
@@ -56,9 +60,19 @@ export default function Order() {
                 className={
                     'text-md bg-primary p-2 w-full text-center rounded-lg hover:opacity-80'
                 }
+                onClick={() => setShowOrder(!showOrder)}
             >
                 Set payment method
             </button>
+        </div>
+    )
+}
+
+function Transaction({ showTransaction }) {
+    return (
+        <div>
+            <button onClick={() => showTransaction(true)}>back</button>
+            <h2>Transaction</h2>
         </div>
     )
 }

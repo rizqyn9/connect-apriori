@@ -31,9 +31,9 @@ export default function OrderCard({ id, menu, image, price, type, quantity }) {
                 <div className="w-[6rem] h-[6rem] rounded-lg border-2 border-primary/70 overflow-hidden">
                     <img src={image} className="mt-[-2.5rem]" alt={''} />
                 </div>
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col justify-between">
                     {/*Menu & Type*/}
-                    <div className={'flex gap-2 align-center'}>
+                    <div className={'flex gap-4 align-center'}>
                         <div className="w-5 h-5 ">
                             {type === 'hot' ? <Icon.Hot /> : <Icon.Ice />}
                         </div>
