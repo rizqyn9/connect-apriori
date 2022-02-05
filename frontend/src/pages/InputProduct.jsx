@@ -35,55 +35,56 @@ export default function InputProduct() {
     return (
         <div
             className={
-                'px-7 max-h-screen w-full text-white flex flex-col align-stretch'
+                'px-7 py-5 max-h-screen w-full text-white flex flex-col gap-6 align-stretch'
             }
         >
             <h1
                 className={
-                    'h3 min-h-[5rem] w-full flex items-center justify-center'
+                    'h-[5rem] text-2xl font-bold border-b-2 w-full flex items-center '
                 }
             >
                 Input Product
             </h1>
-            <div className={'grow pb-5 overflow-scroll'}>
-                <form
-                    onSubmit={handleSubmit(onSubmit)}
-                    className={'grid grid-cols-3 gap-5'}
+            <form
+                onSubmit={handleSubmit(onSubmit)}
+                className={'h-full flex gap-2'}
+            >
+                {/*Input Image*/}
+                <div className="h-full w-full" style={{ flex: '1 1 55%' }}>
+                    <ImageInput onChange={handleImageForm} />
+                </div>
+
+                {/*Form Input*/}
+                <div
+                    className={
+                        'w-full flex-auto p-5 bg-dark-2 col-start-2 col-end-4 rounded-lg overflow-scroll'
+                    }
                 >
-                    <div className="">
-                        <ImageInput onChange={handleImageForm} />
-                    </div>
-                    <div
-                        className={
-                            'w-full p-5 bg-dark-2 col-start-2 col-end-4 rounded-lg overflow-scroll'
-                        }
+                    <FormInput
+                        name={'menu'}
+                        register={register}
+                        label={'Nama Menu'}
+                        errors={errors.menu?.message}
+                    />{' '}
+                    <FormInput
+                        name={'price'}
+                        register={register}
+                        label={'Harga'}
+                        errors={errors.price?.message}
+                        other={{
+                            type: 'number',
+                            min: 5000,
+                            step: '500',
+                        }}
+                    />
+                    <button
+                        type={'submit'}
+                        className={'bg-primary p-3 w-full rounded-lg mt-5'}
                     >
-                        <FormInput
-                            name={'menu'}
-                            register={register}
-                            label={'Nama Menu'}
-                            errors={errors.menu?.message}
-                        />{' '}
-                        <FormInput
-                            name={'price'}
-                            register={register}
-                            label={'Harga'}
-                            errors={errors.price?.message}
-                            other={{
-                                type: 'number',
-                                min: 5000,
-                                step: '500',
-                            }}
-                        />
-                        <button
-                            type={'submit'}
-                            className={'bg-primary p-3 w-full rounded-lg mt-5'}
-                        >
-                            Submit
-                        </button>
-                    </div>
-                </form>
-            </div>
+                        Submit
+                    </button>
+                </div>
+            </form>
         </div>
     )
 }
@@ -134,22 +135,22 @@ function ImageInput({ onChange }) {
         >
             {({ isDragging, dragProps, onImageUpdate, onImageRemove }) => (
                 <div
-                    className={`w-full flex justify-center bg-dark-2 rounded-lg ${
-                        isDragging ? 'bg-green-400' : ''
+                    className={`w-full h-[30rem] flex justify-center bg-dark-2 rounded-lg ${
+                        isDragging ? 'bg-dark-line' : ''
                     }`}
                     {...dragProps}
                 >
-                    <div className="rounded-lg w-[50%] self-center">
-                        <div className="p-6">
+                    <div className="w-full h-full">
+                        <div className="p-6 w-full h-full flex flex-col gap-2">
                             <label className="inline-block mb-2 text-white/70">
                                 Upload Image (jpg,png,svg,jpeg)
                             </label>
-                            <div className="flex items-center justify-center w-full">
-                                <label className="flex flex-col w-full border-4 border-dashed hover:bg-gray-100 hover:border-gray-300">
+                            <div className="flex items-center justify-center w-full h-full ">
+                                <label className="flex flex-col w-full h-full border-4 border-dashed border-dark-line hover:bg-dark-line hover:border-gray-300">
                                     {image.length !== 0 ? (
                                         <img src={image[0].data} alt="" />
                                     ) : (
-                                        <div className="flex flex-col items-center justify-center pt-7 ">
+                                        <div className="h-full flex items-center justify-center">
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 className="w-12 h-12 text-gray-400 group-hover:text-gray-600"
@@ -170,11 +171,12 @@ function ImageInput({ onChange }) {
                                 </label>
                             </div>
                         </div>
-                        <div className="flex p-2 space-x-4">
+                        {/*Button*/}
+                        <div className="flex items-center justify-center p-2">
                             <button
                                 className={clsx(
-                                    'px-4 py-2 text-white bg-red-500 rounded shadow-xl',
-                                    { 'bg-green-400': image.length === 0 }
+                                    'px-4 py-2 text-white bg-primary rounded shadow-xl',
+                                    { 'bg-dark-2': image.length === 0 }
                                 )}
                                 onClick={(e) => {
                                     if (image.length === 0)

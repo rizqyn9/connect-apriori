@@ -18,7 +18,7 @@ export default function Catalog() {
                 <div className="h-[5rem] border-b-2 border-dark-line">
                     <h1 className="text-2xl font-bold mb-2">Connect Coffee</h1>
                     <p className="text-sm font-thin">
-                        {new Date().toDateString()}
+                        {new Date().toLocaleDateString('id')}
                     </p>
                 </div>
                 <div className="h-[80vh] flex flex-wrap gap-5 align-start justify-start overflow-scroll py-7">
