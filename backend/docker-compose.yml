@@ -8,4 +8,4 @@ services:
     ports:
       - 27017:27017
     volumes:
-      - ./docker/mongo:/data/dbe
+      - ./docker/mongo:/data/db
