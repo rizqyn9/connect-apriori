@@ -6,8 +6,11 @@ git fetch
 git pull
 
 echo "Executing backend script"
+cd ./backend
+sh script.sh
 
-sh ./backend/script.sh
+cd ../
 
 echo "Executing frontend script"
-sh ./frontend/script.sh
+cd ./frontend
+sh script.sh
