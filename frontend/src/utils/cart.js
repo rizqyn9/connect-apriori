@@ -8,25 +8,21 @@ let dummy = {
     },
 }
 
-export function useOrder() {
-    const [orders, setOrders] = useState({})
+const OrdersContext = atom({})
+
+function useOrder() {
+    const [orders, setOrders] = useAtom(OrdersContext)
     const [priceTotal, setPriceTotal] = useState(0)
 
     useEffect(() => {
-        // let priceCalc =
-        console.log('render', orders)
+        console.log(orders)
     }, [orders])
 
     const addOrder = (data) => {
         let id = `${data.type}-${data.id}`
-        setOrders((val) => {
-            return { ...val, [id]: data }
-        })
+        setOrders({ ...orders, [id]: data })
     }
 
-    const test = () => {
-        console.log('test')
-    }
-
-    return { test, addOrder, orders, setOrders, priceTotal, setPriceTotal }
+    console.log('orders ctx')
+    return { addOrder, orders, setOrders, priceTotal, setPriceTotal }
 }
