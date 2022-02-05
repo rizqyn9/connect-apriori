@@ -28,7 +28,7 @@ export default function OrderCard({ id, menu, image, price, type, quantity }) {
             {/*Image & Menu Details*/}
             <div className={'flex gap-3'}>
                 {/*Product Image*/}
-                <div className="w-20 h-20 rounded-lg border-2 border-primary/70 overflow-hidden">
+                <div className="w-[6rem] h-[6rem] rounded-lg border-2 border-primary/70 overflow-hidden">
                     <img src={image} className="mt-[-2.5rem]" alt={''} />
                 </div>
                 <div className="flex flex-col gap-2">
@@ -40,8 +40,8 @@ export default function OrderCard({ id, menu, image, price, type, quantity }) {
                         <h2 className="font-bold text-md">{menu}</h2>
                     </div>
                     <h2 className="text-sm">Rp. {order.totalPrice}</h2>
+                    <IncrDcr order={order} handleOnChange={handleOnChange} />
                 </div>
-                <IncrDcr order={order} handleOnChange={handleOnChange} />
             </div>
             <div className="flex gap-3">
                 <input

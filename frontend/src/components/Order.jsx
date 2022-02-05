@@ -13,12 +13,16 @@ let OrderModels = {
 export default function Order() {
     const { orders, transaction } = useOrder()
     return (
-        <div className={'w-full flex-auto flex flex-col gap-2 justify-around '}>
+        <div
+            className={
+                'w-full flex-auto max-h-[85%] flex flex-col gap-2 justify-around '
+            }
+        >
             <p className={'text-md font-bold'}>Order #423848234</p>
             {/*Order Products*/}
             <div
                 className={
-                    'mt-5 flex-auto overflow-scroll border-b-2 border-t-2 py-3 flex flex-col gap-3 border-dark-line'
+                    'relative mt-5 flex-1 overflow-scroll border-b-2 border-t-2 py-3 flex flex-col gap-3 border-dark-line'
                 }
             >
                 {orders &&

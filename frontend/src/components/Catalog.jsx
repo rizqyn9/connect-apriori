@@ -33,7 +33,7 @@ export default function Catalog() {
                     ))}
                 </div>
             </div>
-            <div className="flex flex-col gap-5 h-screen catalog-order bg-dark-2 p-5">
+            <div className="max-h-screen flex flex-col gap-5 h-screen catalog-order bg-dark-2 p-5">
                 <User />
                 <Order />
             </div>
