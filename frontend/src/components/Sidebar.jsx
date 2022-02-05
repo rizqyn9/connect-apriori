@@ -8,8 +8,13 @@ export default function Sidebar() {
     return (
         <div className="h-full rounded-md flex flex-col gap-8 items-center">
             {/*Logo*/}
-            <div className={'text-primary font-extrabold text-4xl '}>CC</div>
-            <hr className="border-dark-line border-1 w-full" />
+            <div
+                className={
+                    'text-primary font-extrabold text-4xl h-[5rem] border-b-2 border-dark-line'
+                }
+            >
+                CC
+            </div>
             <NavItem to="/" title="Dashboard" icon={<Icon.Home />} />
             <NavItem to="/product" title="Input" icon={<Icon.History />} />
             <NavItem
@@ -22,16 +27,6 @@ export default function Sidebar() {
                 title="Account Management"
                 icon={<Icon.AccountManager />}
             />
-        </div>
-    )
-}
-
-function UserContainer() {
-    return (
-        <div className="w-full py-7 mb-5 flex flex-col items-center justify-center gap-2 bg-blue-100 rounded-lg">
-            <div className="bg-blue-600 w-[8rem] h-[8rem] rounded-full" />
-            <p>Name</p>
-            <p>Name</p>
         </div>
     )
 }
@@ -55,7 +50,6 @@ function NavItem({ to, title, icon }) {
             >
                 {icon || <Icon.Home />}
             </div>
-            {/*{title || 'Mock'}*/}
         </NavLink>
     )
 }

@@ -21,13 +21,15 @@ export default function OrderCard({ id, menu, image, price, type, quantity }) {
     return (
         <div className="bg-dark-1 p-2 rounded-md flex gap-5">
             {/*Product Image*/}
-            <div className="w-20 h-20 rounded-lg border-2 border-white/50 overflow-hidden">
+            <div className="w-20 h-20 rounded-lg border-2 border-primary/70 overflow-hidden">
                 <img src={image} className="mt-[-2.5rem]" alt={''} />
             </div>
-            <div>
-                <h2 className="font-bold text-sm">{menu}</h2>
-                <h2 className="text-xs">Rp. {parseInt(price) * quantity}</h2>
-                <h2>{type}</h2>
+            <div className="flex flex-col gap-2">
+                <h2 className="font-bold text-md">{menu}</h2>
+                <h2 className="text-sm">Rp. {parseInt(price) * quantity}</h2>
+                <div className="w-5 h-5 ">
+                    {type === 'hot' ? <Icon.Hot /> : <Icon.Ice />}
+                </div>
             </div>
 
             {/*Increment Decrement*/}

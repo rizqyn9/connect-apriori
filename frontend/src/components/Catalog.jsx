@@ -15,14 +15,13 @@ export default function Catalog() {
     return (
         <div className="w-full text-white catalog">
             <div className="h-full catalog-main p-5">
-                <div className="mb-5">
+                <div className="h-[5rem] border-b-2 border-dark-line">
                     <h1 className="text-2xl font-bold mb-2">Connect Coffee</h1>
                     <p className="text-sm font-thin">
                         {new Date().toDateString()}
                     </p>
                 </div>
-                <hr className="border-dark-line w-full my-5" />
-                <div className="h-[80vh] flex flex-wrap gap-5 align-start justify-start overflow-scroll">
+                <div className="h-[80vh] flex flex-wrap gap-5 align-start justify-start overflow-scroll py-7">
                     {products.map((val, i) => (
                         <Card
                             key={i}
@@ -36,7 +35,6 @@ export default function Catalog() {
             </div>
             <div className="flex flex-col h-screen catalog-order bg-dark-2 p-5">
                 <User />
-                <hr className="border-dark-line w-full my-5" />
                 <Order />
             </div>
         </div>
@@ -45,7 +43,11 @@ export default function Catalog() {
 
 function User() {
     return (
-        <div className={'flex items-center gap-7'}>
+        <div
+            className={
+                'h-[5rem] flex items-center gap-7 border-b-2 border-dark-line'
+            }
+        >
             <div
                 className={'h-[3.5rem] w-[3.5rem] overflow-hidden rounded-full'}
             >
