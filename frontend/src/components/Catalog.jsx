@@ -33,7 +33,7 @@ export default function Catalog() {
                     ))}
                 </div>
             </div>
-            <div className="flex flex-col h-screen catalog-order bg-dark-2 p-5">
+            <div className="flex flex-col gap-5 h-screen catalog-order bg-dark-2 p-5">
                 <User />
                 <Order />
             </div>
@@ -53,7 +53,7 @@ function User() {
             >
                 <img src={'./src/static/images/dummy.jpg'} alt={''} />
             </div>
-            <div>
+            <div className={'flex flex-col gap-2'}>
                 <h1 className="text-md font-bold">John Doe</h1>
                 <p className="text-xs font-thin opacity-70">Admin</p>
             </div>
