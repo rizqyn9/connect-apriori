@@ -9,7 +9,7 @@ import { PostProduct } from '../services/product.service'
 const schema = yup.object({
     menu: yup.string('req').required('req'),
     price: yup.number().required(),
-    // image: yup.object().required(),
+    image: yup.object().required(),
 })
 
 export default function InputProduct() {
@@ -51,7 +51,10 @@ export default function InputProduct() {
             >
                 {/*Input Image*/}
                 <div className="h-full w-full" style={{ flex: '1 1 55%' }}>
-                    <ImageInput onChange={handleImageForm} />
+                    <ImageInput
+                        onChange={handleImageForm}
+                        errors={errors.image?.message}
+                    />
                 </div>
 
                 {/*Form Input*/}
@@ -118,7 +121,7 @@ function FormInput({
     )
 }
 
-function ImageInput({ onChange }) {
+function ImageInput({ onChange, errors }) {
     const [image, setImage] = useState([])
 
     const handleChange = (a, b) => {
@@ -146,7 +149,12 @@ function ImageInput({ onChange }) {
                                 Upload Image (jpg,png,svg,jpeg)
                             </label>
                             <div className="flex items-center justify-center w-full h-full ">
-                                <label className="flex flex-col w-full h-full border-4 border-dashed border-dark-line hover:bg-dark-line hover:border-gray-300">
+                                <label
+                                    className={clsx(
+                                        'flex flex-col w-full h-full border-4 border-dashed border-dark-line hover:bg-dark-line hover:border-gray-300',
+                                        `${errors ? 'border-red-500' : ''}`
+                                    )}
+                                >
                                     {image.length !== 0 ? (
                                         <img src={image[0].data} alt="" />
                                     ) : (
