@@ -17,7 +17,7 @@ export default function Catalog() {
     return (
         <>
             <GridRow
-                className={'px-5 w-full place-content-stretch '}
+                className={'px-5 w-full flex-auto'}
                 title={
                     <div className="text-white flex flex-col justify-center h-full w-full">
                         <h1 className="text-2xl font-bold mb-2">
@@ -29,8 +29,30 @@ export default function Catalog() {
                     </div>
                 }
             >
-                <div className="h-[80vh] row-span-7 row-start-2">
-                    <div className="flex-auto flex flex-wrap gap-5 align-start justify-start overflow-y-scroll h-full">
+                <div className="row-start-2 flex h-full py-8">
+                    <div className="flex-auto flex flex-wrap gap-5 align-start justify-start overflow-y-scroll h-full max-h-[78vh]">
+                        {products.map((val, i) => (
+                            <Card
+                                activeCard={activeCard == val._id}
+                                setActiveCard={setActiveCard}
+                                key={i}
+                                id={val._id}
+                                price={val.price}
+                                menu={val.menu}
+                                image={val.image.data}
+                            />
+                        ))}
+                        {products.map((val, i) => (
+                            <Card
+                                activeCard={activeCard == val._id}
+                                setActiveCard={setActiveCard}
+                                key={i}
+                                id={val._id}
+                                price={val.price}
+                                menu={val.menu}
+                                image={val.image.data}
+                            />
+                        ))}
                         {products.map((val, i) => (
                             <Card
                                 activeCard={activeCard == val._id}
@@ -45,8 +67,8 @@ export default function Catalog() {
                     </div>
                 </div>
             </GridRow>
-            <GridRow title={<User />} className="min-w-[30rem] px-5 bg-dark-2">
-                <Order />
+            <GridRow title={<User />} className="w-[40rem] px-5 bg-dark-2">
+                <Order className={'h-full row-start-2 py-8'} />
             </GridRow>
         </>
     )
@@ -54,7 +76,7 @@ export default function Catalog() {
 
 function User() {
     return (
-        <div className={'h-full flex items-center gap-7 text-white'}>
+        <div className={'h-full flex items-center gap-6 '}>
             <div
                 className={'h-[3.5rem] w-[3.5rem] overflow-hidden rounded-full'}
             >

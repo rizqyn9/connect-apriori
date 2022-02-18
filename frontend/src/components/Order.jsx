@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import React, { useContext, useEffect, useState } from 'react'
 import { useOrder } from '../context/order-context'
 import OrderCard from './OrderCard'
@@ -10,21 +11,22 @@ let OrderModels = {
     payment: null,
 }
 
-export default function Order() {
+export default function Order({ className }) {
     const { orders, transaction } = useOrder()
     const [showOrder, setShowOrder] = useState(true)
 
     return (
         <div
-            className={
-                'w-full flex-auto max-h-[85%] flex flex-col gap-2 justify-around '
-            }
+            className={clsx(
+                'w-full flex-auto flex flex-col gap-2 justify-around ',
+                className
+            )}
         >
             <p className={'text-md font-bold'}>Order #423848234</p>
             {/*Order Products*/}
             <div
                 className={
-                    'relative mt-5 flex-1 overflow-y-scroll border-b-2 border-t-2 py-3 flex flex-col gap-3 border-dark-line'
+                    'relative mt-5 flex-1 overflow-y-scroll border-b-2 border-t-2 py-3 flex flex-col gap-3 border-dark-line pr-4 max-h-[60vh]'
                 }
             >
                 {showOrder &&

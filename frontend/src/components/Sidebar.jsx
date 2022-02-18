@@ -8,6 +8,7 @@ import Icon from './Icon'
 export default function Sidebar() {
     return (
         <GridRow
+            className={'justify-center'}
             title={
                 <div
                     className={
@@ -17,7 +18,6 @@ export default function Sidebar() {
                     CC
                 </div>
             }
-            className="place-content-center"
         >
             <div className="flex flex-col gap-5 py-8">
                 <NavItem to="/" title="Dashboard" icon={<Icon.Home />} />
