@@ -24,7 +24,7 @@ export default function Order() {
             {/*Order Products*/}
             <div
                 className={
-                    'relative mt-5 flex-1 overflow-scroll border-b-2 border-t-2 py-3 flex flex-col gap-3 border-dark-line'
+                    'relative mt-5 flex-1 overflow-y-scroll border-b-2 border-t-2 py-3 flex flex-col gap-3 border-dark-line'
                 }
             >
                 {showOrder &&

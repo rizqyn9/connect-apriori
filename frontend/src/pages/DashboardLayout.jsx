@@ -8,10 +8,10 @@ export default function DashboardLayout() {
         <OrderProvider>
             <div className="w-screen h-screen flex bg-dark-1">
                 {/* Sidebar */}
-                <div className="min-w-[5rem] p-5 bg-dark-2">
+                <div className="w-[6rem] bg-dark-2">
                     <Sidebar />
                 </div>
-                <div className="flex-grow">
+                <div className="flex-auto flex">
                     <Outlet />
                 </div>
             </div>

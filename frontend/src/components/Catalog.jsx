@@ -14,15 +14,15 @@ export default function Catalog() {
     }, [])
 
     return (
-        <div className="w-full text-white catalog">
-            <div className="h-full catalog-main p-5">
-                <div className="h-[5rem] border-b-2 border-dark-line">
+        <div className="h-full w-full text-white grid grid-cols-8">
+            <div className="p-5 col-start-1 col-span-5 flex flex-col">
+                <div className="h-[6rem] border-b-2 border-dark-line">
                     <h1 className="text-2xl font-bold mb-2">Connect Coffee</h1>
                     <p className="text-sm font-thin">
                         {new Date().toLocaleDateString('id')}
                     </p>
                 </div>
-                <div className="h-[80vh] flex flex-wrap gap-5 align-start justify-start overflow-scroll py-7">
+                <div className="flex-auto flex flex-wrap gap-5 align-start justify-start overflow-y-scroll py-7">
                     {products.map((val, i) => (
                         <Card
                             activeCard={activeCard == val._id}
@@ -36,7 +36,7 @@ export default function Catalog() {
                     ))}
                 </div>
             </div>
-            <div className="max-h-screen flex flex-col gap-5 h-screen catalog-order bg-dark-2 p-5">
+            <div className="col-span-3 col-start-6 bg-dark-2 p-6">
                 <User />
                 <Order />
             </div>

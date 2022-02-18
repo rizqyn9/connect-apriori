@@ -2,32 +2,38 @@ import clsx from 'clsx'
 import React from 'react'
 import { useLocation } from 'react-router-dom'
 import { NavLink } from 'react-router-dom'
+import { GridRow } from './Grid'
 import Icon from './Icon'
 
 export default function Sidebar() {
     return (
-        <div className="h-full rounded-md flex flex-col gap-8 items-center">
-            {/*Logo*/}
-            <div
-                className={
-                    'text-primary font-extrabold text-4xl h-[5rem] border-b-2 border-dark-line'
-                }
-            >
-                CC
+        <GridRow
+            title={
+                <div
+                    className={
+                        'text-primary font-extrabold text-4xl w-full h-full flex items-center justify-center'
+                    }
+                >
+                    CC
+                </div>
+            }
+            className="place-content-center"
+        >
+            <div className="flex flex-col gap-5 py-5">
+                <NavItem to="/" title="Dashboard" icon={<Icon.Home />} />
+                <NavItem to="/product" title="Input" icon={<Icon.History />} />
+                <NavItem
+                    to="/product-management"
+                    title="Product Management"
+                    icon={<Icon.Setting />}
+                />
+                <NavItem
+                    to="/admin/account-management"
+                    title="Account Management"
+                    icon={<Icon.AccountManager />}
+                />
             </div>
-            <NavItem to="/" title="Dashboard" icon={<Icon.Home />} />
-            <NavItem to="/product" title="Input" icon={<Icon.History />} />
-            <NavItem
-                to="/product-management"
-                title="Product Management"
-                icon={<Icon.Setting />}
-            />
-            <NavItem
-                to="/admin/account-management"
-                title="Account Management"
-                icon={<Icon.AccountManager />}
-            />
-        </div>
+        </GridRow>
     )
 }
 
