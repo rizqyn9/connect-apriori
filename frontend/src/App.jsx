@@ -1,26 +1,18 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Routes, Route } from 'react-router-dom'
-import { CookiesProvider, useCookies } from 'react-cookie'
-
 import { SignIn, SignUp } from './pages/Auth'
 import DashboardLayout from './pages/DashboardLayout'
 import InputProduct from './pages/InputProduct'
 import Catalog from './components/Catalog'
 import AccountManagement from './pages/AccountManagement'
-import ProductManagement from './pages/ProductManagement'
 import Analytics from './pages/Analytics'
 import { RequireAuth } from './components/WithAuth'
 import { OrderProvider } from './context/order-context'
+import { AuthProvider } from './context/user-context'
 
 function App() {
-    const [cookies, setCookies] = useCookies(['token'])
-
-    useEffect(() => {
-        setCookies('token', 'tes')
-    }, [])
-
     return (
-        <CookiesProvider>
+        <AuthProvider>
             <OrderProvider>
                 <Routes>
                     <Route path="/auth/signin" element={<SignIn />} exact />
@@ -40,7 +32,7 @@ function App() {
                     <Route path={'*'} element={<div>Notfound</div>} />
                 </Routes>
             </OrderProvider>
-        </CookiesProvider>
+        </AuthProvider>
     )
 }
 

@@ -4,7 +4,8 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "serve": "vite preview"
+        "serve": "vite preview",
+        "clear": "rm -rf ./dist"
     },
     "dependencies": {
         "@hookform/resolvers": "^2.8.8",
