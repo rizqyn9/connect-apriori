@@ -42,28 +42,6 @@ export default function Catalog() {
                                 image={val.image.data}
                             />
                         ))}
-                        {products.map((val, i) => (
-                            <Card
-                                activeCard={activeCard == val._id}
-                                setActiveCard={setActiveCard}
-                                key={i}
-                                id={val._id}
-                                price={val.price}
-                                menu={val.menu}
-                                image={val.image.data}
-                            />
-                        ))}
-                        {products.map((val, i) => (
-                            <Card
-                                activeCard={activeCard == val._id}
-                                setActiveCard={setActiveCard}
-                                key={i}
-                                id={val._id}
-                                price={val.price}
-                                menu={val.menu}
-                                image={val.image.data}
-                            />
-                        ))}
                     </div>
                 </div>
             </GridRow>

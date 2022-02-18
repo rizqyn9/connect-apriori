@@ -1,19 +1,11 @@
-import React, { forwardRef, useEffect, useState } from 'react'
-import { Link, useNavigate, Navigate } from 'react-router-dom'
+import React from 'react'
+import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
-import {
-    getToken,
-    signInService,
-    signUpService,
-    validateToken,
-} from '../services'
+import { useAuth } from '../context/user-context'
 
 function Auth({ children }) {
-    const [isAuth, setAuth] = useState(getToken())
-    const navigate = useNavigate()
-
     return (
         <div className="bg-dark-2 flex h-screen overflow-hidden justify-center text-white">
             <div className="py-7 px-8 flex flex-col gap-2 bg-dark-1 w-3/5 min-w-max max-w-sm min-h-[10rem] self-center rounded-xl">
@@ -24,7 +16,7 @@ function Auth({ children }) {
 }
 
 export function SignUp() {
-    const navigate = useNavigate()
+    const { signUp: SignUpServices } = useAuth()
 
     const schema = yup
         .object({
@@ -48,16 +40,7 @@ export function SignUp() {
     })
 
     const onSubmit = async (data) => {
-        await signUpService(data).then((res) => {
-            if (res.status === 'success') {
-                navigate('/auth/signin', { replace: true })
-            } else if (res.status === 'fail') {
-                console.log(res)
-                setError('email', {
-                    message: 'Email already registered',
-                })
-            }
-        })
+        SignUpServices(data)
     }
 
     return (
@@ -109,7 +92,7 @@ export function SignUp() {
 }
 
 export function SignIn() {
-    const navigate = useNavigate()
+    const { signIn: SignInService } = useAuth()
     const schema = yup
         .object({
             email: yup.string().email('Email not valid').required(),
@@ -126,16 +109,7 @@ export function SignIn() {
     })
 
     const onSubmit = async (data) => {
-        await signInService(data).then((res) => {
-            if (res.status === 'success') {
-                navigate('/', { replace: true })
-            } else if (res.status === 'fail') {
-                console.log(res)
-                // setError('email', {
-                //     message: 'Email already registered',
-                // })
-            }
-        })
+        SignInService(data)
     }
 
     return (
