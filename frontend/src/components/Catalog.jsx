@@ -5,6 +5,7 @@ import Order from './Order'
 
 export default function Catalog() {
     const [products, setProducts] = useState([])
+    const [activeCard, setActiveCard] = useState('')
 
     useEffect(async () => {
         let result = await GetAllProducts()
@@ -24,6 +25,8 @@ export default function Catalog() {
                 <div className="h-[80vh] flex flex-wrap gap-5 align-start justify-start overflow-scroll py-7">
                     {products.map((val, i) => (
                         <Card
+                            activeCard={activeCard == val._id}
+                            setActiveCard={setActiveCard}
                             key={i}
                             id={val._id}
                             price={val.price}

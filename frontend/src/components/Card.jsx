@@ -1,12 +1,23 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import clsx from 'clsx'
 import { useOrder } from '../context/order-context'
 import Icon from './Icon'
+import { useOnClickOutside } from '../hooks/useClickOutside'
 
-export default function Card({ menu, image, price, id }) {
+export default function Card({
+    menu,
+    image,
+    price,
+    id,
+    activeCard,
+    setActiveCard,
+}) {
     const [type, setType] = useState('hot')
-
+    const ref = useRef()
     const { addOrder } = useOrder()
+    useOnClickOutside(ref, () => {
+        setActiveCard('')
+    })
 
     const handleType = (typeOrder) => {
         if (typeOrder === type) return
@@ -17,9 +28,20 @@ export default function Card({ menu, image, price, id }) {
 
     return (
         <div
-            className="w-[12rem] h-[23rem] p-2 rounded-2xl drop-shadow-md flex flex-col gap-4 items-center justify-around bg-dark-2"
+            className={clsx(
+                'w-[12rem] h-[23rem] p-2 rounded-2xl drop-shadow-md flex flex-col gap-4 items-center justify-around bg-dark-2 relative',
+                { 'outline border-2': activeCard }
+            )}
             data-id={id}
+            data-active={activeCard}
+            onClick={() => setActiveCard(id)}
+            ref={ref}
         >
+            {/* Edit Icon */}
+            {activeCard && (
+                <div className="absolute top-5 hover:bg-primary cursor-pointer left-5 bg-gray-50 w-6 h-6 rounded-full z-10"></div>
+            )}
+
             <div className="w-full pt-[100%] relative bg-primary rounded-xl overflow-hidden">
                 <img
                     src={image}
