@@ -19,7 +19,7 @@ export default function Sidebar() {
             }
             className="place-content-center"
         >
-            <div className="flex flex-col gap-5 py-5">
+            <div className="flex flex-col gap-5 py-8">
                 <NavItem to="/" title="Dashboard" icon={<Icon.Home />} />
                 <NavItem to="/product" title="Input" icon={<Icon.History />} />
                 <NavItem
@@ -48,7 +48,7 @@ function NavItem({ to, title, icon }) {
             {/* Logo */}
             <div
                 className={clsx(
-                    'p-[16px] w-max rounded-md w-[56px] h-[56px]',
+                    'p-[16px] rounded-md w-[56px] h-[56px]',
                     isActive
                         ? 'bg-primary text-white nav__active'
                         : 'text-primary hover:text-white'

@@ -11,7 +11,7 @@ export default function DashboardLayout() {
                 <div className="w-[6rem] bg-dark-2">
                     <Sidebar />
                 </div>
-                <div className="flex-auto flex">
+                <div className="flex-auto flex text-white">
                     <Outlet />
                 </div>
             </div>
