@@ -1,20 +1,15 @@
 import api from './index'
 
 export async function signInService(data) {
-    try {
-        return await api.post('/auth/signin', data).then((val) => {
-            if (val.data.status === 'success') {
-                localStorage.setItem(
-                    'token',
-                    JSON.stringify(val.data.data.token)
-                )
-                localStorage.setItem('user', JSON.stringify(val.data.data.user))
-                return val.data
-            } else throw new Error('Fail')
+    return await api
+        .post('/auth/signin', data)
+        .then((val) => {
+            return val.data
         })
-    } catch (e) {
-        console.log(e)
-    }
+        .catch((err) => {
+            console.log(err)
+            return { error: 'Server error' }
+        })
 }
 
 export async function signUpService(data) {

@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useAuth } from '../context/user-context'
+import { useOrder } from '../context/order-context'
 
 function Auth({ children }) {
     return (
@@ -92,7 +93,7 @@ export function SignUp() {
 }
 
 export function SignIn() {
-    const { signIn: SignInService } = useAuth()
+    const { userData, signIn } = useAuth()
     const schema = yup
         .object({
             email: yup.string().email('Email not valid').required(),
@@ -109,7 +110,7 @@ export function SignIn() {
     })
 
     const onSubmit = async (data) => {
-        SignInService(data)
+        await signIn(data)
     }
 
     return (
