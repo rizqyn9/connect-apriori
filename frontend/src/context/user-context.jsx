@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useCookies } from 'react-cookie'
+import { useNavigate } from 'react-router-dom'
 import { signInService, signUpService } from '../services'
 import { useToast } from './toast-context'
 
@@ -22,6 +23,7 @@ function AuthProvider({ children }) {
     })
 
     const [isAuth, setIsAuth] = useState(cookies.token)
+    const navigate = useNavigate()
 
     useEffect(() => {
         if (!isAuth) {
@@ -38,19 +40,27 @@ function AuthProvider({ children }) {
 
     const verifyToken = () => {}
 
-    const verifyAuth = () => {}
+    const verifyAuth = () => {
+        console.log('go dashboard')
+        navigate('/', { replace: true })
+    }
 
     const signIn = async (data) => {
         try {
-            await signInService(data)
-                .then((val) => {
-                    if (val.data.isAuth) {
-                        console.log('auth')
-                    } else {
-                        console.log('no auth')
-                    }
-                })
-                .catch((e) => console.log(e))
+            await signInService(data).then((val) => {
+                if (val.data.isAuth) {
+                    navigate('/')
+                    addToast({
+                        msg: 'Success signin',
+                        variant: 'success',
+                    })
+                } else {
+                    addToast({
+                        msg: "Email/Passsword doesn't match",
+                        variant: 'error',
+                    })
+                }
+            })
         } catch (error) {
             console.log(error)
         }
@@ -67,7 +77,7 @@ function AuthProvider({ children }) {
                     })
                 } else {
                     addToast({
-                        msg: val.message,
+                        msg: val.message ?? 'server error',
                         title: 'SignUp',
                         variant: 'error',
                     })
@@ -75,10 +85,16 @@ function AuthProvider({ children }) {
             })
         } catch (error) {
             console.log(error)
+            addToast({
+                msg: 'Server error',
+                variant: 'error',
+            })
         }
     }
 
-    const signOut = () => {}
+    const signOut = () => {
+        navigate('/auth/signin')
+    }
 
     return (
         <AuthContext.Provider
@@ -90,6 +106,7 @@ function AuthProvider({ children }) {
                 signIn,
                 signUp,
                 signOut,
+                verifyAuth,
             }}
         >
             {children}

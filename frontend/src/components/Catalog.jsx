@@ -3,6 +3,7 @@ import Card from './Card'
 import { GetAllProducts } from '../services/product.service'
 import Order from './Order'
 import { GridRow } from './Grid'
+import { useAuth } from '../context/user-context'
 
 export default function Catalog() {
     const [products, setProducts] = useState([])
@@ -53,6 +54,8 @@ export default function Catalog() {
 }
 
 function User() {
+    const { signOut } = useAuth()
+
     return (
         <div className={'h-full flex items-center gap-6 '}>
             <div
@@ -63,6 +66,12 @@ function User() {
             <div className={'flex flex-col gap-2'}>
                 <h1 className="text-md font-bold">John Doe</h1>
                 <p className="text-xs font-thin opacity-70">Admin</p>
+            </div>
+            {/* Sign Out */}
+            <div className="flex-1 text-right" onClick={() => signOut()}>
+                <span className="bg-primary p-2 rounded-lg cursor-pointer">
+                    Sign Out
+                </span>
             </div>
         </div>
     )

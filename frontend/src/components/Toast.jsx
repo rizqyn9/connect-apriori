@@ -40,11 +40,8 @@ function ToastContainer() {
 
     return (
         <div className="flex flex-col gap-5 absolute top-5 right-0">
-            {toast &&
-                toast.length > 0 &&
-                toast.map((val) => {
-                    return <Toast key={val.id} {...val} />
-                })}
+            {toast.length > 0 &&
+                toast.map((val) => <Toast key={val.id} {...val} />)}
         </div>
     )
 }
