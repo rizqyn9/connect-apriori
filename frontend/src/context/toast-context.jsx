@@ -5,17 +5,19 @@ const ToastContext = React.createContext({})
 let id = 1
 
 function ToastProvider({ children }) {
-    const [toast, setToast] = useState({})
+    const [toast, setToast] = useState([])
 
     useEffect(() => {
         console.log(toast)
     }, [toast])
 
     const addToast = ({ msg, title, variant, delay }) => {
-        setToast({ ...toast, [id++]: { msg, title, variant, delay } })
+        setToast([...toast, { msg, title, variant, delay, id: id++ }])
     }
 
-    const removeToast = () => {}
+    const removeToast = (idTarget) => {
+        setToast((toast) => toast.filter((t) => t.id !== idTarget))
+    }
 
     return (
         <ToastContext.Provider

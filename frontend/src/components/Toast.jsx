@@ -8,18 +8,18 @@ const variantStyle = {
     error: 'border-red-400 text-red-400',
 }
 
-function Toast({ msg, title = '', delay = 0, variant = 'success' }) {
+function Toast({ id, msg, title = '', delay = 0, variant = 'success' }) {
     const { removeToast } = useToast()
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            // alert('remove toast')
-        }, 3000)
-
+            removeToast(id)
+        }, 1000)
+        console.log(variant)
         return () => {
             clearTimeout(timer)
         }
-    }, [])
+    }, [id, removeToast])
 
     return (
         <div
@@ -41,8 +41,9 @@ function ToastContainer() {
     return (
         <div className="flex flex-col gap-5 absolute top-5 right-0">
             {toast &&
-                Object.entries(toast).map(([key, value]) => {
-                    return <Toast key={key} {...value} />
+                toast.length > 0 &&
+                toast.map((val) => {
+                    return <Toast key={val.id} {...val} />
                 })}
         </div>
     )

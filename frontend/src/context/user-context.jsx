@@ -57,16 +57,18 @@ function AuthProvider({ children }) {
     }
 
     const signUp = async (data) => {
-        console.log(data)
         try {
             await signUpService(data).then((val) => {
                 console.log(val.status)
                 if (val.status === 'success') {
-                    addToast({})
+                    addToast({
+                        msg: 'Success registered',
+                        variant: 'success',
+                    })
                 } else {
                     addToast({
-                        msg: 'asdasd',
-                        title: 'asdasd',
+                        msg: val.message,
+                        title: 'SignUp',
                         variant: 'error',
                     })
                 }
