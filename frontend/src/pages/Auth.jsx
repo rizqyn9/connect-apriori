@@ -25,7 +25,7 @@ export function SignUp() {
             email: yup.string().email('Email not valid').required(),
             password: yup
                 .string()
-                .min(8, 'Min pass 8 characters')
+                .min(1, 'Min pass 8 characters')
                 .max(13, 'Max pass 13 characters')
                 .required('Password is required'),
         })

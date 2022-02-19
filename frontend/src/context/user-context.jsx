@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useCookies } from 'react-cookie'
-import { signInService } from '../services'
+import { signInService, signUpService } from '../services'
 import { useToast } from './toast-context'
 
 const initialData = {
@@ -27,10 +27,7 @@ function AuthProvider({ children }) {
         if (!isAuth) {
             alert('Log out')
         }
-
-        addToast()
         setCookie('token', { data: 'asdasd' }, { path: '*' })
-        console.log(cookies.token)
     }, [isAuth])
 
     const getLocalStorage = () => {
@@ -59,8 +56,24 @@ function AuthProvider({ children }) {
         }
     }
 
-    const signUp = (data) => {
+    const signUp = async (data) => {
         console.log(data)
+        try {
+            await signUpService(data).then((val) => {
+                console.log(val.status)
+                if (val.status === 'success') {
+                    addToast({})
+                } else {
+                    addToast({
+                        msg: 'asdasd',
+                        title: 'asdasd',
+                        variant: 'error',
+                    })
+                }
+            })
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     const signOut = () => {}

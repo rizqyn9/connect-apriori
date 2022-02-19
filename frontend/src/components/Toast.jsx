@@ -1,7 +1,14 @@
 import { useToast } from '../context/toast-context'
 import React, { useEffect } from 'react'
+import clsx from 'clsx'
 
-function Toast() {
+const variantStyle = {
+    success: 'border-green-400 text-green-700',
+    warning: 'border-yellow-400 text-yellow-700',
+    error: 'border-red-400 text-red-400',
+}
+
+function Toast({ msg, title = '', delay = 0, variant = 'success' }) {
     const { removeToast } = useToast()
 
     useEffect(() => {
@@ -16,11 +23,14 @@ function Toast() {
 
     return (
         <div
-            className="bg-red-200 w-[15rem] p-3 rounded-md text-sm"
+            className={clsx(
+                'w-[15rem] p-3 border-l-4 bg-white rounded-md text-sm',
+                variantStyle[variant]
+            )}
             style={{ transform: 'translateX(-10%)' }}
         >
-            <h1>Toast</h1>
-            <p>Message</p>
+            {title && <h1>{title}</h1>}
+            <p>{msg ?? 'Message empty'}</p>
         </div>
     )
 }
@@ -31,9 +41,8 @@ function ToastContainer() {
     return (
         <div className="flex flex-col gap-5 absolute top-5 right-0">
             {toast &&
-                toast.length > 1 &&
-                toast.map((val, i) => {
-                    return <Toast key={i} />
+                Object.entries(toast).map(([key, value]) => {
+                    return <Toast key={key} {...value} />
                 })}
         </div>
     )

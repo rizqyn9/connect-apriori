@@ -3,9 +3,7 @@ import api from './index'
 export async function signInService(data) {
     return await api
         .post('/auth/signin', data)
-        .then((val) => {
-            return val.data
-        })
+        .then((val) => val.data)
         .catch((err) => {
             console.log(err)
             return { error: 'Server error' }
@@ -13,11 +11,13 @@ export async function signInService(data) {
 }
 
 export async function signUpService(data) {
-    try {
-        return await api.post('/auth/signup', data).then((val) => val.data)
-    } catch (e) {
-        console.log(e)
-    }
+    return await api
+        .post('/auth/signup', data)
+        .then((val) => val.data)
+        .catch((err) => {
+            console.log(err)
+            return { error: 'Server error' }
+        })
 }
 
 export const logout = () => {

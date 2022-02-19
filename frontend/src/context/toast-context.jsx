@@ -1,12 +1,18 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 
 const ToastContext = React.createContext({})
 
-function ToastProvider({ children }) {
-    const [toast, setToast] = useState([])
+let id = 1
 
-    const addToast = () => {
-        setToast([...toast, 1, 2])
+function ToastProvider({ children }) {
+    const [toast, setToast] = useState({})
+
+    useEffect(() => {
+        console.log(toast)
+    }, [toast])
+
+    const addToast = ({ msg, title, variant, delay }) => {
+        setToast({ ...toast, [id++]: { msg, title, variant, delay } })
     }
 
     const removeToast = () => {}
