@@ -54,7 +54,7 @@ export default function Catalog() {
 }
 
 function User() {
-    const { signOut } = useAuth()
+    const { signOut, userData, cookies } = useAuth()
 
     return (
         <div className={'h-full flex items-center gap-6 '}>
@@ -64,7 +64,7 @@ function User() {
                 <img src={'./src/static/images/dummy.jpg'} alt={''} />
             </div>
             <div className={'flex flex-col gap-2'}>
-                <h1 className="text-md font-bold">John Doe</h1>
+                <h1 className="text-md font-bold">{userData.name}</h1>
                 <p className="text-xs font-thin opacity-70">Admin</p>
             </div>
             {/* Sign Out */}

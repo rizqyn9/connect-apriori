@@ -1,13 +1,12 @@
-import { getCurrentUser, getToken } from '../services'
 import { Navigate } from 'react-router-dom'
 import React from 'react'
+import { useCookies } from 'react-cookie'
 
 export function RequireAuth(WrappedComponent) {
-    const token = getToken()
-    if (token) {
+    const [cookies] = useCookies(['user', 'token'])
+    if (cookies.user && cookies.token) {
         return WrappedComponent
     } else {
-        console.log('with auth')
         return <Navigate to={'/auth/signin'} replace />
     }
 }

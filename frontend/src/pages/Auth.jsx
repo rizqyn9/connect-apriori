@@ -111,7 +111,9 @@ export function SignIn() {
     })
 
     const onSubmit = async (data) => {
-        await signIn(data)
+        await signIn(data).then((val) => {
+            console.log(val)
+        })
     }
 
     return (

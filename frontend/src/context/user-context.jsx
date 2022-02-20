@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useCookies } from 'react-cookie'
-import { useNavigate } from 'react-router-dom'
-import { signInService, signUpService } from '../services'
+import { Navigate, useNavigate } from 'react-router-dom'
+import { logout, signInService, signUpService } from '../services'
 import { useToast } from './toast-context'
 
 const initialData = {
@@ -16,51 +16,58 @@ const AuthContext = React.createContext(initialData)
 function AuthProvider({ children }) {
     const { addToast } = useToast()
     const [cookies, setCookie, removeCookie] = useCookies(['user', 'token'])
-    const [userData, setUserData] = useState({
-        ...initialData,
-        ...JSON.parse(localStorage.getItem('user')),
-        token: JSON.parse(localStorage.getItem('token')),
-    })
 
+    const [userData, setUserData] = useState(cookies.user)
     const [isAuth, setIsAuth] = useState(cookies.token)
     const navigate = useNavigate()
 
     useEffect(() => {
-        if (!isAuth) {
-            alert('Log out')
-        }
-        setCookie('token', { data: 'asdasd' }, { path: '*' })
+        // if (!isAuth) {
+        //     alert('Log out')
+        // }
     }, [isAuth])
-
-    const getLocalStorage = () => {
-        return JSON.parse(localStorage.getItem('user'))
-    }
-
-    const setLocalStorage = () => {}
 
     const verifyToken = () => {}
 
-    const verifyAuth = () => {
-        console.log('go dashboard')
-        navigate('/', { replace: true })
+    // const verifyAuth = (useNavigate = true) => {
+    //     if (cookies.name && cookies.user) return true
+    //     if (useNavigate) navigate('/', { replace: true })
+    //     else return false
+    // }
+    const verifyAuth = true
+
+    const getUserData = () => {
+        let castCookie = cookies.user
+
+        console.log(castCookie)
+        if (castCookie) return castCookie
+        else {
+            logout()
+            return null
+        }
     }
 
     const signIn = async (data) => {
         try {
-            await signInService(data).then((val) => {
-                if (val.data.isAuth) {
-                    navigate('/')
-                    addToast({
-                        msg: 'Success signin',
-                        variant: 'success',
-                    })
-                } else {
-                    addToast({
-                        msg: "Email/Passsword doesn't match",
-                        variant: 'error',
-                    })
-                }
-            })
+            return await signInService(data)
+                .then((val) => {
+                    if (val.data.isAuth) {
+                        setCookie('user', val.data.user, { path: '*' })
+                        setCookie('token', val.data.token, { path: '*' })
+
+                        addToast({
+                            msg: 'Success signin',
+                            variant: 'success',
+                        })
+                    } else {
+                        addToast({
+                            msg: "Email/Passsword doesn't match",
+                            variant: 'error',
+                        })
+                    }
+                    return val.data.isAuth
+                })
+                .then(() => navigate('/dashboard', { replace: true }))
         } catch (error) {
             console.log(error)
         }
@@ -99,14 +106,14 @@ function AuthProvider({ children }) {
     return (
         <AuthContext.Provider
             value={{
-                userData,
-                setUserData,
-                getLocalStorage,
-                setLocalStorage,
                 signIn,
                 signUp,
                 signOut,
                 verifyAuth,
+                getUserData,
+                cookies,
+                userData,
+                setUserData,
             }}
         >
             {children}
