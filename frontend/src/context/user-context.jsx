@@ -4,11 +4,16 @@ import { Navigate, useNavigate } from 'react-router-dom'
 import { logout, signInService, signUpService } from '../services'
 import { useToast } from './toast-context'
 
+const ROLES = Object.freeze({
+    ADMIN: 'admin',
+    USER: 'user',
+})
+
 const initialData = {
+    isAuth: false,
+    role: '',
     token: '',
-    email: '',
-    name: '',
-    isAdmin: false,
+    user: undefined,
 }
 
 const AuthContext = React.createContext(initialData)
@@ -17,15 +22,15 @@ function AuthProvider({ children }) {
     const { addToast } = useToast()
     const [cookies, setCookie, removeCookie] = useCookies(['user', 'token'])
 
-    const [userData, setUserData] = useState(cookies.user)
-    const [isAuth, setIsAuth] = useState(cookies.token)
+    const [auth, setAuth] = useState(initialData)
     const navigate = useNavigate()
 
     useEffect(() => {
-        // if (!isAuth) {
-        //     alert('Log out')
-        // }
-    }, [isAuth])
+        if (auth.isAuth) {
+            localStorage.setItem('token', JSON.stringify(auth.token))
+            localStorage.setItem('user', JSON.stringify(auth.user))
+        }
+    }, [auth])
 
     const verifyToken = () => {}
 
@@ -34,7 +39,7 @@ function AuthProvider({ children }) {
     //     if (useNavigate) navigate('/', { replace: true })
     //     else return false
     // }
-    const verifyAuth = true
+    // const verifyAuth = true
 
     const getUserData = () => {
         let castCookie = cookies.user
@@ -49,25 +54,32 @@ function AuthProvider({ children }) {
 
     const signIn = async (data) => {
         try {
-            return await signInService(data)
-                .then((val) => {
-                    if (val.data.isAuth) {
-                        setCookie('user', val.data.user, { path: '*' })
-                        setCookie('token', val.data.token, { path: '*' })
+            return await signInService(data).then((val) => {
+                if (val.data.isAuth) {
+                    const { user, token, isAdmin } = val.data
 
-                        addToast({
-                            msg: 'Success signin',
-                            variant: 'success',
-                        })
-                    } else {
-                        addToast({
-                            msg: "Email/Passsword doesn't match",
-                            variant: 'error',
-                        })
-                    }
-                    return val.data.isAuth
-                })
-                .then(() => navigate('/dashboard', { replace: true }))
+                    setAuth({
+                        ...auth,
+                        ...val.data,
+                        role: isAdmin ? ROLES.ADMIN : ROLES.USER,
+                    })
+
+                    addToast({
+                        msg: `Success signin as ${user.name}`,
+                        variant: 'success',
+                    })
+
+                    navigate('/dashboard', { replace: true })
+
+                    return val.data
+                } else {
+                    addToast({
+                        msg: "Email/Passsword doesn't match",
+                        variant: 'error',
+                    })
+                }
+                return val.data.isAuth
+            })
         } catch (error) {
             console.log(error)
         }
@@ -109,11 +121,10 @@ function AuthProvider({ children }) {
                 signIn,
                 signUp,
                 signOut,
-                verifyAuth,
                 getUserData,
-                cookies,
-                userData,
-                setUserData,
+                removeCookie,
+                auth,
+                setAuth,
             }}
         >
             {children}
@@ -123,4 +134,4 @@ function AuthProvider({ children }) {
 
 const useAuth = () => React.useContext(AuthContext)
 
-export { AuthProvider, useAuth }
+export { AuthProvider, useAuth, ROLES }

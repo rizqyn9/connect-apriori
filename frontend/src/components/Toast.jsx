@@ -15,7 +15,7 @@ function Toast({ id, msg, title = '', delay = 0, variant = 'success' }) {
         const timer = setTimeout(() => {
             removeToast(id)
         }, 1000)
-        console.log(variant)
+        // console.log(variant)
         return () => {
             clearTimeout(timer)
         }

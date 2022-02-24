@@ -1,13 +1,11 @@
 import React, { useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useAuth } from '../context/user-context'
 
 function Auth({ children }) {
-    const { verifyAuth } = useAuth()
-
     return (
         <div className="bg-dark-2 flex h-screen overflow-hidden justify-center text-white">
             <div className="py-7 px-8 flex flex-col gap-2 bg-dark-1 w-3/5 min-w-max max-w-sm min-h-[10rem] self-center rounded-xl">
@@ -94,7 +92,8 @@ export function SignUp() {
 }
 
 export function SignIn() {
-    const { userData, signIn } = useAuth()
+    const { signIn, auth } = useAuth()
+
     const schema = yup
         .object({
             email: yup.string().email('Email not valid').required(),
@@ -111,9 +110,7 @@ export function SignIn() {
     })
 
     const onSubmit = async (data) => {
-        await signIn(data).then((val) => {
-            console.log(val)
-        })
+        await signIn(data)
     }
 
     return (

@@ -10,6 +10,7 @@ export default function Catalog() {
     const [activeCard, setActiveCard] = useState('')
 
     useEffect(async () => {
+        console.log('Catalog')
         let result = await GetAllProducts()
         // console.log(result)
         if (result.data && result.data.length !== 0) setProducts(result.data)
@@ -32,17 +33,18 @@ export default function Catalog() {
             >
                 <div className="row-start-2 flex h-full py-8">
                     <div className="flex-auto flex flex-wrap gap-5 align-start justify-start overflow-y-scroll h-full max-h-[78vh]">
-                        {products.map((val, i) => (
-                            <Card
-                                activeCard={activeCard == val._id}
-                                setActiveCard={setActiveCard}
-                                key={i}
-                                id={val._id}
-                                price={val.price}
-                                menu={val.menu}
-                                image={val.image.data}
-                            />
-                        ))}
+                        {Array.isArray(products) &&
+                            products.map((val, i) => (
+                                <Card
+                                    activeCard={activeCard == val._id}
+                                    setActiveCard={setActiveCard}
+                                    key={i}
+                                    id={val._id}
+                                    price={val.price}
+                                    menu={val.menu}
+                                    image={val.image.data}
+                                />
+                            ))}
                     </div>
                 </div>
             </GridRow>

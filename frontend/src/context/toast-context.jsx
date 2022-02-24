@@ -8,7 +8,7 @@ function ToastProvider({ children }) {
     const [toast, setToast] = useState([])
 
     useEffect(() => {
-        console.log(toast)
+        // console.log(toast)
     }, [toast])
 
     const addToast = ({ msg, title, variant, delay }) => {

@@ -1,5 +1,5 @@
-import React from 'react'
-import { Routes, Route } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { SignIn, SignUp } from './pages/Auth'
 import DashboardLayout from './pages/DashboardLayout'
 import InputProduct from './pages/InputProduct'
@@ -8,34 +8,76 @@ import AccountManagement from './pages/AccountManagement'
 import Analytics from './pages/Analytics'
 import { RequireAuth } from './components/WithAuth'
 import { OrderProvider } from './context/order-context'
-import { AuthProvider } from './context/user-context'
-import { CookiesProvider } from 'react-cookie'
+import { AuthProvider, ROLES } from './context/user-context'
+import { CookiesProvider, useCookies } from 'react-cookie'
 import { ToastProvider } from './context/toast-context'
 import { ToastContainer } from './components/Toast'
 
+/**
+ * Fix every user login store token and user data to local storage
+ * User without authorization will navigate to login page
+ * Prevent authorized user to login page and redirect to latest page
+ *
+ */
 function App() {
     return (
         <GlobalProvider>
             <ToastContainer />
             <Routes>
-                <Route path="/auth/signin" element={<SignIn />} exact />
-                <Route path="/auth/signup" element={<SignUp />} exact />
-                <Route path="/" element={RequireAuth(<DashboardLayout />)}>
-                    <Route index element={<Catalog />} />
-                    <Route path={'/product'} element={<InputProduct />} />
+                <Route
+                    path="/dashboard"
+                    element={
+                        <RequireAuth allowedRoles={[ROLES.ADMIN, ROLES.USER]}>
+                            <DashboardLayout />
+                        </RequireAuth>
+                    }
+                >
                     <Route
-                        path={'/product-management'}
+                        index
+                        element={
+                            <RequireAuth
+                                allowedRoles={[ROLES.ADMIN, ROLES.USER]}
+                            >
+                                {/* <Catalog /> */}
+                            </RequireAuth>
+                        }
+                    />
+
+                    {/* <Route
+                        element={
+                            <RequireAuth
+                                allowedRoles={[ROLES.ADMIN, ROLES.USER]}
+                            />
+                        }
+                    >
+                        <Route path="/catalog" element={<Catalog />} />
+                    </Route> */}
+                    <Route path={'product'} element={<InputProduct />} />
+                    <Route
+                        path={'product-management'}
                         element={<Analytics />}
                     />
                     <Route
-                        path={'/admin/account-management'}
+                        path={'admin/account-management'}
                         element={<AccountManagement />}
                     />
                 </Route>
+                <Route to="logout" element={<logout />} />
+                <Route path="/auth/signin" element={<SignIn />} exact />
+                <Route path="/auth/signup" element={<SignUp />} exact />
                 <Route path={'*'} element={<div>Notfound</div>} />
             </Routes>
         </GlobalProvider>
     )
+}
+
+function logout() {
+    const { removeCookie } = useCookies()
+    useEffect(() => {
+        localStorage.clear()
+        removeCookie(['user', 'token'])
+    }, [])
+    return <></>
 }
 
 function GlobalProvider({ children }) {
