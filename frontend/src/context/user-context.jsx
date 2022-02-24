@@ -3,6 +3,7 @@ import { useCookies } from 'react-cookie'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { logout, signInService, signUpService } from '../services'
 import { useToast } from './toast-context'
+import { useAxiosPrivate } from '../hooks/useAxiosPrivate'
 
 const ROLES = Object.freeze({
     ADMIN: 'admin',
@@ -21,36 +22,28 @@ const AuthContext = React.createContext(initialData)
 function AuthProvider({ children }) {
     const { addToast } = useToast()
     const [cookies, setCookie, removeCookie] = useCookies(['user', 'token'])
+    const axiosPrivate = useAxiosPrivate()
 
     const [auth, setAuth] = useState(initialData)
     const navigate = useNavigate()
 
     useEffect(() => {
-        if (auth.isAuth) {
-            localStorage.setItem('token', JSON.stringify(auth.token))
-            localStorage.setItem('user', JSON.stringify(auth.user))
+        if (!auth.isAuth && cookies.token) {
+            alert('mantap')
+            axiosPrivate
+                .post('/auth/validate', { token: cookies.token })
+                .then((data) => {
+                    console.log(data)
+                })
+                .catch((err) => {
+                    console.log('auth', err)
+                })
+        }
+        if (auth.isAuth && auth.token && auth.user) {
+            setCookie('token', auth.token)
+            setCookie('user', auth.user)
         }
     }, [auth])
-
-    const verifyToken = () => {}
-
-    // const verifyAuth = (useNavigate = true) => {
-    //     if (cookies.name && cookies.user) return true
-    //     if (useNavigate) navigate('/', { replace: true })
-    //     else return false
-    // }
-    // const verifyAuth = true
-
-    const getUserData = () => {
-        let castCookie = cookies.user
-
-        console.log(castCookie)
-        if (castCookie) return castCookie
-        else {
-            logout()
-            return null
-        }
-    }
 
     const signIn = async (data) => {
         try {
@@ -61,6 +54,7 @@ function AuthProvider({ children }) {
                     setAuth({
                         ...auth,
                         ...val.data,
+                        isAuth: true,
                         role: isAdmin ? ROLES.ADMIN : ROLES.USER,
                     })
 
@@ -69,7 +63,7 @@ function AuthProvider({ children }) {
                         variant: 'success',
                     })
 
-                    navigate('/dashboard', { replace: true })
+                    navigate('/', { replace: true })
 
                     return val.data
                 } else {
@@ -121,8 +115,8 @@ function AuthProvider({ children }) {
                 signIn,
                 signUp,
                 signOut,
-                getUserData,
                 removeCookie,
+                cookies,
                 auth,
                 setAuth,
             }}

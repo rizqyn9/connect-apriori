@@ -25,7 +25,7 @@ function App() {
             <ToastContainer />
             <Routes>
                 <Route
-                    path="/dashboard"
+                    path="/"
                     element={
                         <RequireAuth allowedRoles={[ROLES.ADMIN, ROLES.USER]}>
                             <DashboardLayout />

@@ -7,8 +7,9 @@ const RequireAuth = ({ allowedRoles, children }) => {
     const { auth } = useAuth()
     const location = useLocation()
 
-    console.log('Token:', auth)
-    return auth?.roles?.find((role) => allowedRoles?.includes(role)) ? (
+    console.log('Token:')
+
+    return allowedRoles?.includes(auth?.role) ? (
         <>{children}</>
     ) : // auth?.user
     auth?.user1 ? (

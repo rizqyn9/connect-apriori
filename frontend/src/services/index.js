@@ -16,7 +16,6 @@ api.interceptors.response.use((response) => {
 const axiosPrivate = axios.create({
     baseURL: import.meta.env.VITE_SERVER,
     headers: { 'Content-Type': 'application/json' },
-    withCredentials: true,
 })
 
 export default api
