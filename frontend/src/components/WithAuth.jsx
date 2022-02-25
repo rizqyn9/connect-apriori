@@ -2,21 +2,37 @@ import * as React from 'react'
 import { useAuth } from '../context/user-context'
 import { useLocation, Navigate } from 'react-router-dom'
 import { useToast } from '../context/toast-context'
+import { useCookies } from 'react-cookie'
 
 const RequireAuth = ({ allowedRoles, children }) => {
-    const { auth } = useAuth()
+    const { auth, verifyCookiesToken } = useAuth()
+    const [cookies] = useCookies()
     const location = useLocation()
 
-    console.log('Token:')
+    React.useEffect(async () => {
+        console.log('Token:', await verifyCookiesToken())
+    }, [])
 
-    return allowedRoles?.includes(auth?.role) ? (
+    return !auth.isAuth && cookies.token ? (
+        <></>
+    ) : allowedRoles?.includes(auth?.role) ? (
         <>{children}</>
-    ) : // auth?.user
-    auth?.user1 ? (
+    ) : auth?.user1 ? (
         <Navigate to="/unauthorized" state={{ from: location }} replace />
     ) : (
         <Navigate to="/auth/signin" state={{ from: location }} replace />
     )
+
+    // return cookies.token && !auth ? (
+    //     <></>
+    // ) : allowedRoles?.includes(auth?.role) ? (
+    //     <>{children}</>
+    // ) : // auth?.user
+    // auth?.user1 ? (
+    //     <Navigate to="/unauthorized" state={{ from: location }} replace />
+    // ) : (
+    //     <Navigate to="/auth/signin" state={{ from: location }} replace />
+    // )
 }
 
 export { RequireAuth }

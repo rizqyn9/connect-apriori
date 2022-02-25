@@ -29,15 +29,7 @@ function AuthProvider({ children }) {
 
     useEffect(() => {
         if (!auth.isAuth && cookies.token) {
-            alert('mantap')
-            axiosPrivate
-                .post('/auth/validate', { token: cookies.token })
-                .then((data) => {
-                    console.log(data)
-                })
-                .catch((err) => {
-                    console.log('auth', err)
-                })
+            verifyCookiesToken()
         }
         if (auth.isAuth && auth.token && auth.user) {
             setCookie('token', auth.token)
@@ -105,6 +97,36 @@ function AuthProvider({ children }) {
         }
     }
 
+    const verifyCookiesToken = async () => {
+        return axiosPrivate
+            .post('/auth/validate', { token: cookies.token })
+            .then((val) => {
+                console.log(val)
+                if (val.data.isAuth) {
+                    const { user, token, isAdmin } = val.data
+
+                    setAuth({
+                        ...auth,
+                        ...val.data,
+                        isAuth: true,
+                        role: isAdmin ? ROLES.ADMIN : ROLES.USER,
+                    })
+
+                    addToast({
+                        msg: `Success signin as ${user.name}`,
+                        variant: 'success',
+                    })
+
+                    navigate('/', { replace: true })
+
+                    return val.data
+                }
+            })
+            .catch((err) => {
+                console.log('auth', err)
+            })
+    }
+
     const signOut = () => {
         navigate('/auth/signin')
     }
@@ -119,6 +141,7 @@ function AuthProvider({ children }) {
                 cookies,
                 auth,
                 setAuth,
+                verifyCookiesToken,
             }}
         >
             {children}
