@@ -1,17 +1,12 @@
 import * as React from 'react'
 import { useAuth } from '../context/user-context'
 import { useLocation, Navigate } from 'react-router-dom'
-import { useToast } from '../context/toast-context'
 import { useCookies } from 'react-cookie'
 
 const RequireAuth = ({ allowedRoles, children }) => {
-    const { auth, verifyCookiesToken } = useAuth()
+    const { auth } = useAuth()
     const [cookies] = useCookies()
     const location = useLocation()
-
-    React.useEffect(async () => {
-        console.log('Token:', await verifyCookiesToken())
-    }, [])
 
     return !auth.isAuth && cookies.token ? (
         <></>

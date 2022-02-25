@@ -4,9 +4,17 @@ import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useAuth } from '../context/user-context'
+import { useCookies } from 'react-cookie'
 
 function Auth({ children }) {
-    return (
+    const { auth } = useAuth()
+    const [cookies] = useCookies()
+
+    return !auth.isAuth && cookies.token ? (
+        <></>
+    ) : auth ? (
+        <Navigate to={'/'} replace />
+    ) : (
         <div className="bg-dark-2 flex h-screen overflow-hidden justify-center text-white">
             <div className="py-7 px-8 flex flex-col gap-2 bg-dark-1 w-3/5 min-w-max max-w-sm min-h-[10rem] self-center rounded-xl">
                 {children}
