@@ -3,12 +3,14 @@ import Card from './Card'
 import { GetAllProducts } from '../services/product.service'
 import Order from './Order'
 import { GridRow } from './Grid'
+import { useAuth } from '../context/user-context'
 
 export default function Catalog() {
     const [products, setProducts] = useState([])
     const [activeCard, setActiveCard] = useState('')
 
     useEffect(async () => {
+        console.log('Catalog')
         let result = await GetAllProducts()
         // console.log(result)
         if (result.data && result.data.length !== 0) setProducts(result.data)
@@ -31,17 +33,18 @@ export default function Catalog() {
             >
                 <div className="row-start-2 flex h-full py-8">
                     <div className="flex-auto flex flex-wrap gap-5 align-start justify-start overflow-y-scroll h-full max-h-[78vh]">
-                        {products.map((val, i) => (
-                            <Card
-                                activeCard={activeCard == val._id}
-                                setActiveCard={setActiveCard}
-                                key={i}
-                                id={val._id}
-                                price={val.price}
-                                menu={val.menu}
-                                image={val.image.data}
-                            />
-                        ))}
+                        {Array.isArray(products) &&
+                            products.map((val, i) => (
+                                <Card
+                                    activeCard={activeCard == val._id}
+                                    setActiveCard={setActiveCard}
+                                    key={i}
+                                    id={val._id}
+                                    price={val.price}
+                                    menu={val.menu}
+                                    image={val.image.data}
+                                />
+                            ))}
                     </div>
                 </div>
             </GridRow>
@@ -53,6 +56,8 @@ export default function Catalog() {
 }
 
 function User() {
+    const { signOut, userData, cookies } = useAuth()
+
     return (
         <div className={'h-full flex items-center gap-6 '}>
             <div
@@ -61,8 +66,14 @@ function User() {
                 <img src={'./src/static/images/dummy.jpg'} alt={''} />
             </div>
             <div className={'flex flex-col gap-2'}>
-                <h1 className="text-md font-bold">John Doe</h1>
+                <h1 className="text-md font-bold">{userData.name}</h1>
                 <p className="text-xs font-thin opacity-70">Admin</p>
+            </div>
+            {/* Sign Out */}
+            <div className="flex-1 text-right" onClick={() => signOut()}>
+                <span className="bg-primary p-2 rounded-lg cursor-pointer">
+                    Sign Out
+                </span>
             </div>
         </div>
     )

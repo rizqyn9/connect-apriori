@@ -13,5 +13,11 @@ api.interceptors.response.use((response) => {
     return response
 })
 
+const axiosPrivate = axios.create({
+    baseURL: import.meta.env.VITE_SERVER,
+    headers: { 'Content-Type': 'application/json' },
+})
+
 export default api
+export { axiosPrivate }
 export * from './auth.service'

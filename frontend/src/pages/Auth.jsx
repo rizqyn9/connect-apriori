@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { Link, Navigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -24,7 +24,7 @@ export function SignUp() {
             email: yup.string().email('Email not valid').required(),
             password: yup
                 .string()
-                .min(8, 'Min pass 8 characters')
+                .min(1, 'Min pass 8 characters')
                 .max(13, 'Max pass 13 characters')
                 .required('Password is required'),
         })
@@ -92,7 +92,8 @@ export function SignUp() {
 }
 
 export function SignIn() {
-    const { signIn: SignInService } = useAuth()
+    const { signIn, auth } = useAuth()
+
     const schema = yup
         .object({
             email: yup.string().email('Email not valid').required(),
@@ -109,7 +110,7 @@ export function SignIn() {
     })
 
     const onSubmit = async (data) => {
-        SignInService(data)
+        await signIn(data)
     }
 
     return (

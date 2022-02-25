@@ -1,13 +1,22 @@
-import { getCurrentUser, getToken } from '../services'
-import { Navigate } from 'react-router-dom'
-import React from 'react'
+import * as React from 'react'
+import { useAuth } from '../context/user-context'
+import { useLocation, Navigate } from 'react-router-dom'
+import { useToast } from '../context/toast-context'
 
-export function RequireAuth(WrappedComponent) {
-    const token = getToken()
-    if (token) {
-        return WrappedComponent
-    } else {
-        console.log('with auth')
-        return <Navigate to={'/auth/signin'} replace />
-    }
+const RequireAuth = ({ allowedRoles, children }) => {
+    const { auth } = useAuth()
+    const location = useLocation()
+
+    console.log('Token:')
+
+    return allowedRoles?.includes(auth?.role) ? (
+        <>{children}</>
+    ) : // auth?.user
+    auth?.user1 ? (
+        <Navigate to="/unauthorized" state={{ from: location }} replace />
+    ) : (
+        <Navigate to="/auth/signin" state={{ from: location }} replace />
+    )
 }
+
+export { RequireAuth }

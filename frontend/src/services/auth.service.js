@@ -1,28 +1,23 @@
 import api from './index'
 
 export async function signInService(data) {
-    try {
-        return await api.post('/auth/signin', data).then((val) => {
-            if (val.data.status === 'success') {
-                localStorage.setItem(
-                    'token',
-                    JSON.stringify(val.data.data.token)
-                )
-                localStorage.setItem('user', JSON.stringify(val.data.data.user))
-                return val.data
-            } else throw new Error('Fail')
+    return await api
+        .post('/auth/signin', data)
+        .then((val) => val.data)
+        .catch((err) => {
+            console.log(err)
+            return { error: 'Server error' }
         })
-    } catch (e) {
-        console.log(e)
-    }
 }
 
 export async function signUpService(data) {
-    try {
-        return await api.post('/auth/signup', data).then((val) => val.data)
-    } catch (e) {
-        console.log(e)
-    }
+    return await api
+        .post('/auth/signup', data)
+        .then((val) => val.data)
+        .catch((err) => {
+            console.log(err)
+            return { error: 'Server error' }
+        })
 }
 
 export const logout = () => {
