@@ -8,7 +8,7 @@ import AccountManagement from './pages/AccountManagement'
 import Analytics from './pages/Analytics'
 import { RequireAuth } from './components/WithAuth'
 import { OrderProvider } from './context/order-context'
-import { AuthProvider, ROLES } from './context/user-context'
+import { AuthProvider, ROLES, useAuth } from './context/user-context'
 import { CookiesProvider, useCookies } from 'react-cookie'
 import { ToastProvider } from './context/toast-context'
 import { ToastContainer } from './components/Toast'
@@ -62,20 +62,19 @@ function App() {
                         element={<AccountManagement />}
                     />
                 </Route>
-                <Route to="logout" element={<logout />} />
                 <Route path="/auth/signin" element={<SignIn />} exact />
                 <Route path="/auth/signup" element={<SignUp />} exact />
                 <Route path={'*'} element={<div>Notfound</div>} />
+                <Route path="/logout" element={<LogOut />} />
             </Routes>
         </GlobalProvider>
     )
 }
 
-function logout() {
-    const { removeCookie } = useCookies()
+function LogOut() {
+    const { signOut } = useAuth()
     useEffect(() => {
-        localStorage.clear()
-        removeCookie(['user', 'token'])
+        signOut()
     }, [])
     return <></>
 }

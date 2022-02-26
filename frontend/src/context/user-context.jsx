@@ -11,6 +11,7 @@ const ROLES = Object.freeze({
 })
 
 const initialData = {
+    firstLoad: true,
     isAuth: false,
     role: '',
     token: '',
@@ -28,12 +29,12 @@ function AuthProvider({ children }) {
     const navigate = useNavigate()
 
     useEffect(() => {
-        if (!auth.isAuth && cookies.token) {
-            verifyCookiesToken()
-        }
+        // if (!auth.isAuth && cookies[('token', { path: '/' })]) {
+        //     verifyCookiesToken()
+        // }
         if (auth.isAuth && auth.token && auth.user) {
-            setCookie('token', auth.token)
-            setCookie('user', auth.user)
+            setCookie('token', auth.token, { path: '/' })
+            setCookie('user', auth.user, { path: '/' })
         }
     }, [auth])
 
@@ -98,36 +99,37 @@ function AuthProvider({ children }) {
     }
 
     const verifyCookiesToken = async () => {
-        return axiosPrivate
-            .post('/auth/validate', { token: cookies.token })
-            .then((val) => {
-                console.log(val)
-                if (val.data.isAuth) {
-                    const { user, token, isAdmin } = val.data
+        try {
+            return axiosPrivate
+                .post('/auth/validate', { token: cookies.token })
+                .then((val) => {
+                    console.log(val)
+                    if (val.data.isAuth) {
+                        const { user, token, isAdmin } = val.data
 
-                    setAuth({
-                        ...auth,
-                        ...val.data,
-                        isAuth: true,
-                        role: isAdmin ? ROLES.ADMIN : ROLES.USER,
-                    })
+                        setAuth({
+                            ...auth,
+                            ...val.data,
+                            isAuth: true,
+                            role: isAdmin ? ROLES.ADMIN : ROLES.USER,
+                        })
 
-                    addToast({
-                        msg: `Success signin as ${user.name}`,
-                        variant: 'success',
-                    })
+                        navigate('/', { replace: true })
 
-                    navigate('/', { replace: true })
-
-                    return val.data
-                }
-            })
-            .catch((err) => {
-                console.log('auth', err)
-            })
+                        return val.data
+                    }
+                })
+                .catch((err) => {
+                    signOut()
+                })
+        } catch (error) {
+            console.log('asd', error)
+        }
     }
 
     const signOut = () => {
+        setAuth(initialData)
+        removeCookie('token', { path: '/' })
         navigate('/auth/signin')
     }
 

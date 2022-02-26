@@ -12,7 +12,6 @@ const useAxiosPrivate = () => {
     useEffect(() => {
         const requestIntercept = axiosPrivate.interceptors.request.use(
             (config) => {
-                console.log(cookies.token)
                 if (!config.headers['x-access-token']) {
                     config.headers['x-access-token'] = cookies.token
                 }
@@ -36,7 +35,7 @@ const useAxiosPrivate = () => {
                     // prevRequest.headers[
                     //     'Authorization'
                     // ] = `Bearer ${newAccessToken}`
-                    return axiosPrivate(prevRequest)
+                    // return axiosPrivate(prevRequest)
                 }
                 return Promise.reject(error)
             }

@@ -8,7 +8,7 @@ const RequireAuth = ({ allowedRoles, children }) => {
     const [cookies] = useCookies()
     const location = useLocation()
 
-    return !auth.isAuth && cookies.token ? (
+    return !cookies.token ? (
         <></>
     ) : allowedRoles?.includes(auth?.role) ? (
         <>{children}</>

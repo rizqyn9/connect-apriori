@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
@@ -7,20 +7,32 @@ import { useAuth } from '../context/user-context'
 import { useCookies } from 'react-cookie'
 
 function Auth({ children }) {
-    const { auth } = useAuth()
-    const [cookies] = useCookies()
+    const { auth, cookies, verifyCookiesToken } = useAuth()
 
-    return !auth.isAuth && cookies.token ? (
-        <></>
-    ) : auth ? (
-        <Navigate to={'/'} replace />
-    ) : (
+    useEffect(async () => {
+        if (cookies.token) {
+            await verifyCookiesToken()
+        }
+    }, [])
+
+    return (
         <div className="bg-dark-2 flex h-screen overflow-hidden justify-center text-white">
             <div className="py-7 px-8 flex flex-col gap-2 bg-dark-1 w-3/5 min-w-max max-w-sm min-h-[10rem] self-center rounded-xl">
                 {children}
             </div>
         </div>
     )
+    // return auth.firstLoad && cookies[('token', { path: '/' })] ? (
+    //     <></>
+    // ) : auth ? (
+    //     <Navigate to={'/'} replace />
+    // ) : (
+    //     <div className="bg-dark-2 flex h-screen overflow-hidden justify-center text-white">
+    //         <div className="py-7 px-8 flex flex-col gap-2 bg-dark-1 w-3/5 min-w-max max-w-sm min-h-[10rem] self-center rounded-xl">
+    //             {children}
+    //         </div>
+    //     </div>
+    // )
 }
 
 export function SignUp() {
