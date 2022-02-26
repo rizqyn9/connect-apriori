@@ -13,12 +13,6 @@ import { CookiesProvider, useCookies } from 'react-cookie'
 import { ToastProvider } from './context/toast-context'
 import { ToastContainer } from './components/Toast'
 
-/**
- * Fix every user login store token and user data to local storage
- * User without authorization will navigate to login page
- * Prevent authorized user to login page and redirect to latest page
- *
- */
 function App() {
     return (
         <GlobalProvider>

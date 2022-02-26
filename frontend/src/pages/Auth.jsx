@@ -7,32 +7,20 @@ import { useAuth } from '../context/user-context'
 import { useCookies } from 'react-cookie'
 
 function Auth({ children }) {
-    const { auth, cookies, verifyCookiesToken } = useAuth()
+    const [cookies] = useCookies(['token'])
 
-    useEffect(async () => {
-        if (cookies.token) {
-            await verifyCookiesToken()
-        }
-    }, [])
-
-    return (
+    /**
+     * Ketika user sudah login dan melakukan reload pada halaman akan dikembalikan kehalaman dashboard
+     */
+    return !cookies.token ? (
         <div className="bg-dark-2 flex h-screen overflow-hidden justify-center text-white">
             <div className="py-7 px-8 flex flex-col gap-2 bg-dark-1 w-3/5 min-w-max max-w-sm min-h-[10rem] self-center rounded-xl">
                 {children}
             </div>
         </div>
+    ) : (
+        <Navigate to={'/'} />
     )
-    // return auth.firstLoad && cookies[('token', { path: '/' })] ? (
-    //     <></>
-    // ) : auth ? (
-    //     <Navigate to={'/'} replace />
-    // ) : (
-    //     <div className="bg-dark-2 flex h-screen overflow-hidden justify-center text-white">
-    //         <div className="py-7 px-8 flex flex-col gap-2 bg-dark-1 w-3/5 min-w-max max-w-sm min-h-[10rem] self-center rounded-xl">
-    //             {children}
-    //         </div>
-    //     </div>
-    // )
 }
 
 export function SignUp() {

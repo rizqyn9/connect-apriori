@@ -28,15 +28,15 @@ function AuthProvider({ children }) {
     const [auth, setAuth] = useState(initialData)
     const navigate = useNavigate()
 
+    /**
+     * Update cookies setiap ada pembaruan data user
+     */
     useEffect(() => {
-        // if (!auth.isAuth && cookies[('token', { path: '/' })]) {
-        //     verifyCookiesToken()
-        // }
         if (auth.isAuth && auth.token && auth.user) {
             setCookie('token', auth.token, { path: '/' })
             setCookie('user', auth.user, { path: '/' })
         }
-    }, [auth])
+    }, [auth, setAuth])
 
     const signIn = async (data) => {
         try {
@@ -100,9 +100,10 @@ function AuthProvider({ children }) {
 
     const verifyCookiesToken = async () => {
         try {
-            return axiosPrivate
+            return await axiosPrivate
                 .post('/auth/validate', { token: cookies.token })
                 .then((val) => {
+                    console.log(val.data.isAuth)
                     console.log(val)
                     if (val.data.isAuth) {
                         const { user, token, isAdmin } = val.data
@@ -116,13 +117,18 @@ function AuthProvider({ children }) {
 
                         navigate('/', { replace: true })
 
-                        return val.data
+                        // return val.data
+                        return true
+                    } else {
+                        // throw new Error('Invalid Token')
                     }
                 })
-                .catch((err) => {
-                    signOut()
+                .catch((e) => {
+                    console.log(e)
+                    throw new Error('Invalid Token')
                 })
         } catch (error) {
+            signOut()
             console.log('asd', error)
         }
     }
@@ -130,7 +136,12 @@ function AuthProvider({ children }) {
     const signOut = () => {
         setAuth(initialData)
         removeCookie('token', { path: '/' })
+        removeCookie('user', { path: '/' })
         navigate('/auth/signin')
+    }
+
+    const TestFunction = () => {
+        alert('asd')
     }
 
     return (
@@ -144,6 +155,7 @@ function AuthProvider({ children }) {
                 auth,
                 setAuth,
                 verifyCookiesToken,
+                TestFunction,
             }}
         >
             {children}
