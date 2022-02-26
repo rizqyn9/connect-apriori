@@ -31,7 +31,10 @@ function AuthProvider({ children }) {
     /**
      * Update cookies setiap ada pembaruan data user
      */
-    useEffect(() => {
+    useEffect(async () => {
+        if (!auth.isAuth && cookies.token) {
+            await verifyCookiesToken()
+        }
         if (auth.isAuth && auth.token && auth.user) {
             setCookie('token', auth.token, { path: '/' })
             setCookie('user', auth.user, { path: '/' })
@@ -47,6 +50,7 @@ function AuthProvider({ children }) {
                     setAuth({
                         ...auth,
                         ...val.data,
+                        user,
                         isAuth: true,
                         role: isAdmin ? ROLES.ADMIN : ROLES.USER,
                     })
@@ -103,24 +107,21 @@ function AuthProvider({ children }) {
             return await axiosPrivate
                 .post('/auth/validate', { token: cookies.token })
                 .then((val) => {
-                    console.log(val.data.isAuth)
                     console.log(val)
-                    if (val.data.isAuth) {
-                        const { user, token, isAdmin } = val.data
-
+                    if (val.isAuth) {
+                        const { user, token } = val
                         setAuth({
                             ...auth,
-                            ...val.data,
+                            ...val,
+                            user,
                             isAuth: true,
-                            role: isAdmin ? ROLES.ADMIN : ROLES.USER,
+                            role: user.isAdmin ? ROLES.ADMIN : ROLES.USER,
                         })
-
                         navigate('/', { replace: true })
 
-                        // return val.data
-                        return true
+                        return val
                     } else {
-                        // throw new Error('Invalid Token')
+                        throw new Error('Invalid Token')
                     }
                 })
                 .catch((e) => {
@@ -136,8 +137,8 @@ function AuthProvider({ children }) {
     const signOut = () => {
         setAuth(initialData)
         removeCookie('token', { path: '/' })
-        removeCookie('user', { path: '/' })
-        navigate('/auth/signin')
+        // removeCookie('user', { path: '/' })
+        // navigate('/auth/signin')
     }
 
     const TestFunction = () => {

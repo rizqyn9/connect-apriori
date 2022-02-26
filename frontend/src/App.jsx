@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import { SignIn, SignUp } from './pages/Auth'
 import DashboardLayout from './pages/DashboardLayout'
 import InputProduct from './pages/InputProduct'
@@ -9,7 +9,7 @@ import Analytics from './pages/Analytics'
 import { RequireAuth } from './components/WithAuth'
 import { OrderProvider } from './context/order-context'
 import { AuthProvider, ROLES, useAuth } from './context/user-context'
-import { CookiesProvider, useCookies } from 'react-cookie'
+import { CookiesProvider } from 'react-cookie'
 import { ToastProvider } from './context/toast-context'
 import { ToastContainer } from './components/Toast'
 
@@ -32,7 +32,7 @@ function App() {
                             <RequireAuth
                                 allowedRoles={[ROLES.ADMIN, ROLES.USER]}
                             >
-                                {/* <Catalog /> */}
+                                <Catalog />
                             </RequireAuth>
                         }
                     />

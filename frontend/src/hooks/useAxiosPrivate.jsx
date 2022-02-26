@@ -6,7 +6,7 @@ import { useCookies } from 'react-cookie'
 
 const useAxiosPrivate = () => {
     // const refresh = useRefreshToken()
-    const [cookies] = useCookies('token')
+    const [cookies] = useCookies(['token'])
     const { auth } = useAuth()
 
     useEffect(() => {
