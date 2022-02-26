@@ -32,11 +32,11 @@ export default function Sidebar() {
                     title="Account Management"
                     icon={<Icon.AccountManager />}
                 />
-                <NavItem
+                {/* <NavItem
                     to="/logout"
                     title="Account Management"
                     icon={<>LogOut</>}
-                />
+                /> */}
             </div>
         </GridRow>
     )

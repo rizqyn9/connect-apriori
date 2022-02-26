@@ -130,15 +130,15 @@ function AuthProvider({ children }) {
                 })
         } catch (error) {
             signOut()
-            console.log('asd', error)
+            console.log('Token', error)
         }
     }
 
     const signOut = () => {
         setAuth(initialData)
         removeCookie('token', { path: '/' })
-        // removeCookie('user', { path: '/' })
-        // navigate('/auth/signin')
+        removeCookie('user', { path: '/' })
+        navigate('/auth/signin')
     }
 
     const TestFunction = () => {

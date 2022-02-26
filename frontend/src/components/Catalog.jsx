@@ -11,9 +11,10 @@ export default function Catalog() {
     const { getAllProducts } = useProducts()
 
     useEffect(async () => {
-        console.log('Catalog')
-        let getProducts = await getAllProducts()
-        setProducts(getProducts)
+        await getAllProducts().then((res) => {
+            // Ada yang aneh request pertama return object req selanjut nya return array
+            setProducts(Array.isArray(res) ? res : res.data)
+        })
     }, [])
 
     return (
