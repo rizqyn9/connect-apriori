@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { useOrder } from '../context/order-context'
 import Icon from './Icon'
 
+/**
+ * Untuk menampilkan barang yang diorder
+ */
 export default function OrderCard({ id, menu, image, price, type, quantity }) {
     const { updateOrder, removeOrder } = useOrder()
     const [order, setOrder] = useState({
@@ -15,13 +18,12 @@ export default function OrderCard({ id, menu, image, price, type, quantity }) {
     const handleOnChange = (data) => {
         let total = data.quantity ? { totalPrice: price * data.quantity } : {}
         setOrder({ ...order, ...data, ...total })
+
+        // Update Order
+        updateOrder(order.id, order)
     }
 
     console.log('render :', id)
-
-    useEffect(() => {
-        console.log(order)
-    }, [order])
 
     return (
         <div className="bg-dark-1 p-2 rounded-md flex flex-col gap-2">
