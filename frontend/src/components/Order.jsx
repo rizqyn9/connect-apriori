@@ -13,7 +13,7 @@ let OrderModels = {
 
 export default function Order({ className }) {
     const { orders, transaction } = useOrder()
-    const [showOrder, setShowOrder] = useState(true)
+    const [showOrder, setShowOrder] = useState(false)
 
     return (
         <div
@@ -71,10 +71,56 @@ export default function Order({ className }) {
 }
 
 function Transaction({ showTransaction }) {
+    const { transaction, updatePaymentType } = useOrder()
+
+    const handleBack = () => {
+        showTransaction(true)
+        updatePaymentType('')
+    }
+
     return (
         <div>
-            <button onClick={() => showTransaction(true)}>back</button>
+            <button
+                onClick={handleBack}
+                className="bg-primary px-3 py-2 rounded-md"
+            >
+                back
+            </button>
             <h2>Transaction</h2>
+            {transaction.paymentType && <div>{transaction.paymentType}</div>}
+            <div className="grid gap-5 grid-cols-2">
+                <TransactionTypeCard
+                    type={'OVO'}
+                    setTransaction={updatePaymentType}
+                    transactionType={transaction.paymentType}
+                />
+                <TransactionTypeCard
+                    type={'DANA'}
+                    setTransaction={updatePaymentType}
+                    transactionType={transaction.paymentType}
+                />
+                <TransactionTypeCard
+                    type={'KTP'}
+                    setTransaction={updatePaymentType}
+                    transactionType={transaction.paymentType}
+                />
+            </div>
         </div>
+    )
+}
+
+function TransactionTypeCard({ type, setTransaction, transactionType }) {
+    return (
+        <button
+            onClick={() => {
+                setTransaction(type)
+            }}
+            className={clsx(
+                'w-full aspect-w-1 aspect-h-1 border-2 rounded-md flex justify-center items-center',
+                { 'bg-primary': transactionType == type }
+            )}
+        >
+            <div className="flex items-center justify-center">{type}</div>
+        </button>
     )
 }
