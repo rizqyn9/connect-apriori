@@ -60,8 +60,9 @@ export default function Order({ className }) {
             </div>
             <button
                 className={
-                    'text-md bg-primary p-2 w-full text-center rounded-lg hover:opacity-80'
+                    'text-md bg-primary p-2 w-full text-center rounded-lg hover:opacity-80 disabled:bg-gray-300 disabled:cursor-not-allowed'
                 }
+                disabled={Object.keys(orders).length == 0}
                 onClick={() => setShowOrder(!showOrder)}
             >
                 Set payment method
