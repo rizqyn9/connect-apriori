@@ -1,6 +1,5 @@
 import { axiosPrivate } from '../services'
 import { useEffect } from 'react'
-// import useRefreshToken from './useRefreshToken'
 import { useAuth } from '../context/user-context'
 import { useCookies } from 'react-cookie'
 

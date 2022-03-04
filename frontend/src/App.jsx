@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { SignIn, SignUp } from './pages/Auth'
 import DashboardLayout from './pages/DashboardLayout'
-import InputProduct from './pages/InputProduct'
+import { ProductPage } from './pages/InputProduct'
 import Catalog from './components/Catalog'
 import AccountManagement from './pages/AccountManagement'
 import Analytics from './pages/Analytics'
@@ -46,7 +46,9 @@ function App() {
                     >
                         <Route path="/catalog" element={<Catalog />} />
                     </Route> */}
-                    <Route path={'product'} element={<InputProduct />} />
+                    {/* <Route path={'product'} element={<InputProduct />} /> */}
+                    {/* <Route path={'product/:id'} element={<InputProduct />} /> */}
+                    <Route path={'product/*'} element={<ProductPage />} />
                     <Route
                         path={'product-management'}
                         element={<Analytics />}

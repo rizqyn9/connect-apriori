@@ -5,14 +5,28 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { PostProduct } from '../services/product.service'
+import { Routes, Route, useParams } from 'react-router-dom'
+import { useProducts } from '../hooks/useProducts'
+
+export function ProductPage() {
+    return (
+        <Routes>
+            <Route index element={<InputProduct />} />
+            <Route path=":id" element={<InputProduct />} />
+        </Routes>
+    )
+}
 
 const schema = yup.object({
     menu: yup.string('req').required('req'),
     price: yup.number().required(),
-    image: yup.object().required(),
+    image: yup.mixed().required(),
 })
 
-export default function InputProduct() {
+function InputProduct() {
+    const { id } = useParams()
+    const [product, setProducts] = useState({})
+    const { getProductById, postProduct } = useProducts()
     const {
         register,
         handleSubmit,
@@ -23,13 +37,21 @@ export default function InputProduct() {
         resolver: yupResolver(schema),
     })
 
+    useEffect(async () => {
+        if (!id) return
+        await getProductById(id).then((val) => {
+            setProducts(val)
+            setValue('menu', val.menu)
+            setValue('price', val.price)
+        })
+    }, [])
+
     const handleImageForm = (res) => {
         setValue('image', res)
     }
 
     const onSubmit = async (data) => {
-        console.log(data)
-        await PostProduct({ ...data })
+        await postProduct(data)
     }
 
     return (
@@ -54,6 +76,7 @@ export default function InputProduct() {
                     <ImageInput
                         onChange={handleImageForm}
                         errors={errors.image?.message}
+                        defaultImage={product && product.image}
                     />
                 </div>
 
@@ -121,24 +144,35 @@ function FormInput({
     )
 }
 
-function ImageInput({ onChange, errors }) {
+function ImageInput({ onChange, errors, defaultImage = undefined }) {
     const [image, setImage] = useState([])
 
     const handleChange = (a, b) => {
-        let imageData = a[a.length - 1]
         setImage(a)
-        if (onChange) onChange(imageData)
+        if (onChange) onChange(a[0])
     }
+
+    useEffect(() => {
+        if (defaultImage) handleChange([defaultImage], null)
+    }, [defaultImage])
 
     return (
         <ReactImageUploading
+            multiple={false}
             value={image}
             onChange={handleChange}
+            maxNumber={1}
             dataURLKey="data"
         >
-            {({ isDragging, dragProps, onImageUpdate, onImageRemove }) => (
+            {({
+                isDragging,
+                dragProps,
+                onImageUpdate,
+                onImageRemove,
+                onImageUpload,
+            }) => (
                 <div
-                    className={`w-full h-[30rem] flex justify-center bg-dark-2 rounded-lg ${
+                    className={`w-full h-[40rem] flex justify-center bg-dark-2 rounded-lg ${
                         isDragging ? 'bg-dark-line' : ''
                     }`}
                     {...dragProps}
@@ -146,17 +180,22 @@ function ImageInput({ onChange, errors }) {
                     <div className="w-full h-full">
                         <div className="p-6 w-full h-full flex flex-col gap-2">
                             <label className="inline-block mb-2 text-white/70">
-                                Upload Image (jpg,png,svg,jpeg)
+                                Unggah gambar
                             </label>
-                            <div className="flex items-center justify-center w-full h-full ">
+                            <div className="flex items-center justify-center w-full h-full overflow-hidden">
                                 <label
                                     className={clsx(
-                                        'flex flex-col w-full h-full border-4 border-dashed border-dark-line hover:bg-dark-line hover:border-gray-300',
+                                        'flex flex-col w-full h-full border-4 border-dashed border-dark-line hover:bg-dark-line hover:border-gray-300 relative',
                                         `${errors ? 'border-red-500' : ''}`
                                     )}
                                 >
-                                    {image.length !== 0 ? (
-                                        <img src={image[0].data} alt="" />
+                                    {Array.isArray(image) &&
+                                    image.length !== 0 ? (
+                                        <img
+                                            src={image[0].data}
+                                            alt=""
+                                            className="absolute translate-y-[-20%] "
+                                        />
                                     ) : (
                                         <div className="h-full flex items-center justify-center">
                                             <svg
@@ -181,19 +220,19 @@ function ImageInput({ onChange, errors }) {
                         </div>
                         {/*Button*/}
                         <div className="flex items-center justify-center p-2">
-                            <button
+                            <div
                                 className={clsx(
-                                    'px-4 py-2 text-white bg-primary rounded shadow-xl',
-                                    { 'bg-dark-2': image.length === 0 }
+                                    'px-4 py-2 text-white bg-primary rounded shadow-xl cursor-pointer',
+                                    { 'bg-dark-2': image.data }
                                 )}
                                 onClick={(e) => {
-                                    if (image.length === 0)
-                                        return onImageUpdate()
+                                    if (image.length == 0)
+                                        return onImageUpload()
                                     else return onImageRemove()
                                 }}
                             >
-                                {image.length === 0 ? 'Upload' : 'Delete'}
-                            </button>
+                                {image.length == 0 ? 'Upload' : 'Delete'}
+                            </div>
                         </div>
                     </div>
                 </div>

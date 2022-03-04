@@ -3,6 +3,7 @@ import clsx from 'clsx'
 import { useOrder } from '../context/order-context'
 import Icon from './Icon'
 import { useOnClickOutside } from '../hooks/useClickOutside'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 export default function Card({
     menu,
@@ -12,6 +13,7 @@ export default function Card({
     activeCard,
     setActiveCard,
 }) {
+    const navigate = useNavigate()
     const [type, setType] = useState('hot')
     const ref = useRef()
     const { addOrder } = useOrder()
@@ -38,9 +40,10 @@ export default function Card({
             ref={ref}
         >
             {/* Edit Icon */}
-            {activeCard && (
-                <div className="absolute top-5 hover:bg-primary cursor-pointer left-5 bg-gray-50 w-6 h-6 rounded-full z-10"></div>
-            )}
+            <button
+                onClick={() => navigate(`product/${id}`)}
+                className="absolute top-5 hover:bg-primary cursor-pointer left-5 bg-gray-50 w-6 h-6 rounded-full z-10"
+            ></button>
 
             <div className="w-full pt-[100%] relative bg-primary rounded-xl overflow-hidden">
                 <img
