@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import React, { useContext, useEffect, useState } from 'react'
 import { useOrder } from '../context/order-context'
+import { useTransaction } from '../hooks/useTransaction'
 import OrderCard from './OrderCard'
 
 let OrderModels = {
@@ -13,7 +14,10 @@ let OrderModels = {
 
 export default function Order({ className }) {
     const { orders, transaction } = useOrder()
-    const [showOrder, setShowOrder] = useState(false)
+    const { newTransaction, transactionProcess } = useTransaction()
+    const [showOrder, setShowOrder] = useState(true)
+
+    const createNewTransaction = () => {}
 
     return (
         <div
@@ -22,11 +26,11 @@ export default function Order({ className }) {
                 className
             )}
         >
-            <p className={'text-md font-bold'}>Order #423848234</p>
+            <p className={'text-md font-bold'}>Order-ID #423848234</p>
             {/*Order Products*/}
             <div
                 className={
-                    'relative mt-5 flex-1 overflow-y-scroll border-b-2 border-t-2 py-3 flex flex-col gap-3 border-dark-line pr-4 max-h-[60vh]'
+                    'relative mt-5 flex-1 overflow-y-scroll border-b-2 border-t-2 py-3 flex flex-col gap-3 border-dark-line pr-4 max-h-[50vh]'
                 }
             >
                 {showOrder &&
@@ -50,23 +54,47 @@ export default function Order({ className }) {
 
             <div className={'my-5 text-sm text-white/70 flex flex-col gap-3'}>
                 <div className={'flex justify-between'}>
-                    <p>Discount</p>
+                    <p>Diskon</p>
                     <p>{transaction.priceTotal}</p>
                 </div>{' '}
                 <div className={'flex justify-between'}>
-                    <p>Sub Total</p>
+                    <p>Total Harga</p>
                     <p>{transaction.priceTotal}</p>
                 </div>
+                <div className={'flex justify-between'}>
+                    <p>Metode Pembayaran</p>
+                    <p>
+                        {transaction.paymentType == ''
+                            ? '-'
+                            : transaction.paymentType}
+                    </p>
+                </div>
             </div>
-            <button
-                className={
-                    'text-md bg-primary p-2 w-full text-center rounded-lg hover:opacity-80 disabled:bg-gray-300 disabled:cursor-not-allowed'
-                }
-                disabled={Object.keys(orders).length == 0}
-                onClick={() => setShowOrder(!showOrder)}
-            >
-                Set payment method
-            </button>
+            {showOrder ? (
+                <button
+                    className={
+                        'text-md bg-primary p-2 w-full text-center rounded-lg hover:opacity-80 disabled:bg-gray-300 disabled:cursor-not-allowed'
+                    }
+                    disabled={Object.keys(orders).length == 0}
+                    onClick={() => setShowOrder(!showOrder)}
+                >
+                    Metode pembayaran
+                </button>
+            ) : (
+                <button
+                    className={
+                        'text-md bg-primary p-2 w-full text-center rounded-lg hover:opacity-80 disabled:bg-gray-300 disabled:cursor-not-allowed'
+                    }
+                    disabled={
+                        transaction.paymentType == '' || transactionProcess
+                    }
+                    onClick={async () =>
+                        newTransaction({ orders, transaction })
+                    }
+                >
+                    Bayar sekarang
+                </button>
+            )}
         </div>
     )
 }
@@ -80,31 +108,38 @@ function Transaction({ showTransaction }) {
     }
 
     return (
-        <div>
-            <button
-                onClick={handleBack}
-                className="bg-primary px-3 py-2 rounded-md"
-            >
-                back
-            </button>
-            <h2>Transaction</h2>
-            {transaction.paymentType && <div>{transaction.paymentType}</div>}
-            <div className="grid gap-5 grid-cols-2">
-                <TransactionTypeCard
-                    type={'OVO'}
-                    setTransaction={updatePaymentType}
-                    transactionType={transaction.paymentType}
-                />
-                <TransactionTypeCard
-                    type={'DANA'}
-                    setTransaction={updatePaymentType}
-                    transactionType={transaction.paymentType}
-                />
-                <TransactionTypeCard
-                    type={'KTP'}
-                    setTransaction={updatePaymentType}
-                    transactionType={transaction.paymentType}
-                />
+        <div className="flex flex-col gap-5 max-h-full">
+            <div className="sticky top-0 bg-dark-2 z-10 w-full pb-3">
+                <button
+                    onClick={handleBack}
+                    className="border-2 border-primary px-3 py-2 rounded-md w-full"
+                >
+                    back
+                </button>
+            </div>
+            <div className="">
+                <div className="grid w-full gap-5 grid-cols-2">
+                    <TransactionTypeCard
+                        type={'Tunai'}
+                        setTransaction={updatePaymentType}
+                        transactionType={transaction.paymentType}
+                    />
+                    <TransactionTypeCard
+                        type={'OVO'}
+                        setTransaction={updatePaymentType}
+                        transactionType={transaction.paymentType}
+                    />
+                    <TransactionTypeCard
+                        type={'DANA'}
+                        setTransaction={updatePaymentType}
+                        transactionType={transaction.paymentType}
+                    />
+                    <TransactionTypeCard
+                        type={'KTP'}
+                        setTransaction={updatePaymentType}
+                        transactionType={transaction.paymentType}
+                    />
+                </div>
             </div>
         </div>
     )

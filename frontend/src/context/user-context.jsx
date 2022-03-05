@@ -39,20 +39,21 @@ function AuthProvider({ children }) {
             setCookie('token', auth.token, { path: '/' })
             setCookie('user', auth.user, { path: '/' })
         }
-    }, [auth, setAuth])
+    }, [auth])
 
     const signIn = async (data) => {
         try {
             return await signInService(data).then((val) => {
-                if (val.data.isAuth) {
-                    const { user, token, isAdmin } = val.data
+                if (val.isAuth) {
+                    const { user, token, isAdmin } = val
 
                     setAuth({
                         ...auth,
-                        ...val.data,
+                        ...val,
                         user,
                         isAuth: true,
                         role: isAdmin ? ROLES.ADMIN : ROLES.USER,
+                        firstLoad: false,
                     })
 
                     addToast({
@@ -104,12 +105,12 @@ function AuthProvider({ children }) {
 
     const verifyCookiesToken = async () => {
         try {
+            console.log(cookies.token)
             return await axiosPrivate
                 .post('/auth/validate', { token: cookies.token })
                 .then((val) => {
-                    console.log(val)
-                    if (val.isAuth) {
-                        const { user, token } = val
+                    if (val.data.isAuth) {
+                        const { user, token } = val.data
                         setAuth({
                             ...auth,
                             ...val,

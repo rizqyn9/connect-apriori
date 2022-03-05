@@ -20,12 +20,8 @@ const useAxiosPrivate = () => {
         )
 
         const responseIntercept = axiosPrivate.interceptors.response.use(
-            (response) => {
-                console.log(response)
-                return response.data
-            },
+            (response) => response,
             async (error) => {
-                console.log('Axios Private ', error)
                 const prevRequest = error?.config
                 if (error?.response?.status === 403 && !prevRequest?.sent) {
                     alert('Somenthing error in axios private')

@@ -12,8 +12,7 @@ export default function Catalog() {
 
     useEffect(async () => {
         await getAllProducts().then((res) => {
-            // Ada yang aneh request pertama return object req selanjut nya return array
-            setProducts(Array.isArray(res) ? res : res.data)
+            setProducts(res.data.products)
         })
     }, [])
 
@@ -32,7 +31,12 @@ export default function Catalog() {
                     </div>
                 }
             >
-                <div className="row-start-2 flex h-full py-8">
+                <div className="row-start-2 flex h-full py-8 flex-col gap-5">
+                    <div className=" self-start">
+                        <button className="p-2 bg-primary rounded-md">
+                            Refresh
+                        </button>
+                    </div>
                     <div className="flex-auto flex flex-wrap gap-5 align-start justify-start overflow-y-scroll h-full max-h-[78vh]">
                         {Array.isArray(products) &&
                             products.map((val, i) => (
