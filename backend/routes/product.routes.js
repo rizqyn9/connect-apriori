@@ -9,7 +9,7 @@ const responses = require("../utils/responses");
 app.get("/", (req, res) => {
   try {
     return Product.find().then((data) => {
-      return responses.success(res, data);
+      return responses.success(res, { products: data });
     });
   } catch (error) {
     return responses.fail(res, {}, error);
@@ -28,13 +28,14 @@ app.post("/", (req, res) => {
         return responses.fail(res, (message = `${key} is required`));
     }
 
-    console.log(req.body.image.file);
-    Product.create({ ...req.body }).then((data, val) => {
-      console.log(val);
+    return Product.create({ ...req.body }).then((err, val) => {
+      if (val) return responses.success(res, "created success");
+      else return responses.fail(res, "Failed to post");
     });
-
-    return responses.success(res, "created success");
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    return responses.error(res, "Server error");
+  }
 });
 
 /**
@@ -49,6 +50,21 @@ app.post("/:id", (req, res) => {
 
     Product.findByIdAndUpdate(String(id)).then((data) => {
       return responses.success(res, data);
+    });
+  } catch (error) {
+    return responses.error(res, "Server error");
+  }
+});
+
+/**
+ * Ambil data dari salah satu product
+ */
+app.get("/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    return Product.findById(id).then((data) => {
+      if (data) return responses.success(res, data);
+      else return responses.fail(res, "Product not found");
     });
   } catch (error) {
     return responses.error(res, "Server error");

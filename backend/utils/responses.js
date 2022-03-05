@@ -1,7 +1,7 @@
 module.exports = {
   success: (res, data, message = {}, status = 200) => {
     console.log({ data, message });
-    return res.json({ status: "success", data });
+    return res.json({ status: "success", ...data });
   },
   fail: (res, data, message = {}, status = 200) => {
     console.log({ data, message });
