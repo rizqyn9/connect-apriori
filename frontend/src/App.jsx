@@ -12,6 +12,7 @@ import { AuthProvider, ROLES, useAuth } from './context/user-context'
 import { CookiesProvider } from 'react-cookie'
 import { ToastProvider } from './context/toast-context'
 import { ToastContainer } from './components/Toast'
+import { ModalProvider } from './context/modal-context'
 
 function App() {
     return (
@@ -40,7 +41,7 @@ function App() {
                     {/* <Route
                         element={
                             <RequireAuth
-                                allowedRoles={[ROLES.ADMIN, ROLES.USER]}
+                            allowedRoles={[ROLES.ADMIN, ROLES.USER]}
                             />
                         }
                     >
@@ -72,7 +73,7 @@ function LogOut() {
     useEffect(() => {
         signOut()
     }, [])
-    return <></>
+    return null
 }
 
 function GlobalProvider({ children }) {
@@ -80,7 +81,9 @@ function GlobalProvider({ children }) {
         <CookiesProvider>
             <ToastProvider>
                 <AuthProvider>
-                    <OrderProvider>{children}</OrderProvider>
+                    <ModalProvider>
+                        <OrderProvider>{children}</OrderProvider>
+                    </ModalProvider>
                 </AuthProvider>
             </ToastProvider>
         </CookiesProvider>

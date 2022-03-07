@@ -1,36 +1,45 @@
 import clsx from 'clsx'
 import React, { useContext, useEffect, useState } from 'react'
+import { useModal } from '../context/modal-context'
 import { useOrder } from '../context/order-context'
 import { useTransaction } from '../hooks/useTransaction'
+import { Modal } from './Modal'
 import OrderCard from './OrderCard'
 
-let OrderModels = {
-    discount: 0,
-    total: 0,
-    totalOrder: 0,
-    menuOrder: [],
-    payment: null,
-}
-
 export default function Order({ className }) {
-    const { orders, transaction } = useOrder()
-    const { newTransaction, transactionProcess } = useTransaction()
     const [showOrder, setShowOrder] = useState(true)
+    const { orders, transaction } = useOrder()
+    const { activatedModal } = useModal()
+
+    const { transactionParser, transactionProcess } = useTransaction()
 
     const createNewTransaction = () => {}
 
     return (
         <div
             className={clsx(
-                'w-full flex-auto flex flex-col gap-2 justify-around ',
+                'w-full flex-auto flex flex-col justify-around ',
                 className
             )}
         >
-            <p className={'text-md font-bold'}>Order-ID #423848234</p>
+            <div className="flex flex-col gap-2">
+                <p className={'text-md font-bold'}>Order-ID #423848234</p>
+                <button
+                    className="bg-primary p-2 rounded-md"
+                    onClick={() =>
+                        activatedModal({
+                            modalComponentProp: <ModalScanRfid />,
+                        })
+                    }
+                >
+                    Gunakan promo
+                </button>
+                <p>status promo</p>
+            </div>
             {/*Order Products*/}
             <div
                 className={
-                    'relative mt-5 flex-1 overflow-y-scroll border-b-2 border-t-2 py-3 flex flex-col gap-3 border-dark-line pr-4 max-h-[50vh]'
+                    'relative flex-1 overflow-y-scroll border-b-2 border-t-2 py-3 flex flex-col gap-3 border-dark-line pr-4 max-h-[50vh]'
                 }
             >
                 {showOrder &&
@@ -73,7 +82,7 @@ export default function Order({ className }) {
             {showOrder ? (
                 <button
                     className={
-                        'text-md bg-primary p-2 w-full text-center rounded-lg hover:opacity-80 disabled:bg-gray-300 disabled:cursor-not-allowed'
+                        'text-md bg-primary p-2 w-full text-center rounded-lg hover:opacity-80 disabled:bg-gray-700 disabled:cursor-not-allowed'
                     }
                     disabled={Object.keys(orders).length == 0}
                     onClick={() => setShowOrder(!showOrder)}
@@ -83,16 +92,22 @@ export default function Order({ className }) {
             ) : (
                 <button
                     className={
-                        'text-md bg-primary p-2 w-full text-center rounded-lg hover:opacity-80 disabled:bg-gray-300 disabled:cursor-not-allowed'
+                        'text-md bg-primary p-2 w-full text-center rounded-lg hover:opacity-80 disabled:bg-gray-700 disabled:cursor-not-allowed'
                     }
                     disabled={
                         transaction.paymentType == '' || transactionProcess
                     }
-                    onClick={async () =>
-                        newTransaction({ orders, transaction })
+                    onClick={() =>
+                        transactionParser({ orders, transaction }, (prop) =>
+                            activatedModal({
+                                modalComponentProp: (
+                                    <ModalPayment test={prop} />
+                                ),
+                            })
+                        )
                     }
                 >
-                    Bayar sekarang
+                    Buat order
                 </button>
             )}
         </div>
@@ -119,31 +134,26 @@ function Transaction({ showTransaction }) {
             </div>
             <div className="">
                 <div className="grid w-full gap-5 grid-cols-2">
-                    <TransactionTypeCard
-                        type={'Tunai'}
-                        setTransaction={updatePaymentType}
-                        transactionType={transaction.paymentType}
-                    />
-                    <TransactionTypeCard
-                        type={'OVO'}
-                        setTransaction={updatePaymentType}
-                        transactionType={transaction.paymentType}
-                    />
-                    <TransactionTypeCard
-                        type={'DANA'}
-                        setTransaction={updatePaymentType}
-                        transactionType={transaction.paymentType}
-                    />
-                    <TransactionTypeCard
-                        type={'KTP'}
-                        setTransaction={updatePaymentType}
-                        transactionType={transaction.paymentType}
-                    />
+                    {transactionVariants.map((val, i) => {
+                        return (
+                            <TransactionTypeCard
+                                key={i}
+                                type={val.type}
+                                setTransaction={updatePaymentType}
+                                transactionType={transaction.paymentType}
+                            />
+                        )
+                    })}
                 </div>
             </div>
         </div>
     )
 }
+
+/**
+ * Tipe Pembayaran yang disupport
+ */
+let transactionVariants = [{ type: 'DANA' }, { type: 'OVO' }, { type: 'GOPAY' }]
 
 function TransactionTypeCard({ type, setTransaction, transactionType }) {
     return (
@@ -158,5 +168,32 @@ function TransactionTypeCard({ type, setTransaction, transactionType }) {
         >
             <div className="flex items-center justify-center">{type}</div>
         </button>
+    )
+}
+
+/**
+ * Component Modal untuk scan RFID
+ */
+function ModalScanRfid() {
+    return (
+        <Modal title={'Scan'}>
+            <div className="flex flex-col gap-5">
+                <input type={'text'} className="p-2 bg-form" />
+                <button>Menunggu scan</button>
+            </div>
+        </Modal>
+    )
+}
+
+/**
+ * Component Modal untuk melanjutkan pembayaran
+ */
+
+function ModalPayment(prop) {
+    console.log(prop.test)
+    return (
+        <Modal title={'Pembayaran'}>
+            <p>Metode pembayaran</p>
+        </Modal>
     )
 }
