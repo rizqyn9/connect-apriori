@@ -6,9 +6,7 @@ const ModalContext = React.createContext({})
 function ModalProvider({ children }) {
     const [modal, setModal] = useState(false)
 
-    useEffect(() => {
-        console.log('asdsad')
-    }, [modal])
+    useEffect(() => {}, [modal])
     const activatedModal = ({ modalComponentProp }) => {
         setModal(modalComponentProp)
     }

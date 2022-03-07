@@ -98,12 +98,17 @@ export default function Order({ className }) {
                         transaction.paymentType == '' || transactionProcess
                     }
                     onClick={() =>
-                        transactionParser({ orders, transaction }, (prop) =>
-                            activatedModal({
-                                modalComponentProp: (
-                                    <ModalPayment test={prop} />
-                                ),
-                            })
+                        transactionParser(
+                            { orders, transaction },
+                            ({ order, transaction }) =>
+                                activatedModal({
+                                    modalComponentProp: (
+                                        <ModalPayment
+                                            transaction={transaction}
+                                            order={order}
+                                        />
+                                    ),
+                                })
                         )
                     }
                 >
@@ -189,11 +194,57 @@ function ModalScanRfid() {
  * Component Modal untuk melanjutkan pembayaran
  */
 
-function ModalPayment(prop) {
-    console.log(prop.test)
+function ModalPayment({ order, transaction }) {
+    const [paymentState, setPaymentState] = useState(null)
+    const { closeModal } = useModal()
+    const { createTransaction, transactionProcess } = useTransaction()
+
+    const handleCreateTransaction = () => {
+        createTransaction()
+    }
+
+    const handleCancel = () => {
+        closeModal()
+    }
+
+    useEffect(() => {
+        console.log('Transacto', transactionProcess)
+    }, [transactionProcess])
+
+    console.table(order)
     return (
-        <Modal title={'Pembayaran'}>
-            <p>Metode pembayaran</p>
+        <Modal title={'Pembayaran'} className="w-[50vw]">
+            {transactionProcess && <p>Create transaction</p>}
+            {!transactionProcess && (
+                <div className="flex flex-col justify-between">
+                    <div className="py-5">
+                        <p>Metode pembayaran {transaction?.paymentType}</p>
+                        {Object.entries(order).map(([key, val], i) => {
+                            return (
+                                <>
+                                    <p>Debug : {JSON.stringify(val)}</p>
+                                    <p>Menu: {val.menu}</p>
+                                </>
+                            )
+                        })}
+                    </div>
+                    {/* Button Container */}
+                    <div className="p-5 flex gap-5 items-center justify-center">
+                        <button
+                            onClick={() => handleCancel()}
+                            className="rounded-md border-2 border-primary px-4 py-2"
+                        >
+                            Batal
+                        </button>
+                        <button
+                            onClick={() => handleCreateTransaction()}
+                            className="rounded-md bg-primary px-4 py-2"
+                        >
+                            Pembayaran berhasil
+                        </button>
+                    </div>
+                </div>
+            )}
         </Modal>
     )
 }

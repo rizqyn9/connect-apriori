@@ -7,7 +7,10 @@ function useTransaction() {
     const { activatedModal } = useModal()
     const axiosPrivate = useAxiosPrivate()
 
-    const newTransaction = async (data) => {}
+    const createTransaction = async () => {
+        setProcess(true)
+        setTimeout(() => setProcess(false), 4000)
+    }
 
     const transactionParser = (data, cb) => {
         const order = Object.entries(data.orders).map(([a, b]) => {
@@ -15,10 +18,10 @@ function useTransaction() {
             return { [a]: b }
         })
 
-        if (cb) cb({ order, ...data.transaction })
+        if (cb) cb({ order, transaction: data.transaction })
     }
 
-    return { newTransaction, transactionProcess: process, transactionParser }
+    return { createTransaction, transactionProcess: process, transactionParser }
 }
 
 export { useTransaction }
