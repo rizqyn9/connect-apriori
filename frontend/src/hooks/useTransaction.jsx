@@ -15,8 +15,9 @@ function useTransaction() {
     const transactionParser = (data, cb) => {
         const order = Object.entries(data.orders).map(([a, b]) => {
             delete b.image
-            return { [a]: b }
+            return { ...b }
         })
+        console.log(order)
 
         if (cb) cb({ order, transaction: data.transaction })
     }

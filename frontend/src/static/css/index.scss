@@ -9,6 +9,7 @@ body {
 }
 // Additional styles
 @import './additional-styles/range-slider';
+@import './additional-styles/spinner';
 // @import "additional-styles/toggle-switch.scss";
 // @import "additional-styles/flatpickr.scss";
 // @import "additional-styles/theme.scss";
@@ -32,18 +33,18 @@ body {
         .catalog-order {
             width: 35rem;
             //display: none;
-            transition: all .5s ease-in-out;
+            transition: all 0.5s ease-in-out;
         }
     }
 
-    input[type=number] {
+    input[type='number'] {
         -moz-appearance: textfield;
         appearance: textfield;
         margin: 0;
     }
 
-    input[type=number]::-webkit-inner-spin-button,
-    input[type=number]::-webkit-outer-spin-button {
+    input[type='number']::-webkit-inner-spin-button,
+    input[type='number']::-webkit-outer-spin-button {
         -webkit-appearance: none;
         margin: 0;
     }

@@ -47,6 +47,7 @@ export function OrderProvider({ children }) {
     }
 
     function updateOrder(id, data) {
+        console.log(data)
         setOrders({ ...orders, [id]: { ...orders[id], ...data } })
     }
 

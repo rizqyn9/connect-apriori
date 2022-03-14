@@ -1,10 +1,11 @@
 import clsx from 'clsx'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useModal } from '../context/modal-context'
 import { useOrder } from '../context/order-context'
 import { useTransaction } from '../hooks/useTransaction'
 import { Modal } from './Modal'
 import OrderCard from './OrderCard'
+import { Spinner } from './Spinner'
 
 export default function Order({ className }) {
     const [showOrder, setShowOrder] = useState(true)
@@ -214,20 +215,19 @@ function ModalPayment({ order, transaction }) {
     console.table(order)
     return (
         <Modal title={'Pembayaran'} className="w-[50vw]">
-            {transactionProcess && <p>Create transaction</p>}
+            {transactionProcess && (
+                <p>
+                    <Spinner /> Create transaction
+                </p>
+            )}
             {!transactionProcess && (
                 <div className="flex flex-col justify-between">
                     <div className="py-5">
                         <p>Metode pembayaran {transaction?.paymentType}</p>
-                        {Object.entries(order).map(([key, val], i) => {
-                            return (
-                                <>
-                                    <p>Debug : {JSON.stringify(val)}</p>
-                                    <p>Menu: {val.menu}</p>
-                                </>
-                            )
-                        })}
+                        {Array.isArray(order) &&
+                            order.map((val, i) => <p key={i}>{val.menu}</p>)}
                     </div>
+                    <div>{JSON.stringify(transaction)}</div>
                     {/* Button Container */}
                     <div className="p-5 flex gap-5 items-center justify-center">
                         <button
@@ -240,7 +240,7 @@ function ModalPayment({ order, transaction }) {
                             onClick={() => handleCreateTransaction()}
                             className="rounded-md bg-primary px-4 py-2"
                         >
-                            Pembayaran berhasil
+                            Terima pembayran
                         </button>
                     </div>
                 </div>

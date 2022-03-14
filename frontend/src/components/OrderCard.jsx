@@ -18,10 +18,12 @@ export default function OrderCard({ id, menu, image, price, type, quantity }) {
     const handleOnChange = (data) => {
         let total = data.quantity ? { totalPrice: price * data.quantity } : {}
         setOrder({ ...order, ...data, ...total })
-
-        // Update Order
-        updateOrder(order.id, order)
     }
+
+    // Update Order
+    useEffect(() => {
+        updateOrder(order.id, order)
+    }, [order, setOrder])
 
     console.log('render :', id)
 
@@ -48,9 +50,12 @@ export default function OrderCard({ id, menu, image, price, type, quantity }) {
             <div className="flex gap-3">
                 <input
                     className={
-                        'flex-auto h-8 bg-dark-2 p-2 rounded-md border-2 border-dark-line text-primary text-sm'
+                        'flex-auto h-8 bg-dark-2 p-2 rounded-md border-2 border-dark-line text-white text-sm'
                     }
                     placeholder={'Notes'}
+                    onChange={(e) =>
+                        setOrder({ ...order, notes: e.target.value })
+                    }
                 />
                 <button
                     className="h-8 w-8 p-1 border-2 border-primary rounded-md text-primary hover:text-primary/50"
