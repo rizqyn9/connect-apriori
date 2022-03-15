@@ -214,18 +214,39 @@ function ModalPayment({ order, transaction }) {
 
     console.table(order)
     return (
-        <Modal title={'Pembayaran'} className="w-[50vw]">
+        <Modal title={'Pembayaran'} className="">
             {transactionProcess && (
                 <p>
                     <Spinner /> Create transaction
                 </p>
             )}
             {!transactionProcess && (
-                <div className="flex flex-col justify-between">
+                <div className="flex flex-col justify-between w-full">
                     <div className="py-5">
-                        <p>Metode pembayaran {transaction?.paymentType}</p>
-                        {Array.isArray(order) &&
-                            order.map((val, i) => <p key={i}>{val.menu}</p>)}
+                        <p className="text-lg font-bold">
+                            Metode pembayaran {transaction?.paymentType}
+                        </p>
+                        <table className="w-full mt-4">
+                            <thead>
+                                <tr className="bg-dark-2">
+                                    <td className="">Menu</td>
+                                    <td className="text-center">Jumlah</td>
+                                    <td className="text-right">Harga</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {Array.isArray(order) &&
+                                    order.map((val, i) => (
+                                        <OrderMapPayment
+                                            props={val}
+                                            key={i}
+                                            namaMenu={val.menu}
+                                            hargaMenu={val.totalPrice}
+                                            quantity={val.quantity}
+                                        />
+                                    ))}
+                            </tbody>
+                        </table>
                     </div>
                     <div>{JSON.stringify(transaction)}</div>
                     {/* Button Container */}
@@ -246,5 +267,25 @@ function ModalPayment({ order, transaction }) {
                 </div>
             )}
         </Modal>
+    )
+}
+
+function PaymentStatus({ isSucces }) {
+    return (
+        <div>
+            <p>{isSucces && 'Success'}</p>
+            <button>Kembali ke dashboard</button>
+        </div>
+    )
+}
+
+function OrderMapPayment({ namaMenu, hargaMenu, quantity, props }) {
+    console.log(props)
+    return (
+        <tr className="even:bg-primary/10">
+            <td className="">{namaMenu}</td>
+            <td className="text-center">{quantity}</td>
+            <td className="text-right">{hargaMenu}</td>
+        </tr>
     )
 }
