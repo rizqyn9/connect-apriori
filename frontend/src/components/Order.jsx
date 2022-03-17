@@ -196,12 +196,14 @@ function ModalScanRfid() {
  */
 
 function ModalPayment({ order, transaction }) {
-    const [paymentState, setPaymentState] = useState(null)
+    const [transactionStatus, setTransactionStatus] = useState(null)
     const { closeModal } = useModal()
     const { createTransaction, transactionProcess } = useTransaction()
 
-    const handleCreateTransaction = () => {
-        createTransaction()
+    const handleCreateTransaction = async () => {
+        await createTransaction({ order, transaction }).then(() =>
+            setTransactionStatus(true)
+        )
     }
 
     const handleCancel = () => {
@@ -209,18 +211,25 @@ function ModalPayment({ order, transaction }) {
     }
 
     useEffect(() => {
-        console.log('Transacto', transactionProcess)
+        // console.log('Transacto', transactionProcess)
     }, [transactionProcess])
 
-    console.table(order)
     return (
-        <Modal title={'Pembayaran'} className="">
+        <Modal title={'Pembayaran'} className="min-w-[30vw]">
             {transactionProcess && (
-                <p>
-                    <Spinner /> Create transaction
-                </p>
+                <div className="flex flex-col w-full gap-5 items-center justify-center">
+                    <Spinner />
+                    <p>Create transaction</p>
+                </div>
             )}
-            {!transactionProcess && (
+            {!transactionProcess && transactionStatus && (
+                <PaymentStatus
+                    isSucces={true}
+                    closeModal={closeModal}
+                    setTransactionStatus={setTransactionStatus}
+                />
+            )}
+            {!transactionProcess && !transactionStatus && (
                 <div className="flex flex-col justify-between w-full">
                     <div className="py-5">
                         <p className="text-lg font-bold">
@@ -230,6 +239,7 @@ function ModalPayment({ order, transaction }) {
                             <thead>
                                 <tr className="bg-dark-2">
                                     <td className="">Menu</td>
+                                    <td className="text-center">Type</td>
                                     <td className="text-center">Jumlah</td>
                                     <td className="text-right">Harga</td>
                                 </tr>
@@ -240,6 +250,7 @@ function ModalPayment({ order, transaction }) {
                                         <OrderMapPayment
                                             props={val}
                                             key={i}
+                                            type={val.type}
                                             namaMenu={val.menu}
                                             hargaMenu={val.totalPrice}
                                             quantity={val.quantity}
@@ -270,20 +281,29 @@ function ModalPayment({ order, transaction }) {
     )
 }
 
-function PaymentStatus({ isSucces }) {
+function PaymentStatus({ isSucces, closeModal, setTransactionStatus }) {
     return (
-        <div>
-            <p>{isSucces && 'Success'}</p>
-            <button>Kembali ke dashboard</button>
+        <div className="w-full flex flex-col gap-10 items-center justify-center">
+            <p className="font-bold text-2xl">{isSucces && 'Success'}</p>
+            <button
+                onClick={() => {
+                    setTransactionStatus(null)
+                    closeModal()
+                }}
+                className="px-3 py-2 rounded-md"
+                style={{ boxShadow: '0 0 1px white' }}
+            >
+                Kembali ke dashboard
+            </button>
         </div>
     )
 }
 
-function OrderMapPayment({ namaMenu, hargaMenu, quantity, props }) {
-    console.log(props)
+function OrderMapPayment({ namaMenu, hargaMenu, quantity, props, type }) {
     return (
         <tr className="even:bg-primary/10">
             <td className="">{namaMenu}</td>
+            <td className="text-center">{type}</td>
             <td className="text-center">{quantity}</td>
             <td className="text-right">{hargaMenu}</td>
         </tr>

@@ -18,6 +18,9 @@ module.exports = {
             fontFamily: {
                 inter: ['Inter', 'sans-serif'],
             },
+            boxShadow: {
+                active: '0 0px 10px #EA7C69',
+            },
         },
     },
     plugins: [

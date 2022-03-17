@@ -33,7 +33,7 @@ export default function OrderCard({ id, menu, image, price, type, quantity }) {
             <div className={'flex gap-3'}>
                 {/*Product Image*/}
                 <div className="w-[6rem] h-[6rem] rounded-lg border-2 border-primary/70 overflow-hidden">
-                    <img src={image} className="mt-[-2.5rem]" alt={''} />
+                    <img src={image} className="" alt={''} />
                 </div>
                 <div className="flex flex-col justify-between">
                     {/*Menu & Type*/}
@@ -81,24 +81,20 @@ function IncrDcr({ order, handleOnChange }) {
         <div className={'h-6 w-max flex overflow-hidden rounded-md'}>
             <button
                 onClick={() => handleQuantity(false)}
-                className={
-                    'bg-primary flex items-center justify-center p-2 h-full'
-                }
+                className={'bg-primary flex-center p-2 h-full'}
             >
                 -
             </button>
             <p
                 className={
-                    'bg-dark-2 text-white flex items-center justify-center p-2 h-full text-xs'
+                    'bg-dark-2 text-white flex-center p-2 h-full text-xs'
                 }
             >
                 {order.quantity}
             </p>
             <button
                 onClick={() => handleQuantity(true)}
-                className={
-                    'bg-primary flex items-center justify-center p-2 h-full'
-                }
+                className={'bg-primary flex-center p-2 h-full'}
             >
                 +
             </button>

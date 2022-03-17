@@ -7,9 +7,20 @@ function useTransaction() {
     const { activatedModal } = useModal()
     const axiosPrivate = useAxiosPrivate()
 
-    const createTransaction = async () => {
+    const createTransaction = async (data) => {
         setProcess(true)
-        setTimeout(() => setProcess(false), 4000)
+        try {
+            console.log(data)
+            return await axiosPrivate
+                .post('/transaction/new', data)
+                .then((val) => {
+                    console.log(val)
+                })
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setProcess(false)
+        }
     }
 
     const transactionParser = (data, cb) => {

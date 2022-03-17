@@ -13,32 +13,36 @@ import { CookiesProvider } from 'react-cookie'
 import { ToastProvider } from './context/toast-context'
 import { ToastContainer } from './components/Toast'
 import { ModalProvider } from './context/modal-context'
+import { Provider } from 'jotai'
 
 function App() {
     return (
         <GlobalProvider>
-            <ToastContainer />
-            <Routes>
-                <Route
-                    path="/"
-                    element={
-                        <RequireAuth allowedRoles={[ROLES.ADMIN, ROLES.USER]}>
-                            <DashboardLayout />
-                        </RequireAuth>
-                    }
-                >
+            <Provider>
+                <ToastContainer />
+                <Routes>
                     <Route
-                        index
+                        path="/"
                         element={
                             <RequireAuth
                                 allowedRoles={[ROLES.ADMIN, ROLES.USER]}
                             >
-                                <Catalog />
+                                <DashboardLayout />
                             </RequireAuth>
                         }
-                    />
+                    >
+                        <Route
+                            index
+                            element={
+                                <RequireAuth
+                                    allowedRoles={[ROLES.ADMIN, ROLES.USER]}
+                                >
+                                    <Catalog />
+                                </RequireAuth>
+                            }
+                        />
 
-                    {/* <Route
+                        {/* <Route
                         element={
                             <RequireAuth
                             allowedRoles={[ROLES.ADMIN, ROLES.USER]}
@@ -47,23 +51,24 @@ function App() {
                     >
                         <Route path="/catalog" element={<Catalog />} />
                     </Route> */}
-                    {/* <Route path={'product'} element={<InputProduct />} /> */}
-                    {/* <Route path={'product/:id'} element={<InputProduct />} /> */}
-                    <Route path={'product/*'} element={<ProductPage />} />
-                    <Route
-                        path={'product-management'}
-                        element={<Analytics />}
-                    />
-                    <Route
-                        path={'admin/account-management'}
-                        element={<AccountManagement />}
-                    />
-                </Route>
-                <Route path="/auth/signin" element={<SignIn />} exact />
-                <Route path="/auth/signup" element={<SignUp />} exact />
-                <Route path={'*'} element={<div>Notfound</div>} />
-                <Route path="/logout" element={<LogOut />} />
-            </Routes>
+                        {/* <Route path={'product'} element={<InputProduct />} /> */}
+                        {/* <Route path={'product/:id'} element={<InputProduct />} /> */}
+                        <Route path={'product/*'} element={<ProductPage />} />
+                        <Route
+                            path={'product-management'}
+                            element={<Analytics />}
+                        />
+                        <Route
+                            path={'admin/account-management'}
+                            element={<AccountManagement />}
+                        />
+                    </Route>
+                    <Route path="/auth/signin" element={<SignIn />} exact />
+                    <Route path="/auth/signup" element={<SignUp />} exact />
+                    <Route path={'*'} element={<div>Notfound</div>} />
+                    <Route path="/logout" element={<LogOut />} />
+                </Routes>
+            </Provider>
         </GlobalProvider>
     )
 }

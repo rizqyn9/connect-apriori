@@ -1,19 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Card from './Card'
 import Order from './Order'
 import { GridRow } from './Grid'
 import { useAuth } from '../context/user-context'
 import { useProducts } from '../hooks/useProducts'
+import { useData } from './Test.Jotai'
 
 export default function Catalog() {
-    const [products, setProducts] = useState([])
+    const { getAllProducts, products } = useProducts()
     const [activeCard, setActiveCard] = useState('')
-    const { getAllProducts } = useProducts()
 
     useEffect(async () => {
-        await getAllProducts().then((res) => {
-            setProducts(res.data.products)
-        })
+        if (products.length == 0) await getAllProducts()
     }, [])
 
     return (
@@ -37,7 +35,7 @@ export default function Catalog() {
                             Refresh
                         </button>
                     </div>
-                    <div className="flex-auto flex flex-wrap gap-5 align-start justify-start overflow-y-scroll h-full max-h-[78vh]">
+                    <div className="flex-auto flex flex-wrap gap-5 align-start justify-start overflow-y-scroll h-full max-h-[78vh] p-2">
                         {Array.isArray(products) &&
                             products.map((val, i) => (
                                 <Card
@@ -62,7 +60,9 @@ export default function Catalog() {
 
 function User() {
     const { signOut, auth } = useAuth()
+    const { data } = useData()
 
+    console.log('rerdner')
     return auth.user ? (
         <div className={'h-full flex items-center gap-6 '}>
             <div

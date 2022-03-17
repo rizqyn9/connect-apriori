@@ -3,7 +3,7 @@ import clsx from 'clsx'
 import { useOrder } from '../context/order-context'
 import Icon from './Icon'
 import { useOnClickOutside } from '../hooks/useClickOutside'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 export default function Card({
     menu,
@@ -31,8 +31,8 @@ export default function Card({
     return (
         <div
             className={clsx(
-                'w-[12rem] h-[23rem] p-2 rounded-2xl drop-shadow-md flex flex-col gap-4 items-center justify-around bg-dark-2 relative',
-                { 'outline border-2': activeCard }
+                'w-[12rem] h-[23rem] p-2 rounded-2xl flex flex-col gap-4 items-center justify-around bg-dark-2 relative',
+                { 'shadow-active': activeCard }
             )}
             data-id={id}
             data-active={activeCard}
@@ -48,7 +48,7 @@ export default function Card({
             <div className="w-full pt-[100%] relative bg-primary rounded-xl overflow-hidden">
                 <img
                     src={image}
-                    className="mt-[-4rem] absolute top-0 left-0"
+                    className="absolute top-0 left-0"
                     alt="dummy"
                 />
             </div>

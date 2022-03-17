@@ -2,7 +2,15 @@ import clsx from 'clsx'
 import React from 'react'
 import { useModal } from '../context/modal-context'
 
-function Modal({ title, msg, content, action, children, className }) {
+function Modal({
+    title,
+    msg,
+    content,
+    action,
+    children,
+    className,
+    disableClose = false,
+}) {
     const { closeModal } = useModal()
     return (
         <div
@@ -14,6 +22,7 @@ function Modal({ title, msg, content, action, children, className }) {
             <button
                 className="absolute h-[3rem] w-[3rem] right-[-1rem] top-[-1rem] rounded-full bg-primary"
                 onClick={closeModal}
+                disable={String(disableClose)}
             >
                 X
             </button>
