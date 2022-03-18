@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import React, { useEffect, useState } from 'react'
 import { useModal } from '../context/modal-context'
-import { useOrder } from '../context/order-context'
+import { useOrder } from '../hooks/useOrder'
 import { useTransaction } from '../hooks/useTransaction'
 import { Modal } from './Modal'
 import OrderCard from './OrderCard'
@@ -9,10 +9,12 @@ import { Spinner } from './Spinner'
 
 export default function Order({ className }) {
     const [showOrder, setShowOrder] = useState(true)
-    const { orders, transaction } = useOrder()
+    const { orders } = useOrder()
+
     const { activatedModal } = useModal()
 
-    const { transactionParser, transactionProcess } = useTransaction()
+    const { transactionParser, transactionProcess, transaction } =
+        useTransaction()
 
     const createNewTransaction = () => {}
 
@@ -65,19 +67,15 @@ export default function Order({ className }) {
             <div className={'my-5 text-sm text-white/70 flex flex-col gap-3'}>
                 <div className={'flex justify-between'}>
                     <p>Diskon</p>
-                    <p>{transaction.priceTotal}</p>
+                    <p>{transaction.discount}</p>
                 </div>{' '}
                 <div className={'flex justify-between'}>
                     <p>Total Harga</p>
-                    <p>{transaction.priceTotal}</p>
+                    <p>{transaction.price}</p>
                 </div>
                 <div className={'flex justify-between'}>
                     <p>Metode Pembayaran</p>
-                    <p>
-                        {transaction.paymentType == ''
-                            ? '-'
-                            : transaction.paymentType}
-                    </p>
+                    <p>{transaction.paymentMehod ?? '-'}</p>
                 </div>
             </div>
             {showOrder ? (

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import clsx from 'clsx'
-import { useOrder } from '../context/order-context'
+import { useOrder } from '../hooks/useOrder'
 import Icon from './Icon'
 import { useOnClickOutside } from '../hooks/useClickOutside'
 import { useNavigate } from 'react-router-dom'
@@ -26,7 +26,7 @@ export default function Card({
         setType(type)
     }
 
-    // console.log(`render : ${id}`)
+    const idWithVariant = `${type}-${id}`
 
     return (
         <div
@@ -34,7 +34,6 @@ export default function Card({
                 'w-[12rem] h-[23rem] p-2 rounded-2xl flex flex-col gap-4 items-center justify-around bg-dark-2 relative',
                 { 'shadow-active': activeCard }
             )}
-            data-id={id}
             data-active={activeCard}
             onClick={() => setActiveCard(id)}
             ref={ref}
@@ -56,40 +55,47 @@ export default function Card({
                 <h2 className="text-lg">{menu}</h2>
                 <p className="text-sm text-white/80">Rp. {price}</p>
             </div>
-            {/*Ice / Hot*/}
             <div className={'flex gap-5'}>
-                <div
-                    className={clsx(
-                        'w-8 h-8 p-1 grid place-content-center rounded-md cursor-pointer',
-                        type === 'hot'
-                            ? 'bg-primary/50 text-white'
-                            : 'bg-dark-1 text-[#f7a474]'
-                    )}
-                    onClick={() => setType('hot')}
-                >
-                    <Icon.Hot />
-                </div>
-                <div
-                    className={clsx(
-                        'w-8 h-8 p-1 grid place-content-center rounded-md cursor-pointer',
-                        type === 'ice'
-                            ? 'bg-primary/50 text-red-900'
-                            : 'bg-dark-1 text-[#89f1f5]'
-                    )}
-                    style={{ color: 'cyan' }}
-                    onClick={() => setType('ice')}
-                >
-                    <Icon.Ice />
-                </div>
+                <Variants setType={setType} type={type} />
             </div>
             <button
                 className="text-xs bg-primary p-2 w-full text-center rounded-lg hover:opacity-80"
                 onClick={() => {
-                    addOrder({ type, menu, id, price, image })
+                    addOrder(idWithVariant, { type, menu, price, image })
                 }}
             >
                 Add to billing
             </button>
         </div>
+    )
+}
+
+function Variants({ setType, type }) {
+    return (
+        <>
+            <div
+                className={clsx(
+                    'w-8 h-8 p-1 grid place-content-center rounded-md cursor-pointer',
+                    type === 'hot'
+                        ? 'bg-primary/50 text-white'
+                        : 'bg-dark-1 text-[#f7a474]'
+                )}
+                onClick={() => setType('hot')}
+            >
+                <Icon.Hot />
+            </div>
+            <div
+                className={clsx(
+                    'w-8 h-8 p-1 grid place-content-center rounded-md cursor-pointer',
+                    type === 'ice'
+                        ? 'bg-primary/50 text-red-900'
+                        : 'bg-dark-1 text-[#89f1f5]'
+                )}
+                style={{ color: 'cyan' }}
+                onClick={() => setType('ice')}
+            >
+                <Icon.Ice />
+            </div>
+        </>
     )
 }
