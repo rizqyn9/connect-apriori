@@ -13,8 +13,7 @@ export default function Order({ className }) {
 
     const { activatedModal } = useModal()
 
-    const { transactionParser, transactionProcess, transaction } =
-        useTransaction()
+    const { transactionProcess, transaction } = useTransaction()
 
     const createNewTransaction = () => {}
 
@@ -99,20 +98,6 @@ export default function Order({ className }) {
                     disabled={
                         transaction.paymentType == '' || transactionProcess
                     }
-                    onClick={() =>
-                        transactionParser(
-                            { orders, transaction },
-                            ({ order, transaction }) =>
-                                activatedModal({
-                                    modalComponentProp: (
-                                        <ModalPayment
-                                            transaction={transaction}
-                                            order={order}
-                                        />
-                                    ),
-                                })
-                        )
-                    }
                 >
                     Buat order
                 </button>
@@ -122,11 +107,12 @@ export default function Order({ className }) {
 }
 
 function Transaction({ showTransaction }) {
-    const { transaction, updatePaymentType } = useOrder()
+    const { transaction, setPaymentMethod, transactionVariants } =
+        useTransaction()
 
     const handleBack = () => {
         showTransaction(true)
-        updatePaymentType('')
+        setPaymentMethod(null)
     }
 
     return (
@@ -146,8 +132,8 @@ function Transaction({ showTransaction }) {
                             <TransactionTypeCard
                                 key={i}
                                 type={val.type}
-                                setTransaction={updatePaymentType}
-                                transactionType={transaction.paymentType}
+                                setTransaction={setPaymentMethod}
+                                transactionType={transaction.paymentMehod}
                             />
                         )
                     })}
@@ -156,11 +142,6 @@ function Transaction({ showTransaction }) {
         </div>
     )
 }
-
-/**
- * Tipe Pembayaran yang disupport
- */
-let transactionVariants = [{ type: 'DANA' }, { type: 'OVO' }, { type: 'GOPAY' }]
 
 function TransactionTypeCard({ type, setTransaction, transactionType }) {
     return (

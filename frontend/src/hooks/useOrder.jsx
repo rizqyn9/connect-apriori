@@ -12,13 +12,14 @@ function useOrder() {
         } else {
             setOrders({ ...orders, [id]: { ...data, quantity: 1 } })
         }
-        console.log(orders)
+        // console.log(orders)
     }
 
     const removeOrder = (id) => {
-        let data = orders
-        delete data[id]
-        setOrders({ ...data })
+        setOrders((data) => {
+            delete data[id]
+            return { ...data }
+        })
     }
 
     const updateQuantity = (id, isAdd) => {
@@ -42,7 +43,18 @@ function useOrder() {
         setOrders({ ...orders, [id]: { ...orders[id], note } })
     }
 
-    return { orders, addOrder, removeOrder, updateQuantity, setNotes }
+    const resetOrder = () => {
+        setOrders({})
+    }
+
+    return {
+        orders,
+        addOrder,
+        removeOrder,
+        updateQuantity,
+        setNotes,
+        resetOrder,
+    }
 }
 
 export { orderAtom, useOrder }

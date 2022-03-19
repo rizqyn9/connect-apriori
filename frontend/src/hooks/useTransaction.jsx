@@ -11,6 +11,15 @@ const transactionAtom = atom({
     promo: '',
 })
 
+/**
+ * Tipe Pembayaran yang disupport
+ */
+const transactionVariants = [
+    { type: 'DANA' },
+    { type: 'OVO' },
+    { type: 'GOPAY' },
+]
+
 function useTransaction() {
     const { orders } = useOrder()
     const [transaction, setTransaction] = useAtom(transactionAtom)
@@ -56,6 +65,10 @@ function useTransaction() {
         setTransaction({ ...transaction, price })
     }
 
+    const setPaymentMethod = (paywith = null) => {
+        setTransaction({ ...transaction, paymentMehod: paywith })
+    }
+
     return {
         createTransaction,
         transactionProcess: process,
@@ -63,6 +76,8 @@ function useTransaction() {
         transaction,
         setTransaction,
         updatePrice,
+        setPaymentMethod,
+        transactionVariants,
     }
 }
 
