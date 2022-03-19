@@ -1,9 +1,10 @@
-import clsx from 'clsx'
 import React from 'react'
-import { useModal } from '../context/modal-context'
+import ReactDom from 'react-dom'
+import clsx from 'clsx'
 
 function Modal({
     title,
+    close,
     msg,
     content,
     action,
@@ -11,7 +12,6 @@ function Modal({
     className,
     disableClose = false,
 }) {
-    const { closeModal } = useModal()
     return (
         <div
             className={clsx(
@@ -21,7 +21,7 @@ function Modal({
         >
             <button
                 className="absolute h-[3rem] w-[3rem] right-[-1rem] top-[-1rem] rounded-full bg-primary"
-                onClick={closeModal}
+                onClick={close}
                 disable={String(disableClose)}
             >
                 X
@@ -34,11 +34,12 @@ function Modal({
     )
 }
 
-function ModalContainer({ modal }) {
-    return (
+function ModalContainer({ children }) {
+    return ReactDom.createPortal(
         <div className="absolute top-0 left-0 w-full h-full bg-black/50 z-30 grid place-content-center">
-            <div className="relative w-full h-full">{modal}</div>
-        </div>
+            <div className="relative w-full h-full">{children}</div>
+        </div>,
+        document.body
     )
 }
 

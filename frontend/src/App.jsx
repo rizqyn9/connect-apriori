@@ -12,8 +12,7 @@ import { AuthProvider, ROLES, useAuth } from './context/user-context'
 import { CookiesProvider } from 'react-cookie'
 import { ToastProvider } from './context/toast-context'
 import { ToastContainer } from './components/Toast'
-import { ModalProvider } from './context/modal-context'
-import { Provider } from 'jotai'
+import { Provider, useAtom } from 'jotai'
 
 function App() {
     return (
@@ -86,9 +85,7 @@ function GlobalProvider({ children }) {
         <CookiesProvider>
             <ToastProvider>
                 <AuthProvider>
-                    <ModalProvider>
-                        <OrderProvider>{children}</OrderProvider>
-                    </ModalProvider>
+                    <OrderProvider>{children}</OrderProvider>
                 </AuthProvider>
             </ToastProvider>
         </CookiesProvider>

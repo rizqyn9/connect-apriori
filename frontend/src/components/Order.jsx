@@ -1,21 +1,17 @@
 import clsx from 'clsx'
 import React, { useEffect, useState } from 'react'
-import { useModal } from '../context/modal-context'
 import { useOrder } from '../hooks/useOrder'
 import { useTransaction } from '../hooks/useTransaction'
-import { Modal } from './Modal'
 import { OrderCard, OrderCardMemo } from './OrderCard'
-import { Spinner } from './Spinner'
+import { ModalPayment } from './Modal'
 
 export default function Order({ className }) {
     const [showOrder, setShowOrder] = useState(true)
+    const [modalPayment, setModalPayment] = useState(false)
+
     const { orders } = useOrder()
 
-    const { activatedModal } = useModal()
-
     const { transactionProcess, transaction } = useTransaction()
-
-    const createNewTransaction = () => {}
 
     useEffect(() => {
         console.log(orders)
@@ -63,7 +59,9 @@ export default function Order({ className }) {
                             />
                         )
                     })}
-                {!showOrder && <Transaction showTransaction={setShowOrder} />}
+                {!showOrder && (
+                    <Transaction showTransaction={() => setShowOrder(false)} />
+                )}
             </div>
 
             <div className={'my-5 text-sm text-white/70 flex flex-col gap-3'}>
@@ -98,9 +96,13 @@ export default function Order({ className }) {
                     disabled={
                         transaction.paymentType == '' || transactionProcess
                     }
+                    onClick={() => setModalPayment(true)}
                 >
                     Buat order
                 </button>
+            )}
+            {modalPayment && (
+                <ModalPayment close={() => setModalPayment(false)} />
             )}
         </div>
     )
@@ -111,7 +113,7 @@ function Transaction({ showTransaction }) {
         useTransaction()
 
     const handleBack = () => {
-        showTransaction(true)
+        showTransaction()
         setPaymentMethod(null)
     }
 
@@ -162,106 +164,106 @@ function TransactionTypeCard({ type, setTransaction, transactionType }) {
 /**
  * Component Modal untuk scan RFID
  */
-function ModalScanRfid() {
-    return (
-        <Modal title={'Scan'}>
-            <div className="flex flex-col gap-5">
-                <input type={'text'} className="p-2 bg-form" />
-                <button>Menunggu scan</button>
-            </div>
-        </Modal>
-    )
-}
+// function ModalScanRfid() {
+//     return (
+//         <Modal title={'Scan'}>
+//             <div className="flex flex-col gap-5">
+//                 <input type={'text'} className="p-2 bg-form" />
+//                 <button>Menunggu scan</button>
+//             </div>
+//         </Modal>
+//     )
+// }
 
 /**
  * Component Modal untuk melanjutkan pembayaran
  */
 
-function ModalPayment({ order, transaction }) {
-    const [transactionStatus, setTransactionStatus] = useState(null)
-    const { closeModal } = useModal()
-    const { createTransaction, transactionProcess } = useTransaction()
+// function ModalPayment({ order, transaction }) {
+//     const [transactionStatus, setTransactionStatus] = useState(null)
+//     const { closeModal } = useModal()
+//     const { createTransaction, transactionProcess } = useTransaction()
 
-    const handleCreateTransaction = async () => {
-        await createTransaction({ order, transaction }).then(() =>
-            setTransactionStatus(true)
-        )
-    }
+//     const handleCreateTransaction = async () => {
+//         await createTransaction({ order, transaction }).then(() =>
+//             setTransactionStatus(true)
+//         )
+//     }
 
-    const handleCancel = () => {
-        closeModal()
-    }
+//     const handleCancel = () => {
+//         closeModal()
+//     }
 
-    useEffect(() => {
-        // console.log('Transacto', transactionProcess)
-    }, [transactionProcess])
+//     useEffect(() => {
+//         // console.log('Transacto', transactionProcess)
+//     }, [transactionProcess])
 
-    return (
-        <Modal title={'Pembayaran'} className="min-w-[30vw]">
-            {transactionProcess && (
-                <div className="flex flex-col w-full gap-5 items-center justify-center">
-                    <Spinner />
-                    <p>Create transaction</p>
-                </div>
-            )}
-            {!transactionProcess && transactionStatus && (
-                <PaymentStatus
-                    isSucces={true}
-                    closeModal={closeModal}
-                    setTransactionStatus={setTransactionStatus}
-                />
-            )}
-            {!transactionProcess && !transactionStatus && (
-                <div className="flex flex-col justify-between w-full">
-                    <div className="py-5">
-                        <p className="text-lg font-bold">
-                            Metode pembayaran {transaction?.paymentType}
-                        </p>
-                        <table className="w-full mt-4">
-                            <thead>
-                                <tr className="bg-dark-2">
-                                    <td className="">Menu</td>
-                                    <td className="text-center">Type</td>
-                                    <td className="text-center">Jumlah</td>
-                                    <td className="text-right">Harga</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {Array.isArray(order) &&
-                                    order.map((val, i) => (
-                                        <OrderMapPayment
-                                            props={val}
-                                            key={i}
-                                            type={val.type}
-                                            namaMenu={val.menu}
-                                            hargaMenu={val.totalPrice}
-                                            quantity={val.quantity}
-                                        />
-                                    ))}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div>{JSON.stringify(transaction)}</div>
-                    {/* Button Container */}
-                    <div className="p-5 flex gap-5 items-center justify-center">
-                        <button
-                            onClick={() => handleCancel()}
-                            className="rounded-md border-2 border-primary px-4 py-2"
-                        >
-                            Batal
-                        </button>
-                        <button
-                            onClick={() => handleCreateTransaction()}
-                            className="rounded-md bg-primary px-4 py-2"
-                        >
-                            Terima pembayran
-                        </button>
-                    </div>
-                </div>
-            )}
-        </Modal>
-    )
-}
+//     return (
+//         <Modal title={'Pembayaran'} className="min-w-[30vw]">
+//             {transactionProcess && (
+//                 <div className="flex flex-col w-full gap-5 items-center justify-center">
+//                     <Spinner />
+//                     <p>Create transaction</p>
+//                 </div>
+//             )}
+//             {!transactionProcess && transactionStatus && (
+//                 <PaymentStatus
+//                     isSucces={true}
+//                     closeModal={closeModal}
+//                     setTransactionStatus={setTransactionStatus}
+//                 />
+//             )}
+//             {!transactionProcess && !transactionStatus && (
+//                 <div className="flex flex-col justify-between w-full">
+//                     <div className="py-5">
+//                         <p className="text-lg font-bold">
+//                             Metode pembayaran {transaction?.paymentType}
+//                         </p>
+//                         <table className="w-full mt-4">
+//                             <thead>
+//                                 <tr className="bg-dark-2">
+//                                     <td className="">Menu</td>
+//                                     <td className="text-center">Type</td>
+//                                     <td className="text-center">Jumlah</td>
+//                                     <td className="text-right">Harga</td>
+//                                 </tr>
+//                             </thead>
+//                             <tbody>
+//                                 {Array.isArray(order) &&
+//                                     order.map((val, i) => (
+//                                         <OrderMapPayment
+//                                             props={val}
+//                                             key={i}
+//                                             type={val.type}
+//                                             namaMenu={val.menu}
+//                                             hargaMenu={val.totalPrice}
+//                                             quantity={val.quantity}
+//                                         />
+//                                     ))}
+//                             </tbody>
+//                         </table>
+//                     </div>
+//                     <div>{JSON.stringify(transaction)}</div>
+//                     {/* Button Container */}
+//                     <div className="p-5 flex gap-5 items-center justify-center">
+//                         <button
+//                             onClick={() => handleCancel()}
+//                             className="rounded-md border-2 border-primary px-4 py-2"
+//                         >
+//                             Batal
+//                         </button>
+//                         <button
+//                             onClick={() => handleCreateTransaction()}
+//                             className="rounded-md bg-primary px-4 py-2"
+//                         >
+//                             Terima pembayran
+//                         </button>
+//                     </div>
+//                 </div>
+//             )}
+//         </Modal>
+//     )
+// }
 
 function PaymentStatus({ isSucces, closeModal, setTransactionStatus }) {
     return (

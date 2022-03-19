@@ -1,8 +1,7 @@
 import { atom, useAtom } from 'jotai'
 import { useEffect, useState } from 'react'
-import { useModal } from '../context/modal-context'
 import { useAxiosPrivate } from './useAxiosPrivate'
-import { orderAtom, useOrder } from './useOrder'
+import { useOrder } from './useOrder'
 
 const transactionAtom = atom({
     price: 0,
@@ -24,7 +23,6 @@ function useTransaction() {
     const { orders } = useOrder()
     const [transaction, setTransaction] = useAtom(transactionAtom)
     const [process, setProcess] = useState(false)
-    const { activatedModal } = useModal()
     const axiosPrivate = useAxiosPrivate()
 
     useEffect(() => {

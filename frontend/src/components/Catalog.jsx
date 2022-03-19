@@ -4,7 +4,6 @@ import Order from './Order'
 import { GridRow } from './Grid'
 import { useAuth } from '../context/user-context'
 import { useProducts } from '../hooks/useProducts'
-import { useData } from './Test.Jotai'
 
 export default function Catalog() {
     const { getAllProducts, products } = useProducts()
@@ -62,7 +61,6 @@ const UserMemo = React.memo(User)
 
 function User() {
     const { signOut, auth } = useAuth()
-    const { data } = useData()
 
     return auth.user ? (
         <div className={'h-full flex items-center gap-6 '}>
