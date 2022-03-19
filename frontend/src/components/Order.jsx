@@ -4,7 +4,7 @@ import { useModal } from '../context/modal-context'
 import { useOrder } from '../hooks/useOrder'
 import { useTransaction } from '../hooks/useTransaction'
 import { Modal } from './Modal'
-import OrderCard from './OrderCard'
+import { OrderCard, OrderCardMemo } from './OrderCard'
 import { Spinner } from './Spinner'
 
 export default function Order({ className }) {
@@ -17,6 +17,10 @@ export default function Order({ className }) {
         useTransaction()
 
     const createNewTransaction = () => {}
+
+    useEffect(() => {
+        console.log(orders)
+    }, [orders])
 
     return (
         <div
@@ -47,17 +51,16 @@ export default function Order({ className }) {
             >
                 {showOrder &&
                     orders &&
-                    Object.keys(orders).map((val, i) => {
-                        let data = orders[val]
+                    Object.entries(orders).map(([key, val]) => {
                         return (
                             <OrderCard
-                                key={i}
-                                id={val}
-                                image={data.image}
-                                price={data.price}
-                                type={data.type}
-                                menu={data.menu}
-                                quantity={data.quantity}
+                                key={key}
+                                id={key}
+                                image={val.image}
+                                price={val.price}
+                                type={val.type}
+                                menu={val.menu}
+                                quantity={val.quantity}
                             />
                         )
                     })}

@@ -16,7 +16,9 @@ function useOrder() {
     }
 
     const removeOrder = (id) => {
-        orders[id] = undefined
+        let data = orders
+        delete data[id]
+        setOrders({ ...data })
     }
 
     const updateQuantity = (id, isAdd) => {
@@ -27,10 +29,12 @@ function useOrder() {
                 [id]: { ...val, quantity: val.quantity + 1 },
             })
         } else {
-            setOrders({
-                ...orders,
-                [id]: { ...val, quantity: val.quantity - 1 },
-            })
+            if (val.quantity === 1) return removeOrder(id)
+            else
+                setOrders({
+                    ...orders,
+                    [id]: { ...val, quantity: val.quantity - 1 },
+                })
         }
     }
 

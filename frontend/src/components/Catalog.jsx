@@ -51,18 +51,19 @@ export default function Catalog() {
                     </div>
                 </div>
             </GridRow>
-            <GridRow title={<User />} className="w-[40rem] px-5 bg-dark-2">
+            <GridRow title={<UserMemo />} className="w-[40rem] px-5 bg-dark-2">
                 <Order className={'h-full row-start-2 py-8'} />
             </GridRow>
         </>
     )
 }
 
+const UserMemo = React.memo(User)
+
 function User() {
     const { signOut, auth } = useAuth()
     const { data } = useData()
 
-    console.log('rerdner')
     return auth.user ? (
         <div className={'h-full flex items-center gap-6 '}>
             <div
