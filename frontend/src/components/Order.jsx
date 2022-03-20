@@ -264,32 +264,3 @@ function TransactionTypeCard({ type, setTransaction, transactionType }) {
 //         </Modal>
 //     )
 // }
-
-function PaymentStatus({ isSucces, closeModal, setTransactionStatus }) {
-    return (
-        <div className="w-full flex flex-col gap-10 items-center justify-center">
-            <p className="font-bold text-2xl">{isSucces && 'Success'}</p>
-            <button
-                onClick={() => {
-                    setTransactionStatus(null)
-                    closeModal()
-                }}
-                className="px-3 py-2 rounded-md"
-                style={{ boxShadow: '0 0 1px white' }}
-            >
-                Kembali ke dashboard
-            </button>
-        </div>
-    )
-}
-
-function OrderMapPayment({ namaMenu, hargaMenu, quantity, props, type }) {
-    return (
-        <tr className="even:bg-primary/10">
-            <td className="">{namaMenu}</td>
-            <td className="text-center">{type}</td>
-            <td className="text-center">{quantity}</td>
-            <td className="text-right">{hargaMenu}</td>
-        </tr>
-    )
-}
