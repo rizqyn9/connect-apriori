@@ -5,7 +5,8 @@
         "dev": "vite",
         "build": "vite build",
         "serve": "vite preview",
-        "clear": "rm -rf ./dist"
+        "clear": "rm -rf ./dist",
+        "build:css": "tailwindcss "
     },
     "dependencies": {
         "@hookform/resolvers": "^2.8.8",

@@ -5,7 +5,7 @@ import { Modal, ModalContainer } from '../Modal/Base'
 
 function ModalPayment({ close }) {
     const { orders } = useOrder()
-    const { transaction } = useTransaction()
+    const { transaction, createTransaction } = useTransaction()
 
     return (
         <ModalContainer>
@@ -65,7 +65,7 @@ function ModalPayment({ close }) {
                             Batal
                         </button>
                         <button
-                            onClick={() => handleCreateTransaction()}
+                            onClick={() => createTransaction()}
                             className="rounded-md bg-primary px-4 py-2"
                         >
                             Terima pembayran
@@ -77,7 +77,7 @@ function ModalPayment({ close }) {
     )
 }
 
-function OrderMapPayment({ namaMenu, hargaMenu, quantity, props, type }) {
+function OrderMapPayment({ namaMenu, hargaMenu, quantity, type }) {
     return (
         <tr className="even:bg-primary/10">
             <td className="">{namaMenu}</td>

@@ -29,14 +29,20 @@ function useTransaction() {
         updatePrice()
     }, [orders])
 
-    const createTransaction = async (data) => {
+    const createTransaction = async () => {
         setProcess(true)
         try {
-            console.log(data)
+            let orderWithoutImg = Object.entries(orders).map(([key, val]) => {
+                delete val.image
+                return { ...val, id: key }
+            })
             return await axiosPrivate
-                .post('/transaction/new', data)
-                .then((val) => {
-                    console.log(val)
+                .post('/transaction/new', {
+                    orders: orderWithoutImg,
+                    transaction,
+                })
+                .then((res) => {
+                    console.log(res)
                 })
         } catch (error) {
             console.log(error)

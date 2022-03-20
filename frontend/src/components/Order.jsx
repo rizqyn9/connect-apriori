@@ -2,12 +2,14 @@ import clsx from 'clsx'
 import React, { useEffect, useState } from 'react'
 import { useOrder } from '../hooks/useOrder'
 import { useTransaction } from '../hooks/useTransaction'
-import { OrderCard, OrderCardMemo } from './OrderCard'
+import { OrderCard } from './OrderCard'
 import { ModalPayment } from './Modal'
+import { ModalPromo } from './Modal/ModalPromo'
 
 export default function Order({ className }) {
     const [showOrder, setShowOrder] = useState(true)
     const [modalPayment, setModalPayment] = useState(false)
+    const [modalScanPromo, setModalScanPromo] = useState(false)
 
     const { orders } = useOrder()
 
@@ -25,14 +27,13 @@ export default function Order({ className }) {
             )}
         >
             <div className="flex flex-col gap-2">
+                {modalScanPromo && (
+                    <ModalPromo close={() => setModalScanPromo(false)} />
+                )}
                 <p className={'text-md font-bold'}>Order-ID #423848234</p>
                 <button
                     className="bg-primary p-2 rounded-md"
-                    onClick={() =>
-                        activatedModal({
-                            modalComponentProp: <ModalScanRfid />,
-                        })
-                    }
+                    onClick={() => setModalScanPromo(true)}
                 >
                     Gunakan promo
                 </button>
@@ -59,9 +60,7 @@ export default function Order({ className }) {
                             />
                         )
                     })}
-                {!showOrder && (
-                    <Transaction showTransaction={() => setShowOrder(false)} />
-                )}
+                {!showOrder && <Transaction close={() => setShowOrder(true)} />}
             </div>
 
             <div className={'my-5 text-sm text-white/70 flex flex-col gap-3'}>
@@ -108,12 +107,12 @@ export default function Order({ className }) {
     )
 }
 
-function Transaction({ showTransaction }) {
+function Transaction({ show, close }) {
     const { transaction, setPaymentMethod, transactionVariants } =
         useTransaction()
 
     const handleBack = () => {
-        showTransaction()
+        close()
         setPaymentMethod(null)
     }
 
@@ -160,20 +159,6 @@ function TransactionTypeCard({ type, setTransaction, transactionType }) {
         </button>
     )
 }
-
-/**
- * Component Modal untuk scan RFID
- */
-// function ModalScanRfid() {
-//     return (
-//         <Modal title={'Scan'}>
-//             <div className="flex flex-col gap-5">
-//                 <input type={'text'} className="p-2 bg-form" />
-//                 <button>Menunggu scan</button>
-//             </div>
-//         </Modal>
-//     )
-// }
 
 /**
  * Component Modal untuk melanjutkan pembayaran
