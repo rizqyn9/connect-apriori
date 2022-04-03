@@ -61,7 +61,7 @@ export default function Card({
             <button
                 className="text-xs bg-primary p-2 w-full text-center rounded-lg hover:opacity-80"
                 onClick={() => {
-                    addOrder(idWithVariant, { type, menu, price, image })
+                    addOrder(idWithVariant, { type, menu, price, image, id })
                 }}
             >
                 Add to billing

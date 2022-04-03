@@ -29,7 +29,7 @@ function Modal({
             <div className="border-b-2 p-4 flex-shrink-0">
                 <h1 className="text-2xl font-bold">{title}</h1>
             </div>
-            <div className="flex-grow flex">{children}</div>
+            <div className="flex-grow flex flex-wrap">{children}</div>
         </div>
     )
 }
@@ -43,4 +43,8 @@ function ModalContainer({ children }) {
     )
 }
 
-export { Modal, ModalContainer }
+function ModalFooter({ children }) {
+    return <div className="w-full mt-5 -mb-2">{children}</div>
+}
+
+export { Modal, ModalContainer, ModalFooter }

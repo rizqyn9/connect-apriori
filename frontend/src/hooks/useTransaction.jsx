@@ -19,10 +19,23 @@ const transactionVariants = [
     { type: 'GOPAY' },
 ]
 
+/**
+ * state flow : order => creating => success | fail
+ */
+
+const TransactionStateType = Object.freeze({
+    ORDER: 1,
+    CREATE: 2,
+    SUCCESS: 3,
+    FAIL: 4,
+})
 function useTransaction() {
     const { orders } = useOrder()
     const [transaction, setTransaction] = useAtom(transactionAtom)
-    const [process, setProcess] = useState(false)
+    const [transactionState, setTransactionState] = useState(
+        TransactionStateType.ORDER
+    )
+
     const axiosPrivate = useAxiosPrivate()
 
     useEffect(() => {
@@ -30,24 +43,28 @@ function useTransaction() {
     }, [orders])
 
     const createTransaction = async () => {
-        setProcess(true)
+        setTransactionState(TransactionStateType.CREATE)
         try {
             let orderWithoutImg = Object.entries(orders).map(([key, val]) => {
-                delete val.image
-                return { ...val, id: key }
+                return { ...val, image: undefined, id: key }
             })
-            return await axiosPrivate
-                .post('/transaction/new', {
-                    orders: orderWithoutImg,
-                    transaction,
-                })
-                .then((res) => {
-                    console.log(res)
-                })
+
+            const prom = new Promise((res, rej) =>
+                setTimeout(() => res(), 5000)
+            )
+            await prom
+            setTransactionState(TransactionStateType.SUCCESS)
+            // return await axiosPrivate
+            //     .post('/transaction/new', {
+            //         orders: orderWithoutImg,
+            //         transaction,
+            //     })
+            //     .then((res) => {
+            //         console.log(res)
+            //     })
         } catch (error) {
             console.log(error)
-        } finally {
-            setProcess(false)
+            setTransactionState(TransactionStateType.FAIL)
         }
     }
 
@@ -75,13 +92,15 @@ function useTransaction() {
 
     return {
         createTransaction,
-        transactionProcess: process,
         transactionParser,
         transaction,
         setTransaction,
         updatePrice,
         setPaymentMethod,
         transactionVariants,
+        transactionState,
+        setTransactionState,
+        TransactionStateType,
     }
 }
 

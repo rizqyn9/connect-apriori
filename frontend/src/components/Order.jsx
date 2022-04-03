@@ -51,7 +51,8 @@ export default function Order({ className }) {
                         return (
                             <OrderCard
                                 key={key}
-                                id={key}
+                                orderID={key}
+                                id={val.id}
                                 image={val.image}
                                 price={val.price}
                                 type={val.type}

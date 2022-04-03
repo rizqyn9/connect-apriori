@@ -6,41 +6,40 @@ const orderAtom = atom({})
 function useOrder() {
     const [orders, setOrders] = useAtom(orderAtom)
 
-    const addOrder = (id, data) => {
-        if (orders[id] && orders[id].type == data.type) {
-            updateQuantity(id, true)
+    const addOrder = (orderID, data) => {
+        if (orders[orderID] && orders[orderID].type == data.type) {
+            updateQuantity(orderID, true)
         } else {
-            setOrders({ ...orders, [id]: { ...data, quantity: 1 } })
+            setOrders({ ...orders, [orderID]: { ...data, quantity: 1 } })
         }
-        // console.log(orders)
     }
 
-    const removeOrder = (id) => {
+    const removeOrder = (orderID) => {
         setOrders((data) => {
-            delete data[id]
+            delete data[orderID]
             return { ...data }
         })
     }
 
-    const updateQuantity = (id, isAdd) => {
-        let val = orders[id]
+    const updateQuantity = (orderID, isAdd) => {
+        let val = orders[orderID]
         if (isAdd) {
             setOrders({
                 ...orders,
-                [id]: { ...val, quantity: val.quantity + 1 },
+                [orderID]: { ...val, quantity: val.quantity + 1 },
             })
         } else {
-            if (val.quantity === 1) return removeOrder(id)
+            if (val.quantity === 1) return removeOrder(orderID)
             else
                 setOrders({
                     ...orders,
-                    [id]: { ...val, quantity: val.quantity - 1 },
+                    [orderID]: { ...val, quantity: val.quantity - 1 },
                 })
         }
     }
 
-    const setNotes = (id, note) => {
-        setOrders({ ...orders, [id]: { ...orders[id], note } })
+    const setNotes = (orderID, note) => {
+        setOrders({ ...orders, [orderID]: { ...orders[orderID], note } })
     }
 
     const resetOrder = () => {

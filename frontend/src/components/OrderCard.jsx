@@ -5,21 +5,12 @@ import Icon from './Icon'
 /**
  * Untuk menampilkan barang yang diorder
  */
-function OrderCard({ id, menu, image, price, type, quantity }) {
+function OrderCard({ orderID, id, menu, image, price, type, quantity }) {
     const { removeOrder, setNotes, updateQuantity } = useOrder()
 
     const handleOnChange = (data) => {
         let total = data.quantity ? { totalPrice: price * data.quantity } : {}
     }
-
-    const order = {}
-
-    // // Update Order
-    // useEffect(() => {
-    //     updateOrder(order.id, order)
-    // }, [order, setOrder])
-
-    console.log('rerender', id)
 
     return (
         <div className="bg-dark-1 p-2 rounded-md flex flex-col gap-2">
@@ -40,8 +31,8 @@ function OrderCard({ id, menu, image, price, type, quantity }) {
                     <h2 className="text-sm">Rp. {price * quantity}</h2>
                     <IncrDcr
                         quantity={quantity}
-                        decrement={() => updateQuantity(id, false)}
-                        incremnt={() => updateQuantity(id, true)}
+                        decrement={() => updateQuantity(orderID, false)}
+                        incremnt={() => updateQuantity(orderID, true)}
                     />
                 </div>
             </div>
@@ -51,11 +42,11 @@ function OrderCard({ id, menu, image, price, type, quantity }) {
                         'flex-auto h-8 bg-dark-2 p-2 rounded-md border-2 border-dark-line text-white text-sm'
                     }
                     placeholder={'Notes'}
-                    onChange={(e) => setNotes(id, e.target.value)}
+                    onChange={(e) => setNotes(orderID, e.target.value)}
                 />
                 <button
                     className="h-8 w-8 p-1 border-2 border-primary rounded-md text-primary hover:text-primary/50"
-                    onClick={() => removeOrder(id)}
+                    onClick={() => removeOrder(orderID)}
                 >
                     <Icon.Delete />
                 </button>
