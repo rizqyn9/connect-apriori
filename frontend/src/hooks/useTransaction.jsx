@@ -3,12 +3,13 @@ import { useEffect, useState } from 'react'
 import { useAxiosPrivate } from './useAxiosPrivate'
 import { useOrder } from './useOrder'
 
-const transactionAtom = atom({
+const initialTransaction = {
     price: 0,
     paymentMehod: null,
     discount: 0,
     promo: '',
-})
+}
+const transactionAtom = atom(initialTransaction)
 
 /**
  * Tipe Pembayaran yang disupport
@@ -30,7 +31,7 @@ const TransactionStateType = Object.freeze({
     FAIL: 4,
 })
 function useTransaction() {
-    const { orders } = useOrder()
+    const { orders, clearOrders } = useOrder()
     const [transaction, setTransaction] = useAtom(transactionAtom)
     const [transactionState, setTransactionState] = useState(
         TransactionStateType.ORDER
@@ -54,6 +55,7 @@ function useTransaction() {
             )
             await prom
             setTransactionState(TransactionStateType.SUCCESS)
+
             // return await axiosPrivate
             //     .post('/transaction/new', {
             //         orders: orderWithoutImg,
@@ -90,8 +92,15 @@ function useTransaction() {
         setTransaction({ ...transaction, paymentMehod: paywith })
     }
 
+    const clearTransactionAndOrder = () => {
+        clearOrders()
+        setTransactionState(TransactionStateType.ORDER)
+        setTransaction(initialTransaction)
+    }
+
     return {
         createTransaction,
+        clearTransactionAndOrder,
         transactionParser,
         transaction,
         setTransaction,

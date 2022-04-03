@@ -7,6 +7,8 @@ import * as yup from 'yup'
 import { PostProduct } from '../services/product.service'
 import { Routes, Route, useParams } from 'react-router-dom'
 import { useProducts } from '../hooks/useProducts'
+import { GridRow } from '../components/Grid'
+import { H1 } from '../components/Typography'
 
 export function ProductPage() {
     return (
@@ -55,63 +57,61 @@ function InputProduct() {
     }
 
     return (
-        <div
-            className={
-                'px-7 py-5 max-h-screen w-full text-white flex flex-col gap-6 align-stretch'
-            }
-        >
-            <h1
-                className={
-                    'h-[5rem] text-2xl font-bold border-b-2 w-full flex items-center '
+        <>
+            <GridRow
+                className={'px-5 w-full flex-auto'}
+                title={
+                    <div className="flex flex-col justify-center h-full w-full">
+                        <H1>Input Product</H1>
+                    </div>
                 }
             >
-                Input Product
-            </h1>
-            <form
-                onSubmit={handleSubmit(onSubmit)}
-                className={'h-full flex gap-2'}
-            >
-                {/*Input Image*/}
-                <div className="h-full w-full" style={{ flex: '1 1 55%' }}>
-                    <ImageInput
-                        onChange={handleImageForm}
-                        errors={errors.image?.message}
-                        defaultImage={product && product.image}
-                    />
-                </div>
-
-                {/*Form Input*/}
-                <div
-                    className={
-                        'w-full flex-auto p-5 bg-dark-2 col-start-2 col-end-4 rounded-lg overflow-scroll'
-                    }
+                <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className={'h-full flex gap-2 py-8'}
                 >
-                    <FormInput
-                        name={'menu'}
-                        register={register}
-                        label={'Nama Menu'}
-                        errors={errors.menu?.message}
-                    />{' '}
-                    <FormInput
-                        name={'price'}
-                        register={register}
-                        label={'Harga'}
-                        errors={errors.price?.message}
-                        other={{
-                            type: 'number',
-                            min: 5000,
-                            step: '500',
-                        }}
-                    />
-                    <button
-                        type={'submit'}
-                        className={'bg-primary p-3 w-full rounded-lg mt-5'}
+                    {/*Input Image*/}
+                    <div className="h-full w-full" style={{ flex: '1 1 55%' }}>
+                        <ImageInput
+                            onChange={handleImageForm}
+                            errors={errors.image?.message}
+                            defaultImage={product && product.image}
+                        />
+                    </div>
+
+                    {/*Form Input*/}
+                    <div
+                        className={
+                            'w-full flex-auto p-5 bg-dark-2 col-start-2 col-end-4 rounded-lg overflow-scroll'
+                        }
                     >
-                        Submit
-                    </button>
-                </div>
-            </form>
-        </div>
+                        <FormInput
+                            name={'menu'}
+                            register={register}
+                            label={'Nama Menu'}
+                            errors={errors.menu?.message}
+                        />{' '}
+                        <FormInput
+                            name={'price'}
+                            register={register}
+                            label={'Harga'}
+                            errors={errors.price?.message}
+                            other={{
+                                type: 'number',
+                                min: 5000,
+                                step: '500',
+                            }}
+                        />
+                        <button
+                            type={'submit'}
+                            className={'bg-primary p-3 w-full rounded-lg mt-5'}
+                        >
+                            Submit
+                        </button>
+                    </div>
+                </form>
+            </GridRow>
+        </>
     )
 }
 

@@ -42,7 +42,7 @@ function useOrder() {
         setOrders({ ...orders, [orderID]: { ...orders[orderID], note } })
     }
 
-    const resetOrder = () => {
+    const clearOrders = () => {
         setOrders({})
     }
 
@@ -52,7 +52,7 @@ function useOrder() {
         removeOrder,
         updateQuantity,
         setNotes,
-        resetOrder,
+        clearOrders,
     }
 }
 

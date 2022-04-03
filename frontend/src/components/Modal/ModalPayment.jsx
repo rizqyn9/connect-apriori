@@ -2,6 +2,7 @@ import React from 'react'
 import { useOrder } from '../../hooks/useOrder'
 import { useTransaction } from '../../hooks/useTransaction'
 import { Modal, ModalContainer, ModalFooter } from '../Modal/Base'
+import { Spinner } from '../Spinner'
 
 function ModalPayment({ close }) {
     const { orders } = useOrder()
@@ -10,6 +11,7 @@ function ModalPayment({ close }) {
         createTransaction,
         transactionState,
         TransactionStateType,
+        clearTransactionAndOrder,
     } = useTransaction()
 
     const Content = React.useMemo(() => {
@@ -24,9 +26,28 @@ function ModalPayment({ close }) {
                     />
                 )
             case TransactionStateType.SUCCESS:
-                return <OrderStatus status="Transaksi sukses" />
+                return (
+                    <div className="w-full flex flex-col gap-10 items-center justify-center">
+                        <p className="font-bold text-2xl">Success</p>
+                        <button
+                            onClick={() => {
+                                clearTransactionAndOrder()
+                                close()
+                            }}
+                            className="px-3 py-2 rounded-md"
+                            style={{ boxShadow: '0 0 1px white' }}
+                        >
+                            Kembali ke dashboard
+                        </button>
+                    </div>
+                )
             default:
-                return <div>Load</div>
+                return (
+                    <div className="flex flex-col items-center justify-center w-full">
+                        <Spinner />
+                        <p className="mt-5">Loading</p>
+                    </div>
+                )
         }
     }, [transactionState])
 
