@@ -36,6 +36,7 @@ function useOrder() {
                     [orderID]: { ...val, quantity: val.quantity - 1 },
                 })
         }
+        console.log(orders)
     }
 
     const setNotes = (orderID, note) => {

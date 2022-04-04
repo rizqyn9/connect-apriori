@@ -47,23 +47,24 @@ function useTransaction() {
         setTransactionState(TransactionStateType.CREATE)
         try {
             let orderWithoutImg = Object.entries(orders).map(([key, val]) => {
-                return { ...val, image: undefined, id: key }
+                return { ...val, image: undefined, variantWithID: key }
             })
 
-            const prom = new Promise((res, rej) =>
-                setTimeout(() => res(), 5000)
-            )
-            await prom
-            setTransactionState(TransactionStateType.SUCCESS)
+            // const prom = new Promise((res, rej) =>
+            //     setTimeout(() => res(), 5000)
+            // )
+            // await prom
 
-            // return await axiosPrivate
-            //     .post('/transaction/new', {
-            //         orders: orderWithoutImg,
-            //         transaction,
-            //     })
-            //     .then((res) => {
-            //         console.log(res)
-            //     })
+            return await axiosPrivate
+                .post('/transaction/new', {
+                    orders: orderWithoutImg,
+                    transaction,
+                })
+                .then((res) => {
+                    setTransactionState(TransactionStateType.SUCCESS)
+                    console.log(res)
+                    return res
+                })
         } catch (error) {
             console.log(error)
             setTransactionState(TransactionStateType.FAIL)

@@ -37,7 +37,7 @@ export default function Analytics() {
                         'border-2 border-white overflow-hidden rounded-xl'
                     }
                 >
-                    <Table />
+                    <Table data={dummyData} columns={dummyColumns} />
                 </div>
             </div>
         </GridRow>
@@ -61,3 +61,33 @@ function Tabs({ text, tabActive, setTabActive }) {
         </button>
     )
 }
+
+const dummyData = [
+    {
+        col1: 'Hello',
+        col2: 'World',
+    },
+    {
+        col1: 'react-table',
+        col2: 'rocks',
+    },
+    {
+        col1: 'whatever',
+        col2: 'you want',
+    },
+]
+
+const dummyColumns = [
+    {
+        Header: 'Product',
+        accessor: 'col1', // accessor is the "key" in the data
+    },
+    {
+        Header: 'Price',
+        accessor: 'col2',
+    },
+    {
+        Header: 'Total Penjualan',
+        accessor: 'total',
+    },
+]

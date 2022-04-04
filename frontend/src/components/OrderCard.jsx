@@ -8,10 +8,6 @@ import Icon from './Icon'
 function OrderCard({ orderID, id, menu, image, price, type, quantity }) {
     const { removeOrder, setNotes, updateQuantity } = useOrder()
 
-    const handleOnChange = (data) => {
-        let total = data.quantity ? { totalPrice: price * data.quantity } : {}
-    }
-
     return (
         <div className="bg-dark-1 p-2 rounded-md flex flex-col gap-2">
             {/*Image & Menu Details*/}
