@@ -27,7 +27,22 @@ function useProducts() {
         return await axiosPrivate.post('/products', data)
     }
 
-    return { getAllProducts, getProductById, postProduct, products }
+    const testPostProduct = async (data) => {
+        console.log(data)
+        return await axiosPrivate.post('/products/test', data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        })
+    }
+
+    return {
+        getAllProducts,
+        getProductById,
+        postProduct,
+        testPostProduct,
+        products,
+    }
 }
 
 export { useProducts, atomProducts }

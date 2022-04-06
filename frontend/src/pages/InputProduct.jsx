@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import ReactImageUploading from 'react-images-uploading'
 import clsx from 'clsx'
 import { useForm } from 'react-hook-form'
@@ -28,7 +28,7 @@ const schema = yup.object({
 function InputProduct() {
     const { id } = useParams()
     const [product, setProducts] = useState({})
-    const { getProductById, postProduct } = useProducts()
+    const { getProductById, postProduct, testPostProduct } = useProducts()
     const {
         register,
         handleSubmit,
@@ -49,11 +49,20 @@ function InputProduct() {
     }, [])
 
     const handleImageForm = (res) => {
-        setValue('image', res)
+        console.log(res)
+        // setValue('image', res)
     }
 
     const onSubmit = async (data) => {
-        await postProduct(data)
+        console.log(data)
+        const formData = new FormData()
+        Object.entries(data).forEach(([key, val]) => {
+            if (key == 'image') return
+            formData.append(key, val)
+        })
+        formData.append('image', data.image[0])
+        console.log(data.image[0])
+        await testPostProduct(formData)
     }
 
     return (
@@ -68,15 +77,12 @@ function InputProduct() {
             >
                 <form
                     onSubmit={handleSubmit(onSubmit)}
+                    encType="application/x-www-form-urlencoded"
                     className={'h-full flex gap-2 py-8'}
                 >
                     {/*Input Image*/}
                     <div className="h-full w-full" style={{ flex: '1 1 55%' }}>
-                        <ImageInput
-                            onChange={handleImageForm}
-                            errors={errors.image?.message}
-                            defaultImage={product && product.image}
-                        />
+                        <ImagePlanInput name={'image'} register={register} />
                     </div>
 
                     {/*Form Input*/}
@@ -144,99 +150,52 @@ function FormInput({
     )
 }
 
-function ImageInput({ onChange, errors, defaultImage = undefined }) {
-    const [image, setImage] = useState([])
+function ImagePlanInput({ register, name }) {
+    const [selectedImage, setSelectedImage] = useState(null)
+    const imageRef = useRef()
 
-    const handleChange = (a, b) => {
-        setImage(a)
-        if (onChange) onChange(a[0])
+    const imageOnChange = (e) => {
+        console.log(e)
+        if (e.target.files && e.target.files.length > 0) {
+            setSelectedImage(e.target.files[0])
+        }
     }
 
-    useEffect(() => {
-        if (defaultImage) handleChange([defaultImage], null)
-    }, [defaultImage])
+    const removeImage = () => {
+        imageRef.current.value = null
+        setSelectedImage(null)
+    }
 
     return (
-        <ReactImageUploading
-            multiple={false}
-            value={image}
-            onChange={handleChange}
-            maxNumber={1}
-            dataURLKey="data"
-        >
-            {({
-                isDragging,
-                dragProps,
-                onImageUpdate,
-                onImageRemove,
-                onImageUpload,
-            }) => (
-                <div
-                    className={`w-full h-[40rem] flex justify-center bg-dark-2 rounded-lg ${
-                        isDragging ? 'bg-dark-line' : ''
-                    }`}
-                    {...dragProps}
-                >
-                    <div className="w-full h-full">
-                        <div className="p-6 w-full h-full flex flex-col gap-2">
-                            <label className="inline-block mb-2 text-white/70">
-                                Unggah gambar
-                            </label>
-                            <div className="flex items-center justify-center w-full h-full overflow-hidden">
-                                <label
-                                    className={clsx(
-                                        'flex flex-col w-full h-full border-4 border-dashed border-dark-line hover:bg-dark-line hover:border-gray-300 relative',
-                                        `${errors ? 'border-red-500' : ''}`
-                                    )}
-                                >
-                                    {Array.isArray(image) &&
-                                    image.length !== 0 ? (
-                                        <img
-                                            src={image[0].data}
-                                            alt=""
-                                            className="absolute translate-y-[-20%] "
-                                        />
-                                    ) : (
-                                        <div className="h-full flex items-center justify-center">
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                className="w-12 h-12 text-gray-400 group-hover:text-gray-600"
-                                                viewBox="0 0 20 20"
-                                                fill="currentColor"
-                                            >
-                                                <path
-                                                    fillRule="evenodd"
-                                                    d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
-                                                    clipRule="evenodd"
-                                                />
-                                            </svg>
-                                            <p className="pt-1 text-sm tracking-wider text-gray-400 group-hover:text-gray-600">
-                                                Select a photo
-                                            </p>
-                                        </div>
-                                    )}
-                                </label>
-                            </div>
-                        </div>
-                        {/*Button*/}
-                        <div className="flex items-center justify-center p-2">
-                            <div
-                                className={clsx(
-                                    'px-4 py-2 text-white bg-primary rounded shadow-xl cursor-pointer',
-                                    { 'bg-dark-2': image.data }
-                                )}
-                                onClick={(e) => {
-                                    if (image.length == 0)
-                                        return onImageUpload()
-                                    else return onImageRemove()
-                                }}
-                            >
-                                {image.length == 0 ? 'Upload' : 'Delete'}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <div className="bg-dark-2 rounded-lg p-6 flex flex-col gap-4">
+            <input
+                accept="image/*"
+                type="file"
+                {...register(name)}
+                name={name}
+                onChange={imageOnChange}
+                ref={imageRef}
+                className={
+                    'block w-full py-4 px-2 border-2 border-primary rounded-lg text-center'
+                }
+                id={'thumbnail'}
+            />
+            {selectedImage && (
+                <>
+                    <label htmlFor="thumbnail">
+                        <img
+                            className="rounded-lg border-2 border-primary"
+                            src={URL.createObjectURL(selectedImage)}
+                        />
+                    </label>
+                    <button
+                        className="bg-red-700 hover:bg-red-800 rounded-md w-1/2 mx-auto p-3"
+                        onClick={removeImage}
+                    >
+                        Remove Image
+                    </button>
+                </>
             )}
-        </ReactImageUploading>
+        </div>
     )
 }
