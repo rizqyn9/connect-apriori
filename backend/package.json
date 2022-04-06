@@ -15,7 +15,11 @@
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.1.7",
+    "multer": "^1.4.4",
     "pm2": "^5.2.0"
+  },
+  "prettier": {
+    "semi": false
   },
   "devDependencies": {
     "nodemon": "^2.0.15"

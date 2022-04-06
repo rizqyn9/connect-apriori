@@ -2,4 +2,6 @@
 docker
 .env
 
+public/*
+
 .vscode

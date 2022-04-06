@@ -1,42 +1,50 @@
-const TransactionModel = require("../models/Transaction.model");
-const responses = require("../utils/responses");
+const TransactionModel = require("../models/Transaction.model")
+const responses = require("../utils/responses")
+const { parseOrder } = require("../lib/parseOrder")
+const { updateOneProduct } = require("../lib/analytics")
+const ProductModel = require("../models/Product.model")
 
-const app = require("express").Router();
+const app = require("express").Router()
 
 /**
  * Ambil semua transaksi
  */
 app.get("/", (req, res) => {
-  return responses.success(res, "Success");
-});
+  return responses.success(res, "Success")
+})
 
 /**
  * Buat Transaksi baru
  */
-app.post("/new", (req, res) => {
-  const processedData = {};
+app.post("/new", async (req, res) => {
+  const processedData = {}
   try {
-    const { order, transaction } = req.body;
+    const { orders, transaction } = req.body
 
-    if (Array.isArray(order)) {
-      order.map((val) => {
-        let keyMenu = val.id.split("-")[1];
-        if (processedData[keyMenu]) {
-          processedData.quantity += 1;
-        } else {
-          processedData[keyMenu] = { quantity: 1 };
-        }
-      });
-    }
+    console.log(orders, transaction)
 
-    console.log(processedData);
-    console.log(req.body);
+    if (!Array.isArray(orders))
+      return responses.forbidden(res, "Data order not valid")
 
-    return responses.success(res, req.body);
+    const parsedOrder = parseOrder(orders)
+
+    const promises = []
+
+    Object.entries(parsedOrder).forEach(([key, val]) => {
+      promises.push(
+        ProductModel.findByIdAndUpdate(key, {
+          $inc: { totalOrdered: val.quantity },
+        })
+      )
+    })
+
+    await Promise.all(promises)
+
+    return responses.success(res, req.body)
   } catch (error) {
-    console.log(error);
-    return responses.error(res, "err");
+    console.log(error)
+    return responses.error(res, "err")
   }
-});
+})
 
-module.exports = app;
+module.exports = app
