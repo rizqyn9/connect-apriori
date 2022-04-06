@@ -1,23 +1,26 @@
 import React, { useEffect, useState } from 'react'
 import Table from '../components/Table'
 import clsx from 'clsx'
+import { GridRow } from '../components/Grid'
+import { H1 } from '../components/Typography'
 
 export default function Analytics() {
     const [tabActive, setTabActive] = useState('Products')
 
-    useEffect(() => {
-        console.log(tabActive)
-    }, [tabActive])
+    useEffect(() => {}, [tabActive])
 
     return (
-        <div className={'flex flex-col gap-8 h-full p-5'}>
-            {/*Title*/}
-            <div className={'h-[5rem] border-b-2 border-dark-line'}>
-                <h1 className={'text-white font-bold text-2xl'}>Analitycs</h1>
-            </div>
-            <div className={'flex-auto flex flex-col gap-5'}>
+        <GridRow
+            className={'px-5 w-full flex-auto'}
+            title={
+                <div className="flex flex-col justify-center h-full w-full">
+                    <H1>Analitycs</H1>
+                </div>
+            }
+        >
+            <div className={'py-8'}>
                 {/*Tabs Container*/}
-                <div className={'flex gap-3 text-white'}>
+                <div className={'flex gap-3 text-white mb-6'}>
                     <Tabs
                         text={'Products'}
                         tabActive={tabActive}
@@ -34,10 +37,10 @@ export default function Analytics() {
                         'border-2 border-white overflow-hidden rounded-xl'
                     }
                 >
-                    <Table />
+                    <Table data={dummyData} columns={dummyColumns} />
                 </div>
             </div>
-        </div>
+        </GridRow>
     )
 }
 
@@ -48,8 +51,8 @@ function Tabs({ text, tabActive, setTabActive }) {
                 'rounded-md py-1 px-3 border-b-2  hover:bg-dark-2/50 transition',
                 `${
                     tabActive === text
-                        ? 'bg-primary pointer-events-none border-white font-bold'
-                        : 'font-thin'
+                        ? 'bg-primary pointer-events-none border-white nav__active'
+                        : ''
                 }`
             )}
             onClick={() => setTabActive(text)}
@@ -58,3 +61,33 @@ function Tabs({ text, tabActive, setTabActive }) {
         </button>
     )
 }
+
+const dummyData = [
+    {
+        col1: 'Hello',
+        col2: 'World',
+    },
+    {
+        col1: 'react-table',
+        col2: 'rocks',
+    },
+    {
+        col1: 'whatever',
+        col2: 'you want',
+    },
+]
+
+const dummyColumns = [
+    {
+        Header: 'Product',
+        accessor: 'col1', // accessor is the "key" in the data
+    },
+    {
+        Header: 'Price',
+        accessor: 'col2',
+    },
+    {
+        Header: 'Total Penjualan',
+        accessor: 'total',
+    },
+]

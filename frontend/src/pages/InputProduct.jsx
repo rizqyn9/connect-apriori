@@ -1,94 +1,134 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import ReactImageUploading from 'react-images-uploading'
 import clsx from 'clsx'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { PostProduct } from '../services/product.service'
+import { Routes, Route, useParams } from 'react-router-dom'
+import { useProducts } from '../hooks/useProducts'
+import { GridRow } from '../components/Grid'
+import { H1 } from '../components/Typography'
+import { useImperativeHandle } from 'react'
+import { useCallback } from 'react'
+
+export function ProductPage() {
+    return (
+        <Routes>
+            <Route index element={<InputProduct />} />
+            <Route path=":id" element={<InputProduct />} />
+        </Routes>
+    )
+}
 
 const schema = yup.object({
     menu: yup.string('req').required('req'),
     price: yup.number().required(),
-    image: yup.object().required(),
+    image: yup.mixed().required(),
 })
 
-export default function InputProduct() {
+function InputProduct() {
+    const { id } = useParams()
+    const [stateSubmit, setStateSubmit] = useState('iddle')
+    const [product, setProducts] = useState({})
+    const { getProductById, postProduct, testPostProduct } = useProducts()
     const {
         register,
         handleSubmit,
         setError,
         setValue,
+        resetField,
+        control,
         formState: { errors },
     } = useForm({
         resolver: yupResolver(schema),
     })
 
-    const handleImageForm = (res) => {
-        setValue('image', res)
-    }
+    useEffect(async () => {
+        if (!id) return
+        setStateSubmit('iddle')
+        await getProductById(id).then((val) => {
+            setProducts(val)
+            setValue('menu', val.menu)
+            setValue('price', val.price)
+        })
+    }, [])
 
     const onSubmit = async (data) => {
+        const formData = new FormData()
+        Object.entries(data).forEach(([key, val]) => {
+            formData.append(key, val)
+        })
+
+        await testPostProduct(formData).then(() => {
+            setStateSubmit('finish')
+        })
+
+        setStateSubmit('iddle')
+    }
+
+    const onError = async (data) => {
         console.log(data)
-        await PostProduct({ ...data })
     }
 
     return (
-        <div
-            className={
-                'px-7 py-5 max-h-screen w-full text-white flex flex-col gap-6 align-stretch'
-            }
-        >
-            <h1
-                className={
-                    'h-[5rem] text-2xl font-bold border-b-2 w-full flex items-center '
+        <>
+            <GridRow
+                className={'px-5 w-full flex-auto'}
+                title={
+                    <div className="flex flex-col justify-center h-full w-full">
+                        <H1>Input Product</H1>
+                    </div>
                 }
             >
-                Input Product
-            </h1>
-            <form
-                onSubmit={handleSubmit(onSubmit)}
-                className={'h-full flex gap-2'}
-            >
-                {/*Input Image*/}
-                <div className="h-full w-full" style={{ flex: '1 1 55%' }}>
-                    <ImageInput
-                        onChange={handleImageForm}
-                        errors={errors.image?.message}
-                    />
-                </div>
-
-                {/*Form Input*/}
-                <div
-                    className={
-                        'w-full flex-auto p-5 bg-dark-2 col-start-2 col-end-4 rounded-lg overflow-scroll'
-                    }
+                <form
+                    onSubmit={handleSubmit(onSubmit, onError)}
+                    encType="application/x-www-form-urlencoded"
+                    className={'h-full flex gap-2 py-8'}
                 >
-                    <FormInput
-                        name={'menu'}
-                        register={register}
-                        label={'Nama Menu'}
-                        errors={errors.menu?.message}
-                    />{' '}
-                    <FormInput
-                        name={'price'}
-                        register={register}
-                        label={'Harga'}
-                        errors={errors.price?.message}
-                        other={{
-                            type: 'number',
-                            min: 5000,
-                            step: '500',
-                        }}
-                    />
-                    <button
-                        type={'submit'}
-                        className={'bg-primary p-3 w-full rounded-lg mt-5'}
+                    {/*Input Image*/}
+                    <div className="h-full w-full" style={{ flex: '1 1 55%' }}>
+                        <ImagePlanInput
+                            name={'image'}
+                            setValue={setValue}
+                            errors={errors.image?.message}
+                            stateSubmit={stateSubmit}
+                        />
+                    </div>
+
+                    {/*Form Input*/}
+                    <div
+                        className={
+                            'w-full flex-auto p-5 bg-dark-2 col-start-2 col-end-4 rounded-lg overflow-scroll'
+                        }
                     >
-                        Submit
-                    </button>
-                </div>
-            </form>
-        </div>
+                        <FormInput
+                            name={'menu'}
+                            register={register}
+                            label={'Nama Menu'}
+                            errors={errors.menu?.message}
+                        />{' '}
+                        <FormInput
+                            name={'price'}
+                            register={register}
+                            label={'Harga'}
+                            errors={errors.price?.message}
+                            other={{
+                                type: 'number',
+                                min: 5000,
+                                step: '500',
+                            }}
+                        />
+                        <button
+                            type={'submit'}
+                            className={'bg-primary p-3 w-full rounded-lg mt-5'}
+                        >
+                            Submit
+                        </button>
+                    </div>
+                </form>
+            </GridRow>
+        </>
     )
 }
 
@@ -121,83 +161,56 @@ function FormInput({
     )
 }
 
-function ImageInput({ onChange, errors }) {
-    const [image, setImage] = useState([])
+function ImagePlanInput({ name, setValue, errors, stateSubmit }) {
+    const imageRef = useRef(null)
+    const [selectedImage, setSelectedImage] = useState(null)
 
-    const handleChange = (a, b) => {
-        let imageData = a[a.length - 1]
-        setImage(a)
-        if (onChange) onChange(imageData)
+    useEffect(() => {
+        setValue(name, selectedImage)
+    }, [selectedImage])
+
+    const onChange = (e) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setSelectedImage(e.target.files[0])
+        }
     }
 
+    const removeImage = useCallback(() => {
+        setSelectedImage(null)
+        imageRef.current.value = null
+    }, [stateSubmit])
+
     return (
-        <ReactImageUploading
-            value={image}
-            onChange={handleChange}
-            dataURLKey="data"
-        >
-            {({ isDragging, dragProps, onImageUpdate, onImageRemove }) => (
-                <div
-                    className={`w-full h-[30rem] flex justify-center bg-dark-2 rounded-lg ${
-                        isDragging ? 'bg-dark-line' : ''
-                    }`}
-                    {...dragProps}
-                >
-                    <div className="w-full h-full">
-                        <div className="p-6 w-full h-full flex flex-col gap-2">
-                            <label className="inline-block mb-2 text-white/70">
-                                Upload Image (jpg,png,svg,jpeg)
-                            </label>
-                            <div className="flex items-center justify-center w-full h-full ">
-                                <label
-                                    className={clsx(
-                                        'flex flex-col w-full h-full border-4 border-dashed border-dark-line hover:bg-dark-line hover:border-gray-300',
-                                        `${errors ? 'border-red-500' : ''}`
-                                    )}
-                                >
-                                    {image.length !== 0 ? (
-                                        <img src={image[0].data} alt="" />
-                                    ) : (
-                                        <div className="h-full flex items-center justify-center">
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                className="w-12 h-12 text-gray-400 group-hover:text-gray-600"
-                                                viewBox="0 0 20 20"
-                                                fill="currentColor"
-                                            >
-                                                <path
-                                                    fillRule="evenodd"
-                                                    d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
-                                                    clipRule="evenodd"
-                                                />
-                                            </svg>
-                                            <p className="pt-1 text-sm tracking-wider text-gray-400 group-hover:text-gray-600">
-                                                Select a photo
-                                            </p>
-                                        </div>
-                                    )}
-                                </label>
-                            </div>
-                        </div>
-                        {/*Button*/}
-                        <div className="flex items-center justify-center p-2">
-                            <button
-                                className={clsx(
-                                    'px-4 py-2 text-white bg-primary rounded shadow-xl',
-                                    { 'bg-dark-2': image.length === 0 }
-                                )}
-                                onClick={(e) => {
-                                    if (image.length === 0)
-                                        return onImageUpdate()
-                                    else return onImageRemove()
-                                }}
-                            >
-                                {image.length === 0 ? 'Upload' : 'Delete'}
-                            </button>
-                        </div>
-                    </div>
-                </div>
+        <div className="bg-dark-2 rounded-lg p-6 flex flex-col gap-4">
+            <input
+                accept="image/*"
+                type="file"
+                id={'thumbnail'}
+                name={name}
+                className={
+                    'block w-full py-4 px-2 border-2 border-primary rounded-lg text-center'
+                }
+                ref={imageRef}
+                onChange={onChange}
+            />
+            {errors && <p className="text-red-400">{errors}</p>}
+            {selectedImage && (
+                <>
+                    <label
+                        htmlFor="thumbnail"
+                        className="max-h-[55vh] overflow-hidden rounded-lg border-2 border-primary"
+                    >
+                        <img src={URL.createObjectURL(selectedImage)} />
+                    </label>
+                    <button
+                        className="bg-red-700 hover:bg-red-800 rounded-md w-1/2 mx-auto p-3"
+                        onClick={removeImage}
+                        type={'button'}
+                    >
+                        Remove Image
+                    </button>
+                </>
             )}
-        </ReactImageUploading>
+        </div>
     )
 }

@@ -62,18 +62,28 @@ app.post("/signin", async (req, res) => {
 });
 
 app.post("/validate", (req, res) => {
-  console.log(req.body);
   try {
-    jwt.verify(req.body.token, process.env.SECRET_TOKEN, (err, decoded) => {
-      if (err) return new Error("Token not valid");
+    return jwt.verify(
+      req.body.token,
+      process.env.SECRET_TOKEN,
+      (err, decoded) => {
+        if (err) throw new Error("Token not valid");
 
-      User.findById(decoded.id).then((data) => {
-        if (data) {
-          data.password = undefined;
-          return responses.success(res, { isAuth: true, user: data });
-        } else throw new Error("Not authenticated");
-      });
-    });
+        return User.findById(decoded.id).then((data) => {
+          if (data) {
+            return responses.success(res, {
+              token: req.body.token,
+              isAuth: true,
+              user: {
+                email: data.email,
+                name: data.name,
+                isAdmin: data.isAdmin,
+              },
+            });
+          } else throw new Error("Not authenticated");
+        });
+      }
+    );
   } catch (error) {
     return responses.error(res, error.message);
   }

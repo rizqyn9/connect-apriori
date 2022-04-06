@@ -18,23 +18,13 @@ module.exports = {
             fontFamily: {
                 inter: ['Inter', 'sans-serif'],
             },
+            boxShadow: {
+                active: '0 0px 10px #EA7C69',
+            },
         },
     },
-    plugin: [
+    plugins: [
         // eslint-disable-next-line global-require
-        require('@tailwindcss/forms'),
-        require('@savvywombat/tailwindcss-grid-areas'),
-
-        // add custom variant for expanding sidebar
-        plugin(({ addVariant, e }) => {
-            addVariant('sidebar-expanded', ({ modifySelectors, separator }) => {
-                modifySelectors(
-                    ({ className }) =>
-                        `.sidebar-expanded .${e(
-                            `sidebar-expanded${separator}${className}`
-                        )}`
-                )
-            })
-        }),
+        require('@tailwindcss/aspect-ratio'),
     ],
 }

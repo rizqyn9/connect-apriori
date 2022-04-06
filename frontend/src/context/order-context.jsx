@@ -3,8 +3,13 @@ import { useState } from 'react'
 
 const OrderContext = React.createContext({})
 
+const inititalTransaction = {
+    priceTotal: 0,
+    paymentType: '',
+}
+
 export function OrderProvider({ children }) {
-    const [transaction, setTransaction] = useState({})
+    const [transaction, setTransaction] = useState(inititalTransaction)
     const [orders, setOrders] = React.useState({})
 
     React.useEffect(() => {
@@ -42,7 +47,12 @@ export function OrderProvider({ children }) {
     }
 
     function updateOrder(id, data) {
+        console.log(data)
         setOrders({ ...orders, [id]: { ...orders[id], ...data } })
+    }
+
+    function updatePaymentType(typePaymentParam) {
+        setTransaction({ ...transaction, paymentType: typePaymentParam })
     }
 
     function resetOrder() {}
@@ -54,8 +64,10 @@ export function OrderProvider({ children }) {
                 addOrder,
                 removeOrder,
                 updateOrder,
+                // Transaction Function
                 transaction,
                 setTransaction,
+                updatePaymentType,
             }}
         >
             {children}

@@ -11,6 +11,7 @@ const ROLES = Object.freeze({
 })
 
 const initialData = {
+    firstLoad: true,
     isAuth: false,
     role: '',
     token: '',
@@ -27,35 +28,32 @@ function AuthProvider({ children }) {
     const [auth, setAuth] = useState(initialData)
     const navigate = useNavigate()
 
-    useEffect(() => {
+    /**
+     * Update cookies setiap ada pembaruan data user
+     */
+    useEffect(async () => {
         if (!auth.isAuth && cookies.token) {
-            alert('mantap')
-            axiosPrivate
-                .post('/auth/validate', { token: cookies.token })
-                .then((data) => {
-                    console.log(data)
-                })
-                .catch((err) => {
-                    console.log('auth', err)
-                })
+            await verifyCookiesToken()
         }
         if (auth.isAuth && auth.token && auth.user) {
-            setCookie('token', auth.token)
-            setCookie('user', auth.user)
+            setCookie('token', auth.token, { path: '/' })
+            setCookie('user', auth.user, { path: '/' })
         }
     }, [auth])
 
     const signIn = async (data) => {
         try {
             return await signInService(data).then((val) => {
-                if (val.data.isAuth) {
-                    const { user, token, isAdmin } = val.data
+                if (val.isAuth) {
+                    const { user, token, isAdmin } = val
 
                     setAuth({
                         ...auth,
-                        ...val.data,
+                        ...val,
+                        user,
                         isAuth: true,
                         role: isAdmin ? ROLES.ADMIN : ROLES.USER,
+                        firstLoad: false,
                     })
 
                     addToast({
@@ -105,8 +103,47 @@ function AuthProvider({ children }) {
         }
     }
 
+    const verifyCookiesToken = async () => {
+        try {
+            console.log(cookies.token)
+            return await axiosPrivate
+                .post('/auth/validate', { token: cookies.token })
+                .then((val) => {
+                    if (val.data.isAuth) {
+                        const { user, token } = val.data
+                        setAuth({
+                            ...auth,
+                            ...val,
+                            user,
+                            isAuth: true,
+                            role: user.isAdmin ? ROLES.ADMIN : ROLES.USER,
+                        })
+                        navigate('/', { replace: true })
+
+                        return val
+                    } else {
+                        throw new Error('Invalid Token')
+                    }
+                })
+                .catch((e) => {
+                    console.log(e)
+                    throw new Error('Invalid Token')
+                })
+        } catch (error) {
+            signOut()
+            console.log('Token', error)
+        }
+    }
+
     const signOut = () => {
+        setAuth(initialData)
+        removeCookie('token', { path: '/' })
+        removeCookie('user', { path: '/' })
         navigate('/auth/signin')
+    }
+
+    const TestFunction = () => {
+        alert('asd')
     }
 
     return (
@@ -119,6 +156,8 @@ function AuthProvider({ children }) {
                 cookies,
                 auth,
                 setAuth,
+                verifyCookiesToken,
+                TestFunction,
             }}
         >
             {children}

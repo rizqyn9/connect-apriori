@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import Card from './Card'
-import { GetAllProducts } from '../services/product.service'
 import Order from './Order'
 import { GridRow } from './Grid'
 import { useAuth } from '../context/user-context'
+import { useProducts } from '../hooks/useProducts'
 
 export default function Catalog() {
-    const [products, setProducts] = useState([])
+    const { getAllProducts, products } = useProducts()
     const [activeCard, setActiveCard] = useState('')
 
     useEffect(async () => {
-        console.log('Catalog')
-        let result = await GetAllProducts()
-        // console.log(result)
-        if (result.data && result.data.length !== 0) setProducts(result.data)
+        if (products.length == 0) await getAllProducts()
     }, [])
 
     return (
@@ -31,8 +28,13 @@ export default function Catalog() {
                     </div>
                 }
             >
-                <div className="row-start-2 flex h-full py-8">
-                    <div className="flex-auto flex flex-wrap gap-5 align-start justify-start overflow-y-scroll h-full max-h-[78vh]">
+                <div className="row-start-2 flex h-full py-8 flex-col gap-5">
+                    <div className=" self-start">
+                        <button className="p-2 bg-primary rounded-md">
+                            Refresh
+                        </button>
+                    </div>
+                    <div className="flex-auto flex flex-wrap gap-5 align-start justify-start overflow-y-scroll h-full max-h-[78vh] p-2">
                         {Array.isArray(products) &&
                             products.map((val, i) => (
                                 <Card
@@ -48,17 +50,19 @@ export default function Catalog() {
                     </div>
                 </div>
             </GridRow>
-            <GridRow title={<User />} className="w-[40rem] px-5 bg-dark-2">
+            <GridRow title={<UserMemo />} className="w-[40rem] px-5 bg-dark-2">
                 <Order className={'h-full row-start-2 py-8'} />
             </GridRow>
         </>
     )
 }
 
-function User() {
-    const { signOut, userData, cookies } = useAuth()
+const UserMemo = React.memo(User)
 
-    return (
+function User() {
+    const { signOut, auth } = useAuth()
+
+    return auth.user ? (
         <div className={'h-full flex items-center gap-6 '}>
             <div
                 className={'h-[3.5rem] w-[3.5rem] overflow-hidden rounded-full'}
@@ -66,8 +70,8 @@ function User() {
                 <img src={'./src/static/images/dummy.jpg'} alt={''} />
             </div>
             <div className={'flex flex-col gap-2'}>
-                <h1 className="text-md font-bold">{userData.name}</h1>
-                <p className="text-xs font-thin opacity-70">Admin</p>
+                <h1 className="text-md font-bold">{auth.user.name}</h1>
+                <p className="text-xs font-thin opacity-70">{auth.user.role}</p>
             </div>
             {/* Sign Out */}
             <div className="flex-1 text-right" onClick={() => signOut()}>
@@ -76,5 +80,5 @@ function User() {
                 </span>
             </div>
         </div>
-    )
+    ) : null
 }

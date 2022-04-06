@@ -3,7 +3,6 @@ const responses = require("../utils/responses");
 
 const VerifyToken = (req, res, next) => {
   try {
-    console.log(req.headers);
     if (req.headers["x-access-token"]) {
       jwt.verify(
         req.headers["x-access-token"],
