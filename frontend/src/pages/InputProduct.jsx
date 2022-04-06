@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import ReactImageUploading from 'react-images-uploading'
 import clsx from 'clsx'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { PostProduct } from '../services/product.service'
@@ -9,6 +9,8 @@ import { Routes, Route, useParams } from 'react-router-dom'
 import { useProducts } from '../hooks/useProducts'
 import { GridRow } from '../components/Grid'
 import { H1 } from '../components/Typography'
+import { useImperativeHandle } from 'react'
+import { useCallback } from 'react'
 
 export function ProductPage() {
     return (
@@ -27,6 +29,7 @@ const schema = yup.object({
 
 function InputProduct() {
     const { id } = useParams()
+    const [stateSubmit, setStateSubmit] = useState('iddle')
     const [product, setProducts] = useState({})
     const { getProductById, postProduct, testPostProduct } = useProducts()
     const {
@@ -34,6 +37,8 @@ function InputProduct() {
         handleSubmit,
         setError,
         setValue,
+        resetField,
+        control,
         formState: { errors },
     } = useForm({
         resolver: yupResolver(schema),
@@ -41,6 +46,7 @@ function InputProduct() {
 
     useEffect(async () => {
         if (!id) return
+        setStateSubmit('iddle')
         await getProductById(id).then((val) => {
             setProducts(val)
             setValue('menu', val.menu)
@@ -48,21 +54,21 @@ function InputProduct() {
         })
     }, [])
 
-    const handleImageForm = (res) => {
-        console.log(res)
-        // setValue('image', res)
-    }
-
     const onSubmit = async (data) => {
-        console.log(data)
         const formData = new FormData()
         Object.entries(data).forEach(([key, val]) => {
-            if (key == 'image') return
             formData.append(key, val)
         })
-        formData.append('image', data.image[0])
-        console.log(data.image[0])
-        await testPostProduct(formData)
+
+        await testPostProduct(formData).then(() => {
+            setStateSubmit('finish')
+        })
+
+        setStateSubmit('iddle')
+    }
+
+    const onError = async (data) => {
+        console.log(data)
     }
 
     return (
@@ -76,13 +82,18 @@ function InputProduct() {
                 }
             >
                 <form
-                    onSubmit={handleSubmit(onSubmit)}
+                    onSubmit={handleSubmit(onSubmit, onError)}
                     encType="application/x-www-form-urlencoded"
                     className={'h-full flex gap-2 py-8'}
                 >
                     {/*Input Image*/}
                     <div className="h-full w-full" style={{ flex: '1 1 55%' }}>
-                        <ImagePlanInput name={'image'} register={register} />
+                        <ImagePlanInput
+                            name={'image'}
+                            setValue={setValue}
+                            errors={errors.image?.message}
+                            stateSubmit={stateSubmit}
+                        />
                     </div>
 
                     {/*Form Input*/}
@@ -150,47 +161,51 @@ function FormInput({
     )
 }
 
-function ImagePlanInput({ register, name }) {
+function ImagePlanInput({ name, setValue, errors, stateSubmit }) {
+    const imageRef = useRef(null)
     const [selectedImage, setSelectedImage] = useState(null)
-    const imageRef = useRef()
 
-    const imageOnChange = (e) => {
-        console.log(e)
+    useEffect(() => {
+        setValue(name, selectedImage)
+    }, [selectedImage])
+
+    const onChange = (e) => {
         if (e.target.files && e.target.files.length > 0) {
             setSelectedImage(e.target.files[0])
         }
     }
 
-    const removeImage = () => {
-        imageRef.current.value = null
+    const removeImage = useCallback(() => {
         setSelectedImage(null)
-    }
+        imageRef.current.value = null
+    }, [stateSubmit])
 
     return (
         <div className="bg-dark-2 rounded-lg p-6 flex flex-col gap-4">
             <input
                 accept="image/*"
                 type="file"
-                {...register(name)}
+                id={'thumbnail'}
                 name={name}
-                onChange={imageOnChange}
-                ref={imageRef}
                 className={
                     'block w-full py-4 px-2 border-2 border-primary rounded-lg text-center'
                 }
-                id={'thumbnail'}
+                ref={imageRef}
+                onChange={onChange}
             />
+            {errors && <p className="text-red-400">{errors}</p>}
             {selectedImage && (
                 <>
-                    <label htmlFor="thumbnail">
-                        <img
-                            className="rounded-lg border-2 border-primary"
-                            src={URL.createObjectURL(selectedImage)}
-                        />
+                    <label
+                        htmlFor="thumbnail"
+                        className="max-h-[55vh] overflow-hidden rounded-lg border-2 border-primary"
+                    >
+                        <img src={URL.createObjectURL(selectedImage)} />
                     </label>
                     <button
                         className="bg-red-700 hover:bg-red-800 rounded-md w-1/2 mx-auto p-3"
                         onClick={removeImage}
+                        type={'button'}
                     >
                         Remove Image
                     </button>
