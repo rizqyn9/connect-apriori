@@ -3,6 +3,7 @@ const mongoose = require("mongoose")
 const Product = require("../models/Product.model")
 const responses = require("../utils/responses")
 const path = require("path")
+const fs = require("fs/promises")
 const multer = require("multer")
 
 var storage = multer.diskStorage({
@@ -10,7 +11,7 @@ var storage = multer.diskStorage({
     cb(null, path.join(__dirname, "..", "/public"))
   },
   filename: function (req, file, cb) {
-    cb(null, req.body.menu + Date.now() + path.extname(file.originalname))
+    cb(null, Date.now() + path.extname(file.originalname))
   },
 })
 var upload = multer({ storage: storage })
@@ -28,28 +29,25 @@ app.get("/", (req, res) => {
   }
 })
 
-app.post("/test", upload.single("image"), (req, res) => {
-  console.log(req.body)
-
-  return responses.success(res)
-})
-
 /**
  * Menambah produk ke dalama database
  */
-app.post("/", (req, res) => {
+app.post("/", upload.single("image"), (req, res) => {
   try {
     const valid_keys = ["menu"]
 
+    if (!req.file) return responses.fail(res, (message = "Image is required"))
     for (const key of valid_keys) {
       if (!req.body[key])
         return responses.fail(res, (message = `${key} is required`))
     }
 
-    return Product.create({ ...req.body }).then((err, val) => {
-      if (val) return responses.success(res, "created success")
-      else return responses.fail(res, "Failed to post")
-    })
+    return Product.create({ ...req.body, image: req.file.filename }).then(
+      (val, err) => {
+        if (val) return responses.success(res, "created success")
+        else return responses.fail(res, "Failed to post")
+      }
+    )
   } catch (error) {
     console.log(error)
     return responses.error(res, "Server error")

@@ -10,7 +10,7 @@ const ProductSchema = new Schema({
     required: true,
   },
   image: {
-    type: Object,
+    type: String,
   },
   totalOrdered: {
     type: Number,
