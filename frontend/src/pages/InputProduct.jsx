@@ -31,7 +31,7 @@ function InputProduct() {
     const { id } = useParams()
     const [stateSubmit, setStateSubmit] = useState('iddle')
     const [product, setProducts] = useState({})
-    const { getProductById, postProduct, testPostProduct } = useProducts()
+    const { getProductById, postProduct } = useProducts()
     const {
         register,
         handleSubmit,
@@ -55,12 +55,14 @@ function InputProduct() {
     }, [])
 
     const onSubmit = async (data) => {
+        console.log(data)
         const formData = new FormData()
         Object.entries(data).forEach(([key, val]) => {
             formData.append(key, val)
         })
 
-        await testPostProduct(formData).then(() => {
+        await postProduct(formData).then((val) => {
+            console.log(val)
             setStateSubmit('finish')
         })
 
@@ -123,7 +125,7 @@ function InputProduct() {
                             type={'submit'}
                             className={'bg-primary p-3 w-full rounded-lg mt-5'}
                         >
-                            Submit
+                            Tambahkan
                         </button>
                     </div>
                 </form>

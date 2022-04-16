@@ -14,9 +14,9 @@ function useProducts() {
      * Mengambil semua products yang ada di databases
      */
     const getAllProducts = async () => {
-        return await axiosPrivate
-            .get('/products')
-            .then((res) => setProducts(res.data.products))
+        return await axiosPrivate.get('/products').then((res) => {
+            setProducts(res.data.products)
+        })
     }
 
     const getProductById = async (id) => {
@@ -29,11 +29,7 @@ function useProducts() {
 
     const testPostProduct = async (data) => {
         console.log(data)
-        return await axiosPrivate.post('/products/test', data, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        })
+        return await axiosPrivate.post('/products/test', data)
     }
 
     return {

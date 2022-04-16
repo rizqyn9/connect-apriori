@@ -3,11 +3,25 @@ import Table from '../components/Table'
 import clsx from 'clsx'
 import { GridRow } from '../components/Grid'
 import { H1 } from '../components/Typography'
+import { useProducts } from '../hooks/useProducts'
 
 export default function Analytics() {
     const [tabActive, setTabActive] = useState('Products')
+    const [productParsed, setProductParsed] = useState([])
+    const { products } = useProducts()
 
-    useEffect(() => {}, [tabActive])
+    useEffect(() => {
+        let test = []
+        for (const key in products) {
+            let product = products[key]
+            test.push({
+                col1: product._id,
+                col2: product.menu,
+                col3: product.price,
+            })
+        }
+        setProductParsed(test)
+    }, [products])
 
     return (
         <GridRow
@@ -37,7 +51,7 @@ export default function Analytics() {
                         'border-2 border-white overflow-hidden rounded-xl'
                     }
                 >
-                    <Table data={dummyData} columns={dummyColumns} />
+                    <Table data={productParsed} columns={PRODUCT_HEADERS} />
                 </div>
             </div>
         </GridRow>
@@ -62,32 +76,17 @@ function Tabs({ text, tabActive, setTabActive }) {
     )
 }
 
-const dummyData = [
+const PRODUCT_HEADERS = [
     {
-        col1: 'Hello',
-        col2: 'World',
-    },
-    {
-        col1: 'react-table',
-        col2: 'rocks',
-    },
-    {
-        col1: 'whatever',
-        col2: 'you want',
-    },
-]
-
-const dummyColumns = [
-    {
-        Header: 'Product',
+        Header: 'ID',
         accessor: 'col1', // accessor is the "key" in the data
     },
     {
-        Header: 'Price',
+        Header: 'Product',
         accessor: 'col2',
     },
     {
         Header: 'Total Penjualan',
-        accessor: 'total',
+        accessor: 'col3',
     },
 ]
