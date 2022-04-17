@@ -1,14 +1,27 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model } = require("mongoose")
 
 const TransactionModel = new Schema({
-	transaction_id: {
-		type: String,
-		required: true,
-	},
-	creted_at: {
-		type: Date,
-		default: Date.now(),
-	},
-});
+  orderList: {
+    type: Array,
+    required: true,
+  },
+  price: {
+    type: Number,
+  },
+  paymentMethod: {
+    type: String,
+  },
+  promo: {
+    type: String,
+    required: false,
+  },
+  discount: {
+    type: Number,
+  },
+  creted_at: {
+    type: Date,
+    default: Date.now(),
+  },
+})
 
-module.exports = model("Transactions", TransactionModel);
+module.exports = model("Transactions", TransactionModel)

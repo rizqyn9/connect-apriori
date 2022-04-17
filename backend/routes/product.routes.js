@@ -30,7 +30,7 @@ app.get("/", (req, res) => {
 })
 
 /**
- * Menambah produk ke dalama database
+ * Menambah produk ke dalam database
  */
 app.post("/", upload.single("image"), (req, res) => {
   try {
@@ -44,7 +44,6 @@ app.post("/", upload.single("image"), (req, res) => {
 
     return Product.create({ ...req.body, image: req.file.filename }).then(
       (val, err) => {
-        console.log(val)
         if (val) return responses.success(res, "created success")
         else return responses.fail(res, "Failed to post")
       }
