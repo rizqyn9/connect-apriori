@@ -1,5 +1,13 @@
-const app = require("express").Router();
+const ProductModel = require("../models/Product.model")
+const responses = require("../utils/responses")
 
-app.get("/products", async (req, res) => {});
+const app = require("express").Router()
 
-module.exports = app;
+app.get("/products", async (req, res) => {
+  ProductModel.find().then((val, err) => {
+    if (err) responses.fail(res, "Something Error")
+    else responses.success(res, val)
+  })
+})
+
+module.exports = app
