@@ -30,6 +30,7 @@ const TransactionStateType = Object.freeze({
     SUCCESS: 3,
     FAIL: 4,
 })
+
 function useTransaction() {
     const { orders, clearOrders } = useOrder()
     const [transaction, setTransaction] = useAtom(transactionAtom)

@@ -15,7 +15,13 @@ function useProducts() {
      */
     const getAllProducts = async () => {
         return await axiosPrivate.get('/products').then((res) => {
-            setProducts(res.data.products)
+            if (!Array.isArray(res.data.products)) return
+            const parsed = res.data.products.map((val) => ({
+                ...val,
+                image: import.meta.env.VITE_SERVER + '/' + val.image,
+            }))
+
+            setProducts(parsed)
         })
     }
 

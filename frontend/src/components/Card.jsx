@@ -21,8 +21,6 @@ export default function Card({
         setActiveCard('')
     })
 
-    console.log(image)
-
     const handleType = (typeOrder) => {
         if (typeOrder === type) return
         setType(type)
@@ -48,7 +46,7 @@ export default function Card({
 
             <div className="w-full pt-[100%] relative bg-primary rounded-xl overflow-hidden">
                 <img
-                    src={`${import.meta.env.VITE_SERVER + '/' + image}`}
+                    src={image}
                     className="absolute top-0 left-0"
                     alt="dummy"
                 />
