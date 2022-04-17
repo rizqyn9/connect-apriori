@@ -3,11 +3,34 @@ import Table from '../components/Table'
 import clsx from 'clsx'
 import { GridRow } from '../components/Grid'
 import { H1 } from '../components/Typography'
+import { useProducts } from '../hooks/useProducts'
+import { useAnalytics } from '../hooks/useAnalytics'
 
 export default function Analytics() {
     const [tabActive, setTabActive] = useState('Products')
+    const [productParsed, setProductParsed] = useState([])
+    const [transactionParsed, setTransactionParsed] = useState([])
+    const { products } = useProducts()
+    const { getAllTransaction } = useAnalytics()
 
-    useEffect(() => {}, [tabActive])
+    useEffect(() => {
+        const parsed = products.map((val) => ({
+            col1: val._id,
+            col2: val.menu,
+            col3: val.price,
+        }))
+        setProductParsed(parsed)
+    }, [products])
+
+    useEffect(async () => {
+        await getAllTransaction().then((val) => {
+            const parsed = val.map((val) => ({
+                col1: val._id,
+                col2: val.price,
+            }))
+            setTransactionParsed(parsed)
+        })
+    }, [])
 
     return (
         <GridRow
@@ -37,7 +60,15 @@ export default function Analytics() {
                         'border-2 border-white overflow-hidden rounded-xl'
                     }
                 >
-                    <Table data={dummyData} columns={dummyColumns} />
+                    {tabActive === 'Products' && (
+                        <Table data={productParsed} columns={PRODUCT_HEADERS} />
+                    )}
+                    {tabActive === 'Transaction' && (
+                        <Table
+                            data={transactionParsed}
+                            columns={TRANSACTION_HEADERS}
+                        />
+                    )}
                 </div>
             </div>
         </GridRow>
@@ -62,32 +93,32 @@ function Tabs({ text, tabActive, setTabActive }) {
     )
 }
 
-const dummyData = [
+const PRODUCT_HEADERS = [
     {
-        col1: 'Hello',
-        col2: 'World',
-    },
-    {
-        col1: 'react-table',
-        col2: 'rocks',
-    },
-    {
-        col1: 'whatever',
-        col2: 'you want',
-    },
-]
-
-const dummyColumns = [
-    {
-        Header: 'Product',
+        Header: 'ID',
         accessor: 'col1', // accessor is the "key" in the data
     },
     {
-        Header: 'Price',
+        Header: 'Product',
         accessor: 'col2',
     },
     {
         Header: 'Total Penjualan',
-        accessor: 'total',
+        accessor: 'col3',
+    },
+]
+
+const TRANSACTION_HEADERS = [
+    {
+        Header: 'ID Transaction',
+        accessor: 'col1', // accessor is the "key" in the data
+    },
+    {
+        Header: 'Total price',
+        accessor: 'col2',
+    },
+    {
+        Header: 'Total Penjualan',
+        accessor: 'col3',
     },
 ]

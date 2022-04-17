@@ -44,7 +44,7 @@ export default function Catalog() {
                                     id={val._id}
                                     price={val.price}
                                     menu={val.menu}
-                                    image={val.image.data}
+                                    image={val.image}
                                 />
                             ))}
                     </div>

@@ -1,10 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react'
-import ReactImageUploading from 'react-images-uploading'
 import clsx from 'clsx'
 import { useForm, useWatch } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
-import { PostProduct } from '../services/product.service'
 import { Routes, Route, useParams } from 'react-router-dom'
 import { useProducts } from '../hooks/useProducts'
 import { GridRow } from '../components/Grid'
@@ -31,7 +29,7 @@ function InputProduct() {
     const { id } = useParams()
     const [stateSubmit, setStateSubmit] = useState('iddle')
     const [product, setProducts] = useState({})
-    const { getProductById, postProduct, testPostProduct } = useProducts()
+    const { getProductById, postProduct } = useProducts()
     const {
         register,
         handleSubmit,
@@ -55,12 +53,14 @@ function InputProduct() {
     }, [])
 
     const onSubmit = async (data) => {
+        console.log(data)
         const formData = new FormData()
         Object.entries(data).forEach(([key, val]) => {
             formData.append(key, val)
         })
 
-        await testPostProduct(formData).then(() => {
+        await postProduct(formData).then((val) => {
+            console.log(val)
             setStateSubmit('finish')
         })
 
@@ -123,7 +123,7 @@ function InputProduct() {
                             type={'submit'}
                             className={'bg-primary p-3 w-full rounded-lg mt-5'}
                         >
-                            Submit
+                            Tambahkan
                         </button>
                     </div>
                 </form>

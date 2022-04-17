@@ -9,8 +9,14 @@ const app = require("express").Router()
 /**
  * Ambil semua transaksi
  */
-app.get("/", (req, res) => {
-  return responses.success(res, "Success")
+app.get("/", async (req, res) => {
+  TransactionModel.find().then((val, err) => {
+    if (val) return responses.success(res, { transaction: val })
+    else {
+      console.log(err)
+      return responses.fail(res, "Fail")
+    }
+  })
 })
 
 /**
@@ -28,17 +34,27 @@ app.post("/new", async (req, res) => {
 
     const parsedOrder = parseOrder(orders)
 
+    // Update total order menu
     const promises = []
-
-    Object.entries(parsedOrder).forEach(([key, val]) => {
+    Object.entries(parsedOrder).forEach(([key, val]) =>
       promises.push(
         ProductModel.findByIdAndUpdate(key, {
           $inc: { totalOrdered: val.quantity },
         })
       )
-    })
-
+    )
     await Promise.all(promises)
+
+    await TransactionModel.create({
+      orderList: orders,
+      price: transaction.price,
+      paymentMethod: transaction.paymentMethod,
+      promo: transaction.promo,
+      discount: transaction.discount,
+    }).then((success, err) => {
+      if (err) return console.log(err)
+      else console.log(success)
+    })
 
     return responses.success(res, req.body)
   } catch (error) {
