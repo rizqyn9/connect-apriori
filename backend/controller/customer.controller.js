@@ -1,12 +1,11 @@
-const CustomerModel = require("../models/Customer.model")
+import CustomerModel from "../models/Customer.model.js"
 
-const customerController = {
-  getCustomerById: async (id) => {
-    return await CustomerModel.findById(id)
-  },
-  getAllCustomer: async () => {
-    return await CustomerModel.find({})
-  },
+const getCustomerById = async (id) => {
+  return await CustomerModel.findById(id)
 }
 
-module.exports = customerController
+const getAllCustomer = async () => {
+  return await CustomerModel.find({})
+}
+
+export { getCustomerById, getAllCustomer }

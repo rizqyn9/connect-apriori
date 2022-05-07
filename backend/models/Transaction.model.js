@@ -1,6 +1,10 @@
 import mongoose from "mongoose"
 
 const TransactionModel = new mongoose.Schema({
+  customerId: {
+    type: mongoose.Types.ObjectId,
+    ref: "Customers",
+  },
   orderList: [
     {
       type: mongoose.Schema.Types.ObjectId,

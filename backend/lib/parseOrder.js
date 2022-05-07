@@ -1,7 +1,9 @@
 const parseOrder = (data) => {
   let parsedData = []
 
-  if (!Array.isArray(data)) return
+  if (!Array.isArray(data)) {
+    throw new Error("Order is not valid")
+  }
 
   const a = data.map((val, i) => {
     if (!parsedData[val.id]) {

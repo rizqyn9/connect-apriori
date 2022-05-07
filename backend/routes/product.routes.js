@@ -2,9 +2,8 @@ import express from "express"
 import path from "path"
 import { fileURLToPath } from "url"
 import multer from "multer"
-import Product from "../models/Product.model.js"
 import responses from "../utils/responses.js"
-import ProductControl from "../controller/product.controller.js"
+import * as ProductControl from "../controller/product.controller.js"
 import { isValidObjectId, isValidKeyRequest } from "../utils/index.js"
 
 const app = express.Router()
@@ -88,7 +87,7 @@ app.get("/:id", async (req, res) => {
 app.delete("/:id", async (req, res) => {
   try {
     isValidObjectId(req.params.id)
-    await ProductControl.delete(req.params.id).then((val) =>
+    await ProductControl.remove(req.params.id).then((val) =>
       responses.success(res, val)
     )
   } catch (error) {
