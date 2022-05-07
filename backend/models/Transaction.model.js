@@ -1,10 +1,12 @@
 const { Schema, model } = require("mongoose")
 
 const TransactionModel = new Schema({
-  orderList: {
-    type: Array,
-    required: true,
-  },
+  orderList: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Products",
+    },
+  ],
   price: {
     type: Number,
   },
@@ -12,8 +14,8 @@ const TransactionModel = new Schema({
     type: String,
   },
   promo: {
-    type: String,
-    required: false,
+    type: Schema.Types.ObjectId,
+    ref: "Promos",
   },
   discount: {
     type: Number,

@@ -3,6 +3,7 @@ const responses = require("../utils/responses")
 const { parseOrder } = require("../lib/parseOrder")
 const { updateOneProduct } = require("../lib/analytics")
 const ProductModel = require("../models/Product.model")
+const { isValidObjectId } = require("mongoose")
 
 const app = require("express").Router()
 
@@ -23,7 +24,6 @@ app.get("/", async (req, res) => {
  * Buat Transaksi baru
  */
 app.post("/new", async (req, res) => {
-  const processedData = {}
   try {
     const { orders, transaction } = req.body
 
@@ -35,26 +35,28 @@ app.post("/new", async (req, res) => {
     const parsedOrder = parseOrder(orders)
 
     // Update total order menu
-    const promises = []
-    Object.entries(parsedOrder).forEach(([key, val]) =>
-      promises.push(
+    const listOrderId = await Promise.all(
+      Object.entries(parsedOrder).map(([key, val]) =>
         ProductModel.findByIdAndUpdate(key, {
           $inc: { totalOrdered: val.quantity },
         })
       )
     )
-    await Promise.all(promises)
+      .then(async (val) => {
+        return await TransactionModel.create({
+          orderList: val.map((data) => data._id),
+          price: transaction.price,
+          paymentMethod: transaction.paymentMethod,
+          promo: isValidObjectId(transaction.promo) ? transaction.promo : null,
+          discount: transaction.discount,
+        })
+      })
+      .catch((err) => {
+        console.log(err)
+        throw new Error("Update product error")
+      })
 
-    await TransactionModel.create({
-      orderList: orders,
-      price: transaction.price,
-      paymentMethod: transaction.paymentMethod,
-      promo: transaction.promo,
-      discount: transaction.discount,
-    }).then((success, err) => {
-      if (err) return console.log(err)
-      else console.log(success)
-    })
+    console.log(listOrderId)
 
     return responses.success(res, req.body)
   } catch (error) {

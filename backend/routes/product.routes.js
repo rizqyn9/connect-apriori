@@ -42,12 +42,14 @@ app.post("/", upload.single("image"), (req, res) => {
         return responses.fail(res, (message = `${key} is required`))
     }
 
-    return Product.create({ ...req.body, image: req.file.filename }).then(
-      (val, err) => {
-        if (val) return responses.success(res, "created success")
+    Product.create({ ...req.body, image: req.file.filename })
+      .then((val, err) => {
+        if (val) return responses.success(res, {}, "created success")
         else return responses.fail(res, "Failed to post")
-      }
-    )
+      })
+      .catch((err) => {
+        responses.fail(res, err["message"])
+      })
   } catch (error) {
     console.log(error)
     return responses.error(res, "Server error")
