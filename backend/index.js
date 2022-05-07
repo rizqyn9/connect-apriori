@@ -7,7 +7,6 @@ import cors from "cors"
 import cookieParser from "cookie-parser"
 import path from "path"
 import { MongoConnect } from "./utils/mongoConnect.js"
-import { VerifyToken } from "./middleware/token.js"
 import Routes from "./routes/index.routes.js"
 
 const app = express()
@@ -26,7 +25,7 @@ app.use((req, res, next) => {
   next()
 })
 
-app.use("*", Routes)
+app.use(Routes)
 
 app.use("*", (req, res) => {
   res.send("Routes not found")
