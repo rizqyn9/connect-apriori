@@ -1,15 +1,20 @@
 import express from "express"
-import mongoose from "mongoose"
 import path from "path"
+import { fileURLToPath } from "url"
 import multer from "multer"
 import Product from "../models/Product.model.js"
 import responses from "../utils/responses.js"
+import ProductControl from "../controller/product.controller.js"
+import { isValidObjectId, isValidKeyRequest } from "../utils/index.js"
 
 const app = express.Router()
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "..", "/public"))
+    cb(
+      null,
+      path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "/public")
+    )
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + path.extname(file.originalname))
@@ -20,58 +25,45 @@ var upload = multer({ storage: storage })
 /**
  * Mengambil semua data produk yang ada pada database
  */
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
   try {
-    return Product.find().then((data) => {
-      return responses.success(res, { products: data })
-    })
+    await ProductControl.getProduts().then((val) => responses.success(res, val))
   } catch (error) {
-    return responses.fail(res, {}, error)
+    if (error instanceof Error) responses.fail(res, {}, error.message)
+    else responses.error(res, "Server error")
   }
 })
 
 /**
  * Menambah produk ke dalam database
  */
-app.post("/", upload.single("image"), (req, res) => {
+app.post("/", upload.single("image"), async (req, res) => {
   try {
-    const valid_keys = ["menu"]
-
     if (!req.file) return responses.fail(res, (message = "Image is required"))
-    for (const key of valid_keys) {
-      if (!req.body[key])
-        return responses.fail(res, (message = `${key} is required`))
-    }
+    isValidKeyRequest(["menu", "price"], req)
 
-    Product.create({ ...req.body, image: req.file.filename })
-      .then((val, err) => {
-        if (val) return responses.success(res, {}, "created success")
-        else return responses.fail(res, "Failed to post")
-      })
-      .catch((err) => {
-        responses.fail(res, err["message"])
-      })
+    await ProductControl.create({ ...req.body, image: req.file.filename }).then(
+      (val) => responses.success(res, val)
+    )
   } catch (error) {
-    console.log(error)
-    return responses.error(res, "Server error")
+    if (error instanceof Error) responses.fail(res, {}, error.message)
+    else responses.error(res, "Server error")
   }
 })
 
 /**
  * Mengupdate data produk, dari parameter yang berikan
  */
-app.post("/:id", (req, res) => {
-  const { id } = req.params
+app.post("/:id", async (req, res) => {
   try {
-    // Is valid Object ID
-    if (!mongoose.isValidObjectId(id))
-      return responses.fail(res, "Object ID not valid")
+    isValidObjectId(req.params.id)
 
-    Product.findByIdAndUpdate(String(id)).then((data) => {
-      return responses.success(res, data)
-    })
+    await ProductControl.update(req.params.id, req.body).then((val) =>
+      responses.success(res, val)
+    )
   } catch (error) {
-    return responses.error(res, "Server error")
+    if (error instanceof Error) responses.fail(res, {}, error.message)
+    else responses.error(res, "Server error")
   }
 })
 
@@ -79,13 +71,28 @@ app.post("/:id", (req, res) => {
  * Ambil data dari salah satu product
  */
 app.get("/:id", async (req, res) => {
-  const { id } = req.params
   try {
-    return Product.findById(id).then((data) => {
-      if (data) return responses.success(res, data)
-      else return responses.fail(res, "Product not found")
-    })
+    isValidObjectId(req.params.id)
+    await ProductControl.getProductByID(req.params.id).then((val) =>
+      responses.success(res, { ...val })
+    )
   } catch (error) {
+    if (error instanceof Error) return responses.fail(res, error, error.message)
+    return responses.error(res, "Server error")
+  }
+})
+
+/**
+ * Delete Products
+ */
+app.delete("/:id", async (req, res) => {
+  try {
+    isValidObjectId(req.params.id)
+    await ProductControl.delete(req.params.id).then((val) =>
+      responses.success(res, val)
+    )
+  } catch (error) {
+    if (error instanceof Error) return responses.fail(res, error, error.message)
     return responses.error(res, "Server error")
   }
 })

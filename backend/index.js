@@ -17,11 +17,11 @@ app.use(bodyParser.json({ limit: "50mb" }))
 
 app.use(cors())
 
-app.use(express.static(path.dirname + "/public"))
+app.use(express.static(path.dirname(import.meta.url) + "/public"))
 
 app.use((req, res, next) => {
   // console.log(req.cookies);
-  console.log(req.headers["x-access-token"])
+  // console.log(req.headers["x-access-token"])
   next()
 })
 

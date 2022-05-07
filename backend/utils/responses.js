@@ -1,7 +1,7 @@
 export default {
   success: (res, data, message = {}, status = 200) => {
     // console.log({ data, message });
-    return res.json({ status: "success", ...data, message })
+    return res.json({ status: "success", data, message })
   },
   fail: (res, data, message = {}, status = 200) => {
     // console.log({ data, message });

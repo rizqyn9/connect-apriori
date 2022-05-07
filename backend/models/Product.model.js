@@ -2,8 +2,8 @@ import mongoose from "mongoose"
 
 const ProductSchema = new mongoose.Schema({
   menu: {
+    unique: true,
     type: String,
-    required: true,
   },
   price: {
     type: Number,
