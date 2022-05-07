@@ -1,9 +1,9 @@
-const { Schema, model } = require("mongoose")
+import mongoose from "mongoose"
 
-const TransactionModel = new Schema({
+const TransactionModel = new mongoose.Schema({
   orderList: [
     {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Products",
     },
   ],
@@ -14,7 +14,7 @@ const TransactionModel = new Schema({
     type: String,
   },
   promo: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "Promos",
   },
   discount: {
@@ -26,4 +26,4 @@ const TransactionModel = new Schema({
   },
 })
 
-module.exports = model("Transactions", TransactionModel)
+export default mongoose.model("Transactions", TransactionModel)

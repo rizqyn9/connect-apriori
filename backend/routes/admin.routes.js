@@ -1,17 +1,18 @@
-const app = require("express").Router();
-const User = require("../models/User.model");
-const responses = require("../utils/responses");
+import express from "express"
+import User from "../models/User.model.js"
+import responses from "../utils/responses.js"
 
+const app = express.Router()
 app.get("/", (req, res) => {
-	res.send("okay");
-});
+  res.send("okay")
+})
 
 app.get("/accounts", async (req, res) => {
-	try {
-		User.find().then((val) => {
-			return responses.success(res, val);
-		});
-	} catch (error) {}
-});
+  try {
+    User.find().then((val) => {
+      return responses.success(res, val)
+    })
+  } catch (error) {}
+})
 
-module.exports = app;
+export default app

@@ -1,6 +1,6 @@
-const { Schema, model } = require("mongoose")
+import mongoose from "mongoose"
 
-const AnalyticsModel = new Schema({
+const AnalyticsModel = new mongoose.Schema({
   label: {
     type: String,
   },
@@ -15,4 +15,4 @@ const AnalyticsModel = new Schema({
   },
 })
 
-module.exports = model("Analytics", AnalyticsModel)
+export default mongoose.model("Analytics", AnalyticsModel)

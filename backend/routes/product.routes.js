@@ -1,10 +1,11 @@
-const app = require("express").Router()
-const mongoose = require("mongoose")
-const Product = require("../models/Product.model")
-const responses = require("../utils/responses")
-const path = require("path")
-const fs = require("fs/promises")
-const multer = require("multer")
+import express from "express"
+import mongoose from "mongoose"
+import path from "path"
+import multer from "multer"
+import Product from "../models/Product.model.js"
+import responses from "../utils/responses.js"
+
+const app = express.Router()
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -89,4 +90,4 @@ app.get("/:id", async (req, res) => {
   }
 })
 
-module.exports = app
+export default app

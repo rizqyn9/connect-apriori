@@ -1,11 +1,12 @@
-const TransactionModel = require("../models/Transaction.model")
-const responses = require("../utils/responses")
-const { parseOrder } = require("../lib/parseOrder")
-const { updateOneProduct } = require("../lib/analytics")
-const ProductModel = require("../models/Product.model")
-const { isValidObjectId } = require("mongoose")
+import TransactionModel from "../models/Transaction.model.js"
+import responses from "../utils/responses.js"
+import { parseOrder } from "../lib/parseOrder.js"
+import { updateOneProduct } from "../lib/analytics.js"
+import ProductModel from "../models/Product.model.js"
+import mongoose from "mongoose"
 
-const app = require("express").Router()
+import express from "express"
+const app = express.Router()
 
 /**
  * Ambil semua transaksi
@@ -47,9 +48,16 @@ app.post("/new", async (req, res) => {
           orderList: val.map((data) => data._id),
           price: transaction.price,
           paymentMethod: transaction.paymentMethod,
-          promo: isValidObjectId(transaction.promo) ? transaction.promo : null,
+          promo: mongoose.isValidObjectId(transaction.promo)
+            ? transaction.promo
+            : null,
           discount: transaction.discount,
         })
+          .then((data) => data)
+          .catch((err) => {
+            console.log(err)
+            throw new Error("Transaction cant created")
+          })
       })
       .catch((err) => {
         console.log(err)
@@ -65,4 +73,4 @@ app.post("/new", async (req, res) => {
   }
 })
 
-module.exports = app
+export default app

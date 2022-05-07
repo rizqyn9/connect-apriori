@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "type": "module",
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "build": "node_modules/babel/bin/babel.js src --source-maps --out-dir dist",
+    "start": "node_modules/nodemon/bin/nodemon.js -- node_modules/babel/bin/babel-node.js src/server.js"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",

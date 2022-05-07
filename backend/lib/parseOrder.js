@@ -1,21 +1,21 @@
 const parseOrder = (data) => {
-  let parsedData = [];
+  let parsedData = []
 
-  if (!Array.isArray(data)) return;
+  if (!Array.isArray(data)) return
 
   const a = data.map((val, i) => {
     if (!parsedData[val.id]) {
-      delete val.variantWithID;
-      delete val.type;
+      delete val.variantWithID
+      delete val.type
       parsedData[val.id] = {
         ...val,
-      };
+      }
     } else {
-      parsedData[val.id].quantity += val.quantity;
+      parsedData[val.id].quantity += val.quantity
     }
-  });
+  })
 
-  return parsedData;
-};
+  return parsedData
+}
 
-module.exports = { parseOrder };
+export { parseOrder }
