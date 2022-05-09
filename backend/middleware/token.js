@@ -1,24 +1,20 @@
-const jwt = require("jsonwebtoken");
-const responses = require("../utils/responses");
+import jwt from "jsonwebtoken"
+import responses from "../utils/responses.js"
 
-const VerifyToken = (req, res, next) => {
+export const VerifyToken = (req, res, next) => {
   try {
     if (req.headers["x-access-token"]) {
       jwt.verify(
         req.headers["x-access-token"],
         process.env.SECRET_TOKEN,
         (err, validate) => {
-          if (err) throw new Error("Token not valid");
-          req.user = validate;
-          next();
+          if (err) throw new Error("Token not valid")
+          req.user = validate
+          next()
         }
-      );
-    } else throw new Error("Not validated");
+      )
+    } else throw new Error("User dont have authorization for this action")
   } catch (error) {
-    return responses.fail(res, error.message);
+    return responses.fail(res, error.message)
   }
-};
-
-module.exports = {
-  VerifyToken,
-};
+}

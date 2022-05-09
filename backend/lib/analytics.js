@@ -1,4 +1,4 @@
-const Analytics = require("../models/Analytics.model")
+import Analytics from "../models/Analytics.model.js"
 
 const ANALYTICS_LABEL = "analytics"
 
@@ -42,4 +42,4 @@ const getAnalytics = async () => {
   }
 }
 
-module.exports = { updateOneProduct }
+export { updateOneProduct }

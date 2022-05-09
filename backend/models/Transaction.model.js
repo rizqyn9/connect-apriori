@@ -1,10 +1,16 @@
-const { Schema, model } = require("mongoose")
+import mongoose from "mongoose"
 
-const TransactionModel = new Schema({
-  orderList: {
-    type: Array,
-    required: true,
+const TransactionModel = new mongoose.Schema({
+  customerId: {
+    type: mongoose.Types.ObjectId,
+    ref: "Customers",
   },
+  orderList: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Products",
+    },
+  ],
   price: {
     type: Number,
   },
@@ -12,8 +18,8 @@ const TransactionModel = new Schema({
     type: String,
   },
   promo: {
-    type: String,
-    required: false,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Promos",
   },
   discount: {
     type: Number,
@@ -24,4 +30,4 @@ const TransactionModel = new Schema({
   },
 })
 
-module.exports = model("Transactions", TransactionModel)
+export default mongoose.model("Transactions", TransactionModel)

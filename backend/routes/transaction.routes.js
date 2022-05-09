@@ -1,66 +1,70 @@
-const TransactionModel = require("../models/Transaction.model")
-const responses = require("../utils/responses")
-const { parseOrder } = require("../lib/parseOrder")
-const { updateOneProduct } = require("../lib/analytics")
-const ProductModel = require("../models/Product.model")
+import TransactionModel from "../models/Transaction.model.js"
+import responses from "../utils/responses.js"
+import { parseOrder } from "../lib/parseOrder.js"
+import * as transactionController from "../controller/transaction.controller.js"
+import * as productController from "../controller/product.controller.js"
 
-const app = require("express").Router()
+import express from "express"
+import { isValidKeyRequest, isValidObjectId } from "../utils/index.js"
+const app = express.Router()
 
 /**
  * Ambil semua transaksi
  */
 app.get("/", async (req, res) => {
-  TransactionModel.find().then((val, err) => {
-    if (val) return responses.success(res, { transaction: val })
-    else {
-      console.log(err)
-      return responses.fail(res, "Fail")
-    }
-  })
+  try {
+    await transactionController
+      .getAll()
+      .then((val) => responses.success(res, val, "Transactions"))
+  } catch (error) {
+    if (error instanceof Error) responses.fail(res, {}, error.message)
+    else responses.error(res, "Server error")
+  }
 })
 
 /**
  * Buat Transaksi baru
  */
 app.post("/new", async (req, res) => {
-  const processedData = {}
   try {
+    isValidKeyRequest(["orders", "transaction"], req)
     const { orders, transaction } = req.body
-
     console.log(orders, transaction)
-
-    if (!Array.isArray(orders))
-      return responses.forbidden(res, "Data order not valid")
 
     const parsedOrder = parseOrder(orders)
 
     // Update total order menu
-    const promises = []
-    Object.entries(parsedOrder).forEach(([key, val]) =>
-      promises.push(
-        ProductModel.findByIdAndUpdate(key, {
-          $inc: { totalOrdered: val.quantity },
-        })
+    const listOrderId = await Promise.all(
+      Object.entries(parsedOrder).map(([key, val]) =>
+        productController.incrementOrderById(key, val.quantity)
       )
     )
-    await Promise.all(promises)
+    // .then(async (val) => {
+    //   return await TransactionModel.create({
+    //     orderList: val.map((data) => data._id),
+    //     price: transaction.price,
+    //     paymentMethod: transaction.paymentMethod,
+    //     promo: isValidObjectId(transaction.promo, false) || null,
+    //     discount: transaction.discount,
+    //   })
+    //     .then((data) => data)
+    //     .catch((err) => {
+    //       console.log(err)
+    //       throw new Error("Transaction cant created")
+    //     })
+    // })
+    // .catch((err) => {
+    //   console.log(err)
+    //   throw new Error("Update product error")
+    // })
 
-    await TransactionModel.create({
-      orderList: orders,
-      price: transaction.price,
-      paymentMethod: transaction.paymentMethod,
-      promo: transaction.promo,
-      discount: transaction.discount,
-    }).then((success, err) => {
-      if (err) return console.log(err)
-      else console.log(success)
-    })
+    console.log(listOrderId)
 
     return responses.success(res, req.body)
   } catch (error) {
-    console.log(error)
-    return responses.error(res, "err")
+    if (error instanceof Error) responses.fail(res, {}, error.message)
+    else responses.error(res, "Server error")
   }
 })
 
-module.exports = app
+export default app
