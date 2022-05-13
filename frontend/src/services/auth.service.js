@@ -5,7 +5,6 @@ export async function signInService(data) {
         .post('/auth/signin', data)
         .then((val) => val.data)
         .catch((err) => {
-            console.log(err)
             return { error: 'Server error' }
         })
 }

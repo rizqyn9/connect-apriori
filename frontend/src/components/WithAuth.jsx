@@ -1,11 +1,10 @@
 import * as React from 'react'
 import { Navigate } from 'react-router-dom'
-import { useCookies } from 'react-cookie'
+import { useIsAuthenticated } from 'react-auth-kit'
 
 const RequireAuth = ({ allowedRoles, children }) => {
-    const [cookies] = useCookies(['token'])
-
-    return cookies.token ? <>{children}</> : <Navigate to={'/auth/signin'} />
+    const isAuthenticated = useIsAuthenticated()
+    return isAuthenticated ? <>{children}</> : <Navigate to={'/auth/signin'} />
 }
 
 export { RequireAuth }

@@ -24,11 +24,13 @@ export default function Analytics() {
 
     useEffect(async () => {
         await getAllTransaction().then((val) => {
-            const parsed = val.map((val) => ({
-                col1: val._id,
-                col2: val.price,
-            }))
-            setTransactionParsed(parsed)
+            const parsed =
+                val &&
+                val.map((val) => ({
+                    col1: val._id,
+                    col2: val.price,
+                }))
+            setTransactionParsed(parsed || [])
         })
     }, [])
 
