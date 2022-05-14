@@ -5,27 +5,23 @@ import express from "express"
 import bodyParser from "body-parser"
 import cors from "cors"
 import cookieParser from "cookie-parser"
-import path from "path"
 import { MongoConnect } from "./utils/mongoConnect.js"
 import Routes from "./routes/index.routes.js"
 
 const app = express()
 
+app.use(cors())
+app.use(express.static("public"))
+
 app.use(cookieParser())
 // application/json
 app.use(bodyParser.json({ limit: "50mb" }))
 
-app.use(cors())
-
-app.use(express.static(path.dirname(import.meta.url) + "/public"))
-
 app.use((req, res, next) => {
-  // console.log(req.cookies);
-  // console.log(req.headers["x-access-token"])
   next()
 })
 
-app.use(Routes)
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }), Routes)
 
 app.use("*", (req, res) => {
   res.send("Routes not found")
