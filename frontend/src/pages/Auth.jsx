@@ -11,7 +11,7 @@ function Auth({ children }) {
     /**
      * Ketika user sudah login dan melakukan reload pada halaman akan dikembalikan kehalaman dashboard
      */
-    return !shouldAuthenticated ? (
+    return !shouldAuthenticated() ? (
         <div className="bg-dark-2 flex h-screen overflow-hidden justify-center text-white">
             <div className="py-7 px-8 flex flex-col gap-2 bg-dark-1 w-3/5 min-w-max max-w-sm min-h-[10rem] self-center rounded-xl">
                 {children}

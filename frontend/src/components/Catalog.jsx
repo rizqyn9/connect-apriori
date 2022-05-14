@@ -16,7 +16,7 @@ export default function Catalog() {
     return (
         <>
             <GridRow
-                className={'px-5 w-full flex-auto'}
+                className={'px-5 w-full'}
                 title={
                     <div className="text-white flex flex-col justify-center h-full w-full">
                         <h1 className="text-2xl font-bold mb-2">

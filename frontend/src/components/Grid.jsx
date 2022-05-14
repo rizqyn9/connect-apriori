@@ -4,7 +4,10 @@ import * as React from 'react'
 function GridRow({ children, title, className }) {
     return (
         <div
-            className={clsx('grid w-full h-full relative', className)}
+            className={clsx(
+                'grid w-full h-screen overflow-hidden relative',
+                className
+            )}
             style={{
                 gridTemplateRows: '8rem auto',
             }}

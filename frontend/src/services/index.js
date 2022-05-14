@@ -4,7 +4,6 @@ import axios from 'axios'
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_SERVER,
-    withCredentials: true,
 })
 
 // Handle Error
@@ -15,6 +14,7 @@ api.interceptors.response.use((response) => {
 const axiosPrivate = axios.create({
     baseURL: import.meta.env.VITE_SERVER,
     headers: { 'Content-Type': 'application/json' },
+    withCredentials: true,
 })
 
 export default api

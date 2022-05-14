@@ -1,7 +1,5 @@
 import { axiosPrivate } from '../services'
 import { useEffect } from 'react'
-import { useAuth } from '../hooks/useAuth'
-import { useCookies } from 'react-cookie'
 
 const useAxiosPrivate = () => {
     useEffect(

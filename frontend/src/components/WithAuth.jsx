@@ -1,10 +1,10 @@
 import * as React from 'react'
-import { Navigate } from 'react-router-dom'
 import { useIsAuthenticated } from 'react-auth-kit'
+import { Navigate } from 'react-router-dom'
 
 const RequireAuth = ({ allowedRoles, children }) => {
     const isAuthenticated = useIsAuthenticated()
-    return isAuthenticated ? <>{children}</> : <Navigate to={'/auth/signin'} />
+    return isAuthenticated() ? <>{children}</> : <Navigate to={'/auth/login'} />
 }
 
 export { RequireAuth }
