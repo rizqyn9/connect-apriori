@@ -18,6 +18,9 @@ export default function Analytics() {
             col1: val._id,
             col2: val.menu,
             col3: val.price,
+            col4: {
+                edit: () => alert(`Edit ${val._id}`),
+            },
         }))
         setProductParsed(parsed)
     }, [products])
@@ -63,7 +66,10 @@ export default function Analytics() {
                     }
                 >
                     {tabActive === 'Products' && (
-                        <Table data={productParsed} columns={PRODUCT_HEADERS} />
+                        <Table
+                            data={productParsed}
+                            columns={getProductHeaders(true)}
+                        />
                     )}
                     {tabActive === 'Transaction' && (
                         <Table
@@ -93,6 +99,21 @@ function Tabs({ text, tabActive, setTabActive }) {
             <p>{text}</p>
         </button>
     )
+}
+
+function getProductHeaders(isAdmin) {
+    return isAdmin
+        ? [
+              ...PRODUCT_HEADERS,
+              {
+                  Header: 'Edit',
+                  accessor: 'col4',
+                  Cell: ({ value }) => (
+                      <button onClick={() => value.edit()}>Edit</button>
+                  ),
+              },
+          ]
+        : PRODUCT_HEADERS
 }
 
 const PRODUCT_HEADERS = [
