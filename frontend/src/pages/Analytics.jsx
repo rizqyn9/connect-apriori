@@ -59,10 +59,15 @@ export default function Analytics() {
                         tabActive={tabActive}
                         setTabActive={setTabActive}
                     />
+                    <Tabs
+                        text={'Promo'}
+                        tabActive={tabActive}
+                        setTabActive={setTabActive}
+                    />
                 </div>
                 <div
                     className={
-                        'border-2 border-white overflow-hidden rounded-xl'
+                        'border-2 border-white rounded-xl max-h-[70vh] overflow-auto'
                     }
                 >
                     {tabActive === 'Products' && (
@@ -76,6 +81,9 @@ export default function Analytics() {
                             data={transactionParsed}
                             columns={TRANSACTION_HEADERS}
                         />
+                    )}
+                    {tabActive === 'Promo' && (
+                        <Table data={[]} columns={PROMO_HEADERS} />
                     )}
                 </div>
             </div>
@@ -143,5 +151,12 @@ const TRANSACTION_HEADERS = [
     {
         Header: 'Total Penjualan',
         accessor: 'col3',
+    },
+]
+
+const PROMO_HEADERS = [
+    {
+        Header: 'Promo',
+        accessor: 'col1',
     },
 ]

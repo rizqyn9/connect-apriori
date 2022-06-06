@@ -10,6 +10,7 @@ export async function signInService(data) {
 }
 
 export async function signUpService(data) {
+    console.log(data)
     return await api
         .post('/auth/signup', data)
         .then((val) => val.data)

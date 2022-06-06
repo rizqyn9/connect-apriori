@@ -19,7 +19,7 @@ function OrderCard({ orderID, id, menu, image, price, type, quantity }) {
                 <div className="flex flex-col justify-between">
                     {/*Menu & Type*/}
                     <div className={'flex gap-4 align-center'}>
-                        <div className="w-5 h-5 ">
+                        <div className="w-5 h-5 flex items-center justify-center">
                             {type === 'hot' ? <Icon.Hot /> : <Icon.Ice />}
                         </div>
                         <h2 className="font-bold text-md">{menu}</h2>

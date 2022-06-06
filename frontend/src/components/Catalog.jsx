@@ -34,7 +34,7 @@ export default function Catalog() {
                             Refresh
                         </button>
                     </div>
-                    <div className="flex-auto flex flex-wrap gap-5 align-start justify-start overflow-y-scroll h-full max-h-[78vh] p-2">
+                    <div className="flex-auto flex flex-wrap gap-5 align-start justify-start overflow-y-scroll h-full max-h-[75vh] p-2">
                         {Array.isArray(products) &&
                             products.map((val, i) => (
                                 <Card

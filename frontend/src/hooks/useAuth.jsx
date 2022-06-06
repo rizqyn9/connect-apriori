@@ -1,5 +1,5 @@
 import React from 'react'
-import { signInService } from '../services'
+import { signInService, signUpService } from '../services'
 import { useNavigate } from 'react-router-dom'
 import { useAxiosPrivate } from '../hooks/useAxiosPrivate'
 import { useAuthUser, useSignIn, useSignOut } from 'react-auth-kit'
@@ -16,7 +16,7 @@ export function useAuth() {
     const auth = useAuthUser()
     const axiosPrivate = useAxiosPrivate()
 
-    const signIn = async (data) => {
+    const signIn = async (data) =>
         signInService(data)
             .then((val) => {
                 authSignIn({
@@ -27,9 +27,11 @@ export function useAuth() {
                 })
             })
             .catch((val) => console.log(val))
-    }
 
-    const signUp = () => {}
+    const signUp = (data) =>
+        signUpService(data)
+            .then((val) => navigate('/auth/signin'))
+            .catch((err) => console.log(err))
 
     const signOut = () => {
         authSignOut()

@@ -47,13 +47,14 @@ export function SignUp() {
     })
 
     const onSubmit = async (data) => {
-        SignUpServices(data)
+        console.log(data)
+        await SignUpServices(data)
     }
 
     return (
         <Auth>
             {/* TITLE */}
-            <h1 className="h4 py-3 mb-5 text-center">DAFTAR</h1>
+            <h1 className="text-xl font-bold py-3 mb-3 text-center">DAFTAR</h1>
             {/* FORM */}
             <form
                 className={'w-full flex flex-col gap-5'}
@@ -126,7 +127,7 @@ export function SignIn() {
     return (
         <Auth>
             {/* TITLE */}
-            <h1 className="h4 py-3 mb-5 text-center">MASUK</h1>
+            <h1 className="text-xl font-bold py-3 mb-3 text-center">MASUK</h1>
             {/* FORM */}
             <form
                 className={'w-full flex flex-col gap-4'}
