@@ -33,7 +33,7 @@ function AuthProvider({ children }) {
      */
     useEffect(async () => {
         if (!auth.isAuth && cookies.token) {
-            await verifyCookiesToken()
+            // await verifyCookiesToken()
         }
         if (auth.isAuth && auth.token && auth.user) {
             setCookie('token', auth.token, { path: '/' })

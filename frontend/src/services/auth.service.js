@@ -5,12 +5,12 @@ export async function signInService(data) {
         .post('/auth/signin', data)
         .then((val) => val.data)
         .catch((err) => {
-            console.log(err)
             return { error: 'Server error' }
         })
 }
 
 export async function signUpService(data) {
+    console.log(data)
     return await api
         .post('/auth/signup', data)
         .then((val) => val.data)

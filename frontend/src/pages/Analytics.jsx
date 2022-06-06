@@ -18,17 +18,22 @@ export default function Analytics() {
             col1: val._id,
             col2: val.menu,
             col3: val.price,
+            col4: {
+                edit: () => alert(`Edit ${val._id}`),
+            },
         }))
         setProductParsed(parsed)
     }, [products])
 
     useEffect(async () => {
         await getAllTransaction().then((val) => {
-            const parsed = val.map((val) => ({
-                col1: val._id,
-                col2: val.price,
-            }))
-            setTransactionParsed(parsed)
+            const parsed =
+                val &&
+                val.map((val) => ({
+                    col1: val._id,
+                    col2: val.price,
+                }))
+            setTransactionParsed(parsed || [])
         })
     }, [])
 
@@ -54,20 +59,31 @@ export default function Analytics() {
                         tabActive={tabActive}
                         setTabActive={setTabActive}
                     />
+                    <Tabs
+                        text={'Promo'}
+                        tabActive={tabActive}
+                        setTabActive={setTabActive}
+                    />
                 </div>
                 <div
                     className={
-                        'border-2 border-white overflow-hidden rounded-xl'
+                        'border-2 border-white rounded-xl max-h-[70vh] overflow-auto'
                     }
                 >
                     {tabActive === 'Products' && (
-                        <Table data={productParsed} columns={PRODUCT_HEADERS} />
+                        <Table
+                            data={productParsed}
+                            columns={getProductHeaders(true)}
+                        />
                     )}
                     {tabActive === 'Transaction' && (
                         <Table
                             data={transactionParsed}
                             columns={TRANSACTION_HEADERS}
                         />
+                    )}
+                    {tabActive === 'Promo' && (
+                        <Table data={[]} columns={PROMO_HEADERS} />
                     )}
                 </div>
             </div>
@@ -91,6 +107,21 @@ function Tabs({ text, tabActive, setTabActive }) {
             <p>{text}</p>
         </button>
     )
+}
+
+function getProductHeaders(isAdmin) {
+    return isAdmin
+        ? [
+              ...PRODUCT_HEADERS,
+              {
+                  Header: 'Edit',
+                  accessor: 'col4',
+                  Cell: ({ value }) => (
+                      <button onClick={() => value.edit()}>Edit</button>
+                  ),
+              },
+          ]
+        : PRODUCT_HEADERS
 }
 
 const PRODUCT_HEADERS = [
@@ -120,5 +151,12 @@ const TRANSACTION_HEADERS = [
     {
         Header: 'Total Penjualan',
         accessor: 'col3',
+    },
+]
+
+const PROMO_HEADERS = [
+    {
+        Header: 'Promo',
+        accessor: 'col1',
     },
 ]

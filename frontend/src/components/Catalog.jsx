@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Card from './Card'
 import Order from './Order'
 import { GridRow } from './Grid'
-import { useAuth } from '../context/user-context'
+import { useAuth } from '../hooks/useAuth'
 import { useProducts } from '../hooks/useProducts'
 
 export default function Catalog() {
@@ -16,7 +16,7 @@ export default function Catalog() {
     return (
         <>
             <GridRow
-                className={'px-5 w-full flex-auto'}
+                className={'px-5 w-full'}
                 title={
                     <div className="text-white flex flex-col justify-center h-full w-full">
                         <h1 className="text-2xl font-bold mb-2">
@@ -34,7 +34,7 @@ export default function Catalog() {
                             Refresh
                         </button>
                     </div>
-                    <div className="flex-auto flex flex-wrap gap-5 align-start justify-start overflow-y-scroll h-full max-h-[78vh] p-2">
+                    <div className="flex-auto flex flex-wrap gap-5 align-start justify-start overflow-y-scroll h-full max-h-[75vh] p-2">
                         {Array.isArray(products) &&
                             products.map((val, i) => (
                                 <Card
@@ -60,9 +60,9 @@ export default function Catalog() {
 const UserMemo = React.memo(User)
 
 function User() {
-    const { signOut, auth } = useAuth()
+    const { signOut, authUser } = useAuth()
 
-    return auth.user ? (
+    return (
         <div className={'h-full flex items-center gap-6 '}>
             <div
                 className={'h-[3.5rem] w-[3.5rem] overflow-hidden rounded-full'}
@@ -70,15 +70,15 @@ function User() {
                 <img src={'./src/static/images/dummy.jpg'} alt={''} />
             </div>
             <div className={'flex flex-col gap-2'}>
-                <h1 className="text-md font-bold">{auth.user.name}</h1>
-                <p className="text-xs font-thin opacity-70">{auth.user.role}</p>
+                <h1 className="text-md font-bold">{authUser.name}</h1>
+                <p className="text-xs font-thin opacity-70">{authUser.role}</p>
             </div>
             {/* Sign Out */}
-            <div className="flex-1 text-right" onClick={() => signOut()}>
+            <div className="flex-1 text-right" onClick={signOut}>
                 <span className="bg-primary p-2 rounded-lg cursor-pointer">
                     Sign Out
                 </span>
             </div>
         </div>
-    ) : null
+    )
 }

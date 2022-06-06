@@ -33,10 +33,7 @@ function InputProduct() {
     const {
         register,
         handleSubmit,
-        setError,
         setValue,
-        resetField,
-        control,
         formState: { errors },
     } = useForm({
         resolver: yupResolver(schema),

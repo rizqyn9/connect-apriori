@@ -3,16 +3,15 @@ import { Link, Navigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useAuth } from '../context/user-context'
-import { useCookies } from 'react-cookie'
+import { useAuth } from '../hooks/useAuth'
+import { useIsAuthenticated } from 'react-auth-kit'
 
 function Auth({ children }) {
-    const [cookies] = useCookies(['token'])
-
+    const shouldAuthenticated = useIsAuthenticated()
     /**
      * Ketika user sudah login dan melakukan reload pada halaman akan dikembalikan kehalaman dashboard
      */
-    return !cookies.token ? (
+    return !shouldAuthenticated() ? (
         <div className="bg-dark-2 flex h-screen overflow-hidden justify-center text-white">
             <div className="py-7 px-8 flex flex-col gap-2 bg-dark-1 w-3/5 min-w-max max-w-sm min-h-[10rem] self-center rounded-xl">
                 {children}
@@ -48,13 +47,14 @@ export function SignUp() {
     })
 
     const onSubmit = async (data) => {
-        SignUpServices(data)
+        console.log(data)
+        await SignUpServices(data)
     }
 
     return (
         <Auth>
             {/* TITLE */}
-            <h1 className="h4 py-3 mb-5 text-center">DAFTAR</h1>
+            <h1 className="text-xl font-bold py-3 mb-3 text-center">DAFTAR</h1>
             {/* FORM */}
             <form
                 className={'w-full flex flex-col gap-5'}
@@ -100,11 +100,14 @@ export function SignUp() {
 }
 
 export function SignIn() {
-    const { signIn, auth } = useAuth()
+    const { signIn } = useAuth()
 
     const schema = yup
         .object({
-            email: yup.string().email('Email not valid').required(),
+            email: yup
+                .string()
+                .email('Email not valid')
+                .required('Email is required'),
             password: yup.string().required('Password is required'),
         })
         .required()
@@ -124,7 +127,7 @@ export function SignIn() {
     return (
         <Auth>
             {/* TITLE */}
-            <h1 className="h4 py-3 mb-5 text-center">MASUK</h1>
+            <h1 className="text-xl font-bold py-3 mb-3 text-center">MASUK</h1>
             {/* FORM */}
             <form
                 className={'w-full flex flex-col gap-4'}
