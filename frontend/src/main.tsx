@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom'
 import './static/css/index.scss'
 import App from './App'
 import { BrowserRouter as Router } from 'react-router-dom'
-import { Helmet } from 'react-helmet'
 
 ReactDOM.render(
     <React.StrictMode>
@@ -11,7 +10,8 @@ ReactDOM.render(
 			<title>Dashboard</title>
 		</Helmet> */}
         <Router>
-            <App />
+            {/* <App /> */}
+            <div>a</div>
         </Router>
     </React.StrictMode>,
     document.getElementById('root')
