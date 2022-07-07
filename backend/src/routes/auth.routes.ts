@@ -1,20 +1,12 @@
 import express from "express"
 import User from "../../models/User.model.js"
 import responses from "../../utils/responses.js"
-import jose from "jose"
+import jwt from "jsonwebtoken"
+import { config } from "@/lib/config.js"
 
 const app = express.Router()
-
 app.post("/signup", async (req, res) => {
   try {
-    // const valid_keys = ["email", "password", "name"]
-
-    // required fields
-    // for (const key of valid_keys) {
-    //   if (!req.body[key])
-    //     return responses.fail(res, (message = `${key} is required`))
-    // }
-
     //Destruct
     const { name, email, password } = req.body
 
@@ -33,34 +25,22 @@ app.post("/signup", async (req, res) => {
 
 app.post("/signin", async (req, res) => {
   try {
-    // Destruct
+    const { email, password } = req.body
 
-    // const { email, password } = req.body
-
-    const payload = new jose.SignJWT({ "urn:example:claim": true })
-      .setProtectedHeader({ alg: "ES256" })
-      .setIssuedAt()
-      .setIssuer("urn:example:issuer")
-      .setAudience("urn:example:audience")
-      .setExpirationTime("2h")
-
-    res.json({
-      payload,
-    })
     // Get User
-    // await User.findOne({ email }).then((data) => {
-    //   if (data) {
-    // let payload = jwt.sign(
-    //   { email: data.email, id: data._id },
-    //   process.env.SECRET_TOKEN
-    // )
-    // return responses.success(res, {
-    //   token: payload,
-    //   isAuth: true,
-    //   user: { email: data.email, name: data.name, isAdmin: data.isAdmin },
-    // })
-    //   }
-    // })
+    await User.findOne({ email }).then((data) => {
+      if (data) {
+        let payload = jwt.sign(
+          { email: data.email, id: data._id },
+          config.secretToken
+        )
+        return responses.success(res, {
+          token: payload,
+          isAuth: true,
+          user: { email: data.email, name: data.name, isAdmin: data.isAdmin },
+        })
+      }
+    })
   } catch (error) {
     return responses.error(res, error)
   }
