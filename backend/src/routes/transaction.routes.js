@@ -1,12 +1,13 @@
-import TransactionModel from "../models/Transaction.model.js"
+import TransactionModel from "../models/Transaction.js"
 import responses from "../utils/responses.js"
 import { parseOrder } from "../lib/parseOrder.js"
 import * as transactionController from "../controller/transaction.controller.js"
 import * as productController from "../controller/product.controller.js"
 
-import express from "express"
+import { Router } from "express"
 import { isValidKeyRequest, isValidObjectId } from "../utils/index.js"
-const app = express.Router()
+
+const app = Router()
 
 /**
  * Ambil semua transaksi

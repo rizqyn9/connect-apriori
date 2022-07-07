@@ -1,4 +1,4 @@
-import TransactionModel from "../models/Transaction.model.js"
+import TransactionModel from "@/models/Transaction"
 
 const getAll = async () =>
   await TransactionModel.find().then((val, rej) => {

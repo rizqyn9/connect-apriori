@@ -1,52 +1,50 @@
-import express from "express"
-import User from "../../models/User.model.js"
-import responses from "../../utils/responses.js"
+import { Router } from "express"
+import User from "../models/User.js"
+import responses from "../utils/responses.js"
 import jwt from "jsonwebtoken"
 import { config } from "@/lib/config.js"
 
-const app = express.Router()
-app.post("/signup", async (req, res) => {
+const app = Router()
+
+/* --------------------------- Handle user signup --------------------------- */
+app.post("/signup", async (req, res, next) => {
   try {
-    //Destruct
     const { name, email, password } = req.body
 
     // Check existing email
-    if (await User.exists({ email }))
-      return responses.fail(res, "email", "Email exist")
+    if (await User.exists({ email })) throw new Error("Email exist")
 
     // Create new User
-    await User.create({ name, email, password }).then((data) => {
-      return responses.success(res, { name, email })
+    await User.create({ name, email, password }).then((payload) => {
+      return res.status(201).json({ msg: "created", payload })
     })
   } catch (error) {
-    return responses.error(res, error)
+    next(error)
   }
 })
 
-app.post("/signin", async (req, res) => {
+/* ------------------------------ User sign in ------------------------------ */
+app.post("/signin", async (req, res, next) => {
   try {
     const { email, password } = req.body
 
-    // Get User
-    await User.findOne({ email }).then((data) => {
-      if (data) {
-        let payload = jwt.sign(
-          { email: data.email, id: data._id },
-          config.secretToken
-        )
-        return responses.success(res, {
-          token: payload,
-          isAuth: true,
-          user: { email: data.email, name: data.name, isAdmin: data.isAdmin },
-        })
+    // Get User by email
+    await User.findOne({ email }).then((payload) => {
+      if (payload) {
+        const { _id, email } = payload
+        let token = jwt.sign({ email: email, id: _id }, config.secretToken)
+        return res.json({ token, payload })
       }
     })
+
+    // If user not found
+    throw new Error("User not found")
   } catch (error) {
-    return responses.error(res, error)
+    next(error)
   }
 })
 
-app.post("/validate", (req, res) => {
+app.post("/validate", (req, res, next) => {
   try {
     // return jwt.verify(
     //   req.body.token,
@@ -68,8 +66,9 @@ app.post("/validate", (req, res) => {
     //     })
     //   }
     // )
+    throw new Error(`${req.url} not handled now`)
   } catch (error) {
-    return responses.error(res, error.message)
+    next(error)
   }
 })
 

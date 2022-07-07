@@ -1,10 +1,10 @@
-import express from "express"
-import Customer from "../models/Customer.model.js"
+import { Router } from "express"
+import Customer from "../models/Customer.js"
 import responses from "../utils/responses.js"
-import { isValidKeyRequest } from "../utils/index.js"
+import { isValidKeyRequest } from "../utils"
 import mongoose from "mongoose"
 
-const app = express.Router()
+const app = Router()
 
 /**
  * Get all customer if id empty

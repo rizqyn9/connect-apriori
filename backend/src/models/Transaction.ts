@@ -1,6 +1,6 @@
 import { Schema, Types, model } from "mongoose"
 
-type TransactionProps = {
+export type TransactionProps = {
   price: number
   paymentMethod: string
   customerId: Types.ObjectId

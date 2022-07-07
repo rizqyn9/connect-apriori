@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken"
-import responses from "../utils/responses.js"
+import responses from "../src/utils/responses"
 
 export const VerifyToken = (req, res, next) => {
   try {

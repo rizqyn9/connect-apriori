@@ -1,4 +1,4 @@
-import PromoModel from "../models/Promo.model.js"
+import PromoModel from "@/models/Promo.js"
 
 const getAll = async () =>
   await PromoModel.find().then((val, rej) => {

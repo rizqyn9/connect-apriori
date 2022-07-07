@@ -1,13 +1,14 @@
-import mongoose from "mongoose"
+import { isValidObjectId as checkValidId } from "mongoose"
+import { Request } from "express"
 
-const isValidKeyRequest = (compare = [], req) => {
+const isValidKeyRequest = (compare: string[] = [], req: Request) => {
   for (const key of compare) {
     if (!req.body[key]) throw new Error(`${key} is required`)
   }
 }
 
-const isValidObjectId = (id, shouldThrow = true) => {
-  const validId = id && mongoose.isValidObjectId(id) ? id : false
+const isValidObjectId = (id: string, shouldThrow = true) => {
+  const validId = id && checkValidId(id) ? id : false
   if (validId) return validId
   if (!validId && shouldThrow) {
     throw new Error("ID not valid")

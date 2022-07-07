@@ -1,11 +1,10 @@
-import express from "express"
+import { Router } from "express"
 import responses from "../utils/responses.js"
 import * as promoController from "../controller/promo.controller.js"
-import * as productController from "../controller/product.controller.js"
+// import * as productController from "../controller/product.controller.js"
 import { isValidKeyRequest, isValidObjectId } from "../utils/index.js"
-import monggose from "mongoose"
 
-const app = express.Router()
+const app = Router()
 
 // Get all promos
 app.get("/", async (req, res) => {

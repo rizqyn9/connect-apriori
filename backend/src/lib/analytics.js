@@ -1,4 +1,4 @@
-import Analytics from "../models/Analytics.model.js"
+import Analytics from "../models/Analytics.js"
 
 const ANALYTICS_LABEL = "analytics"
 

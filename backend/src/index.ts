@@ -1,4 +1,4 @@
-import express from "express"
+import express, { NextFunction, Request, Response } from "express"
 import bodyParser from "body-parser"
 import cors from "cors"
 import cookieParser from "cookie-parser"
@@ -23,8 +23,14 @@ app.use((req, res, next) => {
 // app.use(cors({ credentials: true, origin: "http://localhost:3000" }), Routes)
 app.use(Routes)
 
-app.use("*", (req, res) => {
-  res.send("Routes not found")
+// Error handler
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.log(err)
+  if (err instanceof Error) {
+    res.json({ err: err.message })
+  } else {
+    res.json({ err })
+  }
 })
 
 MongoConnect()

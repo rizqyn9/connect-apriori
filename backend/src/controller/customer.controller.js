@@ -1,4 +1,4 @@
-import CustomerModel from "../models/Customer.model.js"
+import CustomerModel from "@/models/Customer.js"
 
 const getCustomerById = async (id) => {
   return await CustomerModel.findById(id)

@@ -1,8 +1,9 @@
-import express from "express"
-const app = express.Router()
+import { Router } from "express"
 
-import User from "../models/User.model.js"
-import responses from "../utils/responses.js"
+const app = Router()
+
+import User from "../models/User.js"
+import responses from "../utils/responses"
 
 app.get("/", (req, res) => {
   res.send("user")
