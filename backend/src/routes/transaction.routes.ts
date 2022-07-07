@@ -1,36 +1,29 @@
-import TransactionModel from "../models/Transaction.js"
-import responses from "../utils/responses.js"
-import { parseOrder } from "../lib/parseOrder.js"
-import * as transactionController from "../controller/transaction.controller.js"
-import * as productController from "../controller/product.controller.js"
+import responses from "../utils/responses"
+import { parseOrder } from "@/lib/parseOrder"
+import * as TransactionController from "@/controller/transaction.controller"
+import * as productController from "@/controller/product.controller"
 
 import { Router } from "express"
 import { isValidKeyRequest, isValidObjectId } from "../utils/index.js"
 
 const app = Router()
 
-/**
- * Ambil semua transaksi
- */
-app.get("/", async (req, res) => {
+/* -------------------------- Get all transactions -------------------------- */
+app.get("/", async (req, res, next) => {
   try {
-    await transactionController
-      .getAll()
-      .then((val) => responses.success(res, val, "Transactions"))
+    await TransactionController.getAll().then((payload) =>
+      res.json({ payload })
+    )
   } catch (error) {
-    if (error instanceof Error) responses.fail(res, {}, error.message)
-    else responses.error(res, "Server error")
+    next(error)
   }
 })
 
-/**
- * Buat Transaksi baru
- */
-app.post("/new", async (req, res) => {
+/* ------------------------- Create new transaction ------------------------- */
+app.post("/crete", async (req, res) => {
   try {
     isValidKeyRequest(["orders", "transaction"], req)
     const { orders, transaction } = req.body
-    console.log(orders, transaction)
 
     const parsedOrder = parseOrder(orders)
 

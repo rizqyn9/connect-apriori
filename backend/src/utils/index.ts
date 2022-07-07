@@ -17,4 +17,12 @@ const isValidObjectId = (id: string, shouldThrow = true) => {
   }
 }
 
-export { isValidKeyRequest, isValidObjectId }
+const isMongooseError = (error: unknown) => {
+  if (error instanceof Error) {
+    if (error.message.includes("E11000")) {
+      error.message = "Duplicate"
+    }
+  }
+}
+
+export { isValidKeyRequest, isValidObjectId, isMongooseError }

@@ -1,71 +1,53 @@
 import { Router } from "express"
-import Customer from "../models/Customer.js"
-import responses from "../utils/responses.js"
-import { isValidKeyRequest } from "../utils"
-import mongoose from "mongoose"
+import * as CustomerController from "@/controller/customer.controller"
+import { isMongooseError, isValidObjectId } from "@/utils"
 
 const app = Router()
 
-/**
- * Get all customer if id empty
- * Get specified customer if id is fullfilled
- */
-app.get("/", async (req, res) => {
-  const id = req.body.id
-
-  const query = id && mongoose.isValidObjectId(id) ? { _id: id } : {}
-
-  return await Customer.find(query)
-    .then((data) => {
-      responses.success(res, data)
-    })
-    .catch((err) => {
-      responses.error(res, err)
-    })
-})
-
-app.post("/new", async (req, res) => {
+/* ---------------------------- Get all customers --------------------------- */
+app.get("/", async (req, res, next) => {
   try {
-    isValidKeyRequest(["name", "id_customer"], req, res)
-
-    return await Customer.create({ ...req.body })
-      .then((val) => {
-        if (val) responses.success(res, val, "New user success created")
-      })
-      .catch((err) => {
-        if (err.code == "11000")
-          return responses.fail(res, "Customer already resgistered")
-        throw new Error(err)
-      })
+    CustomerController.getAll().then((payload) => res.json({ payload }))
   } catch (error) {
-    if (error instanceof Error) {
-      responses.error(res, error.message)
-    }
+    next(error)
   }
 })
 
-app.delete("/", async (req, res) => {
+/* ----------------------- Get specific customer by id ---------------------- */
+app.get("/:id", async (req, res, next) => {
   try {
-    isValidKeyRequest(["id"], req)
-    const id = isValidObjectId(req.body.id) ? req.body.id : false
-
-    if (!id) {
-      throw new Error("ID not valid")
-    }
-
-    await Customer.findByIdAndDelete(id).then((data, err) => {
-      if (data) {
-        return responses.success(res, data, "Success deleted customer")
-      } else {
-        throw new Error("Customer not found")
-      }
-    })
+    const { id } = req.params
+    isValidObjectId(id)
+    CustomerController.getById(id).then((payload) => res.json({ payload }))
   } catch (error) {
-    console.log(error)
-    if (error instanceof Error) {
-      return responses.error(res, error.message)
-    }
-    responses.error(res, error)
+    next(error)
+  }
+})
+
+/* ----------------------------- Create customer ---------------------------- */
+app.post("/create", async (req, res, next) => {
+  try {
+    console.log(req.body)
+
+    return await CustomerController.create({
+      name: String(req.body.name),
+    }).then((payload) => res.json({ payload }))
+  } catch (error) {
+    // isMongooseError(error)
+    next(error)
+  }
+})
+
+/* --------------------------- Create delete by id -------------------------- */
+app.delete("/:id", async (req, res, next) => {
+  try {
+    const { id } = req.params
+
+    isValidObjectId(id)
+
+    CustomerController.deleteById(id).then((payload) => res.json({ payload }))
+  } catch (error) {
+    next(error)
   }
 })
 

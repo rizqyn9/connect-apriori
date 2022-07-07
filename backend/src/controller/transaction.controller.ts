@@ -1,10 +1,9 @@
 import TransactionModel from "@/models/Transaction"
 
 const getAll = async () =>
-  await TransactionModel.find().then((val, rej) => {
-    if (val) return val
-    else throw new Error("Transaction not found")
-  })
+  await TransactionModel.find().then(
+    (val) => val ?? Promise.reject("Transaction not found")
+  )
 
 const getById = async () => {}
 

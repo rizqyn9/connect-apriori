@@ -1,41 +1,32 @@
-import PromoModel from "@/models/Promo.js"
+import PromoModel, { PromoProps } from "@/models/Promo.js"
 
 const getAll = async () =>
-  await PromoModel.find().then((val, rej) => {
-    if (val) return val
-    else throw new Error("Failed to find promo")
-  })
-
-const getById = async (id) =>
-  await PromoModel.findById(id).then((val, rej) => {
-    if (val) return val
-    else throw new Error("Failed to find promo")
-  })
-
-/**
- * @param {Array} list of ProductID
- * @param {Number} discount
- * @returns Promise.PromoModel
- */
-const create = async (listProduct, discount) =>
-  await PromoModel.create({ productsList: listProduct, discount }).then(
-    (val, rej) => {
-      if (val) return val
-      else throw new Error("Failed to create new promo")
-    }
+  await PromoModel.find().then(
+    (val) => val ?? Promise.reject("Something error")
   )
 
-const update = async (id, data) =>
-  await PromoModel.findById(id, { ...data }).then((val, rej) => {
-    if (val) return val
-    else throw new Error("Failed to update promo")
-  })
+const getById = async (id: string) =>
+  await PromoModel.findById(id).then(
+    (val) => val ?? Promise.reject("Promo not found")
+  )
 
-const remove = async (id) =>
-  await PromoModel.findByIdAndRemove(id).then((val, rej) => {
-    if (val) return val
-    else throw new Error("Failed to deleted promo")
-  })
+const create = async (
+  listProduct: PromoProps["productsList"],
+  discount: number
+) =>
+  await PromoModel.create({ productsList: listProduct, discount }).then(
+    (val) => val ?? Promise.reject("Failed")
+  )
+
+const update = async (id: string, data: PromoProps) =>
+  await PromoModel.findById(id, { ...data }).then(
+    (val) => val ?? Promise.reject("Failed to update promo")
+  )
+
+const remove = async (id: string) =>
+  await PromoModel.findByIdAndRemove(id).then(
+    (val) => val ?? Promise.reject("Failed to deleted promo")
+  )
 
 const isValidPromo = async () => {}
 
@@ -43,4 +34,12 @@ const assignProductToPromo = async (promo, productId) => {
   return promo.products.push(productId)
 }
 
-export { getAll, getById, create, update, remove, isValidPromo }
+export {
+  getAll,
+  getById,
+  create,
+  update,
+  remove,
+  isValidPromo,
+  assignProductToPromo,
+}
