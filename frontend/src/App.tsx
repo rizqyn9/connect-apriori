@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
-import { SignIn, SignUp } from './pages/Auth'
+import { SignIn, SignUp } from './pages/Auth.tsx'
 import DashboardLayout from './pages/DashboardLayout'
 import { ProductPage } from './pages/InputProduct'
 import Catalog from './components/Catalog'
@@ -48,8 +48,8 @@ function App() {
                         element={<AccountManagement />}
                     />
                 </Route>
-                <Route path="/auth/signin" element={<SignIn />} exact />
-                <Route path="/auth/signup" element={<SignUp />} exact />
+                <Route path="/auth/signin" element={<SignIn />} />
+                <Route path="/auth/signup" element={<SignUp />} />
                 <Route path={'*'} element={<div>Notfound</div>} />
                 <Route path="/logout" element={<LogOut />} />
             </Routes>

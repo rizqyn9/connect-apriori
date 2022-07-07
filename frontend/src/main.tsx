@@ -10,9 +10,9 @@ ReactDOM.render(
 			<title>Dashboard</title>
 		</Helmet> */}
         <Router>
-            {/* <App /> */}
-            <div>a</div>
+            <App />
+            {/* <div>a</div> */}
         </Router>
     </React.StrictMode>,
-    document.getElementById('root')
+    document.getElementById('root'),
 )

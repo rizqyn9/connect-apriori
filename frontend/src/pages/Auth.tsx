@@ -1,16 +1,26 @@
 import React, { useEffect, useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
+import {
+    useForm,
+    UseControllerProps,
+    FieldValue,
+    useController,
+    FieldValues,
+    FieldPath,
+    Control,
+} from 'react-hook-form'
 import * as yup from 'yup'
+import { z, infer } from 'zod'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useAuth } from '../hooks/useAuth'
 import { useIsAuthenticated } from 'react-auth-kit'
 
-function Auth({ children }) {
+type AuthProps = {
+    children: React.ReactNode
+}
+function Auth({ children }: AuthProps) {
     const shouldAuthenticated = useIsAuthenticated()
-    /**
-     * Ketika user sudah login dan melakukan reload pada halaman akan dikembalikan kehalaman dashboard
-     */
     return !shouldAuthenticated() ? (
         <div className="bg-dark-2 flex h-screen overflow-hidden justify-center text-white">
             <div className="py-7 px-8 flex flex-col gap-2 bg-dark-1 w-3/5 min-w-max max-w-sm min-h-[10rem] self-center rounded-xl">
@@ -22,31 +32,37 @@ function Auth({ children }) {
     )
 }
 
+const schema = yup
+    .object({
+        name: yup.string().required(),
+        email: yup.string().email('Email not valid').required(),
+        password: yup
+            .string()
+            .min(1, 'Min pass 8 characters')
+            .max(13, 'Max pass 13 characters')
+            .required('Password is required'),
+    })
+    .required()
+
+const signUpSchema = z.object({
+    name: z.string().min(1, 'Name required'),
+    email: z.string().email('Email not valid').min(1, 'Email required'),
+    password: z
+        .string()
+        .min(1, 'Min pass 8 characters')
+        .max(13, 'Max pass 13 characters'),
+})
+
+type SignUpSchema = z.infer<typeof signUpSchema>
+
 export function SignUp() {
     const { signUp: SignUpServices } = useAuth()
 
-    const schema = yup
-        .object({
-            name: yup.string().required(),
-            email: yup.string().email('Email not valid').required(),
-            password: yup
-                .string()
-                .min(1, 'Min pass 8 characters')
-                .max(13, 'Max pass 13 characters')
-                .required('Password is required'),
-        })
-        .required()
-
-    const {
-        register,
-        handleSubmit,
-        setError,
-        formState: { errors },
-    } = useForm({
-        resolver: yupResolver(schema),
+    const { handleSubmit, control } = useForm<SignUpSchema>({
+        resolver: zodResolver(signUpSchema),
     })
 
-    const onSubmit = async (data) => {
+    const onSubmit = async (data: SignUpSchema) => {
         console.log(data)
         await SignUpServices(data)
     }
@@ -61,33 +77,31 @@ export function SignUp() {
                 onSubmit={handleSubmit(onSubmit)}
             >
                 <FormInput
+                    control={control}
                     label={'Name'}
-                    register={register}
-                    name={'name'}
+                    name="name"
                     type={'text'}
-                    errors={errors.name?.message}
                 />
                 <FormInput
+                    control={control}
                     label={'Email'}
-                    register={register}
                     name={'email'}
                     type={'email'}
-                    errors={errors.email?.message}
                 />
                 <FormInput
+                    control={control}
                     label={'Password'}
-                    register={register}
                     name={'password'}
                     type={'password'}
-                    errors={errors.password?.message}
                 />
-                <input
+                <button
                     type={'submit'}
-                    value={'Sign Up'}
                     className={
                         'py-2 mt-8 rounded-lg bg-primary hover:bg-primary/80 cursor-pointer'
                     }
-                />
+                >
+                    Sign Up
+                </button>
                 <Link
                     to={'/auth/signin'}
                     className={'text-sm hover:text-white/80 italic mt-3'}
@@ -112,11 +126,7 @@ export function SignIn() {
         })
         .required()
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm({
+    const { control, handleSubmit } = useForm({
         resolver: yupResolver(schema),
     })
 
@@ -134,26 +144,26 @@ export function SignIn() {
                 onSubmit={handleSubmit(onSubmit)}
             >
                 <FormInput
+                    control={control}
                     label={'Email'}
-                    register={register}
                     name={'email'}
                     type={'email'}
-                    errors={errors.email?.message}
                 />
                 <FormInput
-                    label={'Password'}
-                    register={register}
+                    control={control}
                     name={'password'}
+                    label={'Password'}
                     type={'password'}
-                    errors={errors.password?.message}
                 />
-                <input
+                <button
                     type={'submit'}
                     value={'Sign In'}
                     className={
                         'py-2 mt-8 rounded-lg bg-primary hover:bg-primary/80 cursor-pointer'
                     }
-                />
+                >
+                    Sign In
+                </button>
                 <Link
                     to={'/auth/signup'}
                     className={
@@ -167,21 +177,29 @@ export function SignIn() {
     )
 }
 
-function FormInput({ name, register, label, errors, type = 'text' }) {
+type FormInputProps<T extends FieldValues> = UseControllerProps<T> & {
+    label: string
+    type: React.HTMLInputTypeAttribute
+}
+function FormInput<T extends FieldValues = FieldValues>(
+    props: FormInputProps<T>,
+) {
+    const { field, fieldState } = useController(props)
     return (
-        <label htmlFor={name} className={'w-full flex flex-col'}>
-            <p className="ml-1 pb-1 text-sm font-medium">{label}</p>
+        <label htmlFor={field.name} className={'w-full flex flex-col'}>
+            <p className="ml-1 pb-1 text-sm font-medium">{props.label}</p>
             <input
-                id={name}
-                name={name}
-                type={type}
-                {...register(name)}
+                id={field.name}
+                type={props.type}
+                {...field}
                 className={
                     'py-2 px-3 rounded-md text-white bg-form outline-2 border-2 border-dark-line outline-offset-5 outline-red-200 '
                 }
             />
-            {errors && (
-                <p className={'text-xs mt-1 italic text-red-300'}>{errors}</p>
+            {fieldState.error && (
+                <p className={'text-xs mt-1 italic text-red-300'}>
+                    {fieldState.error.message}
+                </p>
             )}
         </label>
     )
