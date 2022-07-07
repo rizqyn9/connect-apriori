@@ -1,12 +1,11 @@
-import dotenv from "dotenv"
-dotenv.config()
-
 import express from "express"
 import bodyParser from "body-parser"
 import cors from "cors"
 import cookieParser from "cookie-parser"
-import { MongoConnect } from "./utils/mongoConnect.js"
-import Routes from "./routes/index.routes.js"
+
+import { MongoConnect } from "./lib/mongo"
+import { config } from "@/lib/config"
+import Routes from "./routes"
 
 const app = express()
 
@@ -21,19 +20,17 @@ app.use((req, res, next) => {
   next()
 })
 
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }), Routes)
+// app.use(cors({ credentials: true, origin: "http://localhost:3000" }), Routes)
+app.use(Routes)
 
 app.use("*", (req, res) => {
   res.send("Routes not found")
 })
 
-const PORT = process.env.PORT || 5000
-
-// Wait until DB connected
-MongoConnect(process.env.MONGO)
+MongoConnect()
   .then(() => {
-    app.listen(PORT, () => {
-      console.log(`Server listening on http://localhost:${PORT}`)
+    app.listen(config.port, () => {
+      console.log(`Server listening on http://localhost:${config.port}`)
     })
   })
   .catch((e) => {

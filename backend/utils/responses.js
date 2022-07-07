@@ -5,7 +5,7 @@ export default {
   },
   fail: (res, data, message = {}, status = 200) => {
     // console.log({ data, message });
-    return res.json({ status: "fail", data, message })
+    return res.status(status).json({ status: "fail", data, message })
   },
   error: (res, message, status = 500) => {
     console.log(message)
