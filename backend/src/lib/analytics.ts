@@ -1,4 +1,4 @@
-import Analytics from "../models/Analytics.js"
+import Analytics from "../models/Analytics"
 
 const ANALYTICS_LABEL = "analytics"
 
@@ -12,7 +12,7 @@ const updateOneProduct = async (data) => {
   }
 }
 
-const checkExistAnalytics = () =>
+const checkExistAnalytics = (): Promise<void> =>
   new Promise(async (res, rej) => {
     try {
       if (!(await Analytics.exists({ label: ANALYTICS_LABEL }))) {
@@ -28,18 +28,9 @@ const checkExistAnalytics = () =>
     }
   })
 
-const getAnalytics = async () => {
-  try {
-    return await Analytics.findOne({ label: ANALYTICS_LABEL }).then(
-      (data, err) => {
-        if (err) throw new Error("Data not found")
-        return data
-      }
-    )
-  } catch (error) {
-    console.log(error)
-    throw new Error(error)
-  }
-}
+const getAnalytics = async () =>
+  await Analytics.findOne({ label: ANALYTICS_LABEL }).then(
+    (data) => data ?? Promise.reject("Data not found")
+  )
 
 export { updateOneProduct }
