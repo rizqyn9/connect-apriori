@@ -1,7 +1,6 @@
 import clsx from 'clsx'
 import React from 'react'
-import { useLocation } from 'react-router-dom'
-import { NavLink } from 'react-router-dom'
+import { useLocation, NavLink } from 'react-router-dom'
 import { GridRow } from './Grid'
 import Icon from './Icon'
 
@@ -14,9 +13,8 @@ export default function Sidebar() {
                     className={
                         'text-primary font-extrabold text-4xl w-full h-full flex items-center justify-center'
                     }
-                >
-                    CC
-                </div>
+                    children="CC"
+                />
             }
         >
             <div className="flex flex-col gap-5 py-8">
@@ -42,7 +40,12 @@ export default function Sidebar() {
     )
 }
 
-function NavItem({ to, title, icon }) {
+type NavItemProps = {
+    to: string
+    title?: string
+    icon: React.ReactNode
+}
+function NavItem({ to, title, icon }: NavItemProps) {
     const location = useLocation()
     const { pathname } = location
 
@@ -56,7 +59,7 @@ function NavItem({ to, title, icon }) {
                     'p-[16px] rounded-md w-[56px] h-[56px]',
                     isActive
                         ? 'bg-primary text-white nav__active'
-                        : 'text-primary hover:text-white'
+                        : 'text-primary hover:text-white',
                 )}
             >
                 {icon || <Icon.Home />}

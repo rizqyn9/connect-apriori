@@ -1,4 +1,3 @@
-import React from 'react'
 import Sidebar from '../components/Sidebar'
 import { Outlet } from 'react-router-dom'
 import { OrderProvider } from '../context/order-context'
@@ -11,7 +10,9 @@ export default function DashboardLayout() {
                 <div className="w-[7rem] bg-dark-2 flex-shrink">
                     <Sidebar />
                 </div>
-                <div className="flex flex-1 text-white">{/* <Outlet /> */}</div>
+                <div className="flex flex-1 text-white">
+                    <Outlet />
+                </div>
             </div>
         </OrderProvider>
     )

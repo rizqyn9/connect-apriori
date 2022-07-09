@@ -3,14 +3,23 @@ import Card from './Card'
 import Order from './Order'
 import { GridRow } from './Grid'
 import { useAuth } from '../hooks/useAuth'
-import { useProducts } from '../hooks/useProducts'
+import { useProductStore } from '../hooks/useProducts'
+import { useToastStore } from './Toast'
 
 export default function Catalog() {
-    const { getAllProducts, products } = useProducts()
+    const { addToast } = useToastStore()
+    const { getAllProducts, products } = useProductStore()
+
     const [activeCard, setActiveCard] = useState('')
 
-    useEffect(async () => {
-        if (products.length == 0) await getAllProducts()
+    useEffect(() => {
+        if (products.length == 0) fetchProduct()
+    }, [])
+
+    const fetchProduct = React.useCallback(() => {
+        getAllProducts()
+            .then(() => addToast({ msg: 'update catalog' }))
+            .catch((err) => addToast({ msg: err, type: 'error' }))
     }, [])
 
     return (
@@ -30,7 +39,10 @@ export default function Catalog() {
             >
                 <div className="row-start-2 flex h-full py-8 flex-col gap-5">
                     <div className=" self-start">
-                        <button className="p-2 bg-primary rounded-md">
+                        <button
+                            className="p-2 bg-primary rounded-md"
+                            onClick={fetchProduct}
+                        >
                             Refresh
                         </button>
                     </div>
@@ -41,10 +53,10 @@ export default function Catalog() {
                                     activeCard={activeCard == val._id}
                                     setActiveCard={setActiveCard}
                                     key={i}
-                                    id={val._id}
+                                    _id={val._id}
                                     price={val.price}
                                     menu={val.menu}
-                                    image={val.image}
+                                    imageURL={val.imageURL}
                                 />
                             ))}
                     </div>
@@ -70,8 +82,8 @@ function User() {
                 <img src={'./src/static/images/dummy.jpg'} alt={''} />
             </div>
             <div className={'flex flex-col gap-2'}>
-                <h1 className="text-md font-bold">{authUser.name}</h1>
-                <p className="text-xs font-thin opacity-70">{authUser.role}</p>
+                <h1 className="text-md font-bold">{authUser?.name}</h1>
+                <p className="text-xs font-thin opacity-70">{authUser?.role}</p>
             </div>
             {/* Sign Out */}
             <div className="flex-1 text-right" onClick={signOut}>

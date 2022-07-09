@@ -1,11 +1,8 @@
-import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthUser, useSignIn, useSignOut } from 'react-auth-kit'
-
-import { signInService, signUpService } from '../services'
-import { useAxiosPrivate } from './useAxiosPrivate'
 import { SignInSchema, SignUpSchema } from '../utils/zod.schema'
-import api from '../services/index'
+import api from '../services'
+import { useToastStore } from '../components/Toast'
 
 export const ROLES = Object.freeze({
     ADMIN: 'admin',
@@ -16,29 +13,46 @@ export function useAuth() {
     const navigate = useNavigate()
     const authSignIn = useSignIn()
     const authSignOut = useSignOut()
+    const { addToast } = useToastStore()
     const auth = useAuthUser()
-    const axiosPrivate = useAxiosPrivate()
 
-    const signIn = async (data: SignInSchema) => {
-        return await api
+    const signIn = async (data: SignInSchema) =>
+        await api
             .post('/auth/signin', data)
             .then((val) => {
+                if ('err' in val.data) throw new Error(val.data.err)
+
                 authSignIn({
                     token: val.data.token,
                     tokenType: 'token',
                     expiresIn: 60 * 60 * 24 * 7,
-                    authState: { ...val.data.user },
+                    authState: { ...val.data.payload },
                 })
+                addToast({ msg: `Wellcome ${val.data.payload.name}` })
             })
-            .catch((err) => console.log(err))
-    }
+            .catch((err: Error) =>
+                addToast({
+                    msg: err.message ?? 'Failed to signin',
+                    type: 'error',
+                }),
+            )
 
-    const signUp = (data: SignUpSchema) =>
-        signUpService(data)
-            .then((val) => navigate('/auth/signin'))
-            .catch((err) => console.log(err))
+    const signUp = async (data: SignUpSchema) =>
+        await api
+            .post('/auth/signup', data)
+            .then((val) => {
+                if ('err' in val.data) throw new Error(val.data.err)
+                addToast({ msg: 'Success signup' })
+                navigate('/auth/signin')
+            })
+            .catch((err: Error) =>
+                addToast({
+                    msg: err.message ?? 'Failed to signup',
+                    type: 'error',
+                }),
+            )
 
-    const signOut = () => {
+    const signOut = async () => {
         authSignOut()
         navigate('/auth/signin')
     }

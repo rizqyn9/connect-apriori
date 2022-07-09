@@ -1,52 +1,53 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React from 'react'
 import clsx from 'clsx'
-import { useOrder } from '../hooks/useOrder'
-import Icon from './Icon'
-import { useOnClickOutside } from '../hooks/useClickOutside'
 import { useNavigate } from 'react-router-dom'
+import Icon from './Icon'
+import { useOrderStore } from '../hooks/useOrder'
+import { useOnClickOutside } from '../hooks/useClickOutside'
 
 export default function Card({
     menu,
-    image,
+    imageURL,
     price,
-    id,
+    _id,
     activeCard,
     setActiveCard,
-}) {
+}: CardProductProps) {
     const navigate = useNavigate()
-    const [type, setType] = useState('hot')
-    const ref = useRef()
-    const { addOrder } = useOrder()
+    const [menuType, setMenuType] = React.useState<MenuType>('hot')
+    const ref = React.useRef<HTMLDivElement>(null)
+    const { addOrder, orders } = useOrderStore()
+
     useOnClickOutside(ref, () => {
         setActiveCard('')
+        ref.current
     })
 
-    const handleType = (typeOrder) => {
-        if (typeOrder === type) return
-        setType(type)
-    }
+    React.useEffect(() => {
+        console.log(orders)
+    }, [orders])
 
-    const idWithVariant = `${type}-${id}`
+    const idWithVariant = `${menuType}-${_id}`
 
     return (
         <div
             className={clsx(
                 'w-[12rem] h-[23rem] p-2 rounded-2xl flex flex-col gap-4 items-center justify-around bg-dark-2 relative',
-                { 'shadow-active': activeCard }
+                { 'shadow-active': activeCard },
             )}
             data-active={activeCard}
-            onClick={() => setActiveCard(id)}
+            onClick={() => setActiveCard(_id)}
             ref={ref}
         >
             {/* Edit Icon */}
             <button
-                onClick={() => navigate(`product/${id}`)}
+                onClick={() => navigate(`product/${_id}`)}
                 className="absolute top-5 hover:bg-primary cursor-pointer left-5 bg-gray-50 w-6 h-6 rounded-full z-10"
             ></button>
 
             <div className="w-full pt-[100%] relative bg-primary rounded-xl overflow-hidden">
                 <img
-                    src={image}
+                    src={imageURL}
                     className="absolute top-0 left-0"
                     alt="dummy"
                 />
@@ -56,12 +57,18 @@ export default function Card({
                 <p className="text-sm text-white/80">Rp. {price}</p>
             </div>
             <div className={'flex gap-5'}>
-                <Variants setType={setType} type={type} />
+                <Variants setType={setMenuType} type={menuType} />
             </div>
             <button
                 className="text-xs bg-primary p-2 w-full text-center rounded-lg hover:opacity-80"
                 onClick={() => {
-                    addOrder(idWithVariant, { type, menu, price, image, id })
+                    addOrder(idWithVariant, {
+                        menuType,
+                        menu,
+                        price,
+                        imageURL,
+                        _id,
+                    })
                 }}
             >
                 Add to billing
@@ -70,7 +77,12 @@ export default function Card({
     )
 }
 
-function Variants({ setType, type }) {
+type VariantProps = {
+    setType: (type: MenuType) => void
+    type: MenuType
+}
+
+function Variants({ setType, type }: VariantProps) {
     return (
         <>
             <div
@@ -78,7 +90,7 @@ function Variants({ setType, type }) {
                     'w-8 h-8 p-1 grid place-content-center rounded-md cursor-pointer',
                     type === 'hot'
                         ? 'bg-primary/50 text-white'
-                        : 'bg-dark-1 text-[#f7a474]'
+                        : 'bg-dark-1 text-[#f7a474]',
                 )}
                 onClick={() => setType('hot')}
             >
@@ -89,7 +101,7 @@ function Variants({ setType, type }) {
                     'w-8 h-8 p-1 grid place-content-center rounded-md cursor-pointer',
                     type === 'ice'
                         ? 'bg-primary/50 text-red-900'
-                        : 'bg-dark-1 text-[#89f1f5]'
+                        : 'bg-dark-1 text-[#89f1f5]',
                 )}
                 style={{ color: 'cyan' }}
                 onClick={() => setType('ice')}

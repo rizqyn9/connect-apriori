@@ -1,63 +1,64 @@
 import React from 'react'
-import { useOrder } from '../../hooks/useOrder'
-import { useTransaction } from '../../hooks/useTransaction'
-import { Modal, ModalContainer, ModalFooter } from '../Modal/Base'
+// import { useOrder } from '../../hooks/useOrder'
+import { useTransactionStore } from '../../hooks/useTransaction'
+import { Modal, ModalContainer, ModalFooter } from './Base'
 import { Spinner } from '../Spinner'
 
 function ModalPayment({ close }) {
-    const { orders } = useOrder()
-    const {
-        transaction,
-        createTransaction,
-        transactionState,
-        TransactionStateType,
-        clearTransactionAndOrder,
-    } = useTransaction()
+    // const { orders } = useOrder()
+    // const {
+    //     transaction,
+    //     createTransaction,
+    //     transactionState,
+    //     TransactionStateType,
+    //     clearTransactionAndOrder,
+    // } = useTransaction()
 
-    const Content = React.useMemo(() => {
-        switch (transactionState) {
-            case TransactionStateType.ORDER:
-                return (
-                    <CreateOrder
-                        transaction={transaction}
-                        orders={orders}
-                        close={close}
-                        createTransaction={createTransaction}
-                    />
-                )
-            case TransactionStateType.SUCCESS:
-                return (
-                    <div className="w-full flex flex-col gap-10 items-center justify-center">
-                        <p className="font-bold text-2xl">Success</p>
-                        <button
-                            onClick={() => {
-                                clearTransactionAndOrder()
-                                close()
-                            }}
-                            className="px-3 py-2 rounded-md"
-                            style={{ boxShadow: '0 0 1px white' }}
-                        >
-                            Kembali ke dashboard
-                        </button>
-                    </div>
-                )
-            default:
-                return (
-                    <div className="flex flex-col items-center justify-center w-full">
-                        <Spinner />
-                        <p className="mt-5">Loading</p>
-                    </div>
-                )
-        }
-    }, [transactionState])
+    // const Content = React.useMemo(() => {
+    //     switch (transactionState) {
+    //         case TransactionStateType.ORDER:
+    //             return (
+    //                 <CreateOrder
+    //                     transaction={transaction}
+    //                     orders={orders}
+    //                     close={close}
+    //                     createTransaction={createTransaction}
+    //                 />
+    //             )
+    //         case TransactionStateType.SUCCESS:
+    //             return (
+    //                 <div className="w-full flex flex-col gap-10 items-center justify-center">
+    //                     <p className="font-bold text-2xl">Success</p>
+    //                     <button
+    //                         onClick={() => {
+    //                             clearTransactionAndOrder()
+    //                             close()
+    //                         }}
+    //                         className="px-3 py-2 rounded-md"
+    //                         style={{ boxShadow: '0 0 1px white' }}
+    //                     >
+    //                         Kembali ke dashboard
+    //                     </button>
+    //                 </div>
+    //             )
+    //         default:
+    //             return (
+    //                 <div className="flex flex-col items-center justify-center w-full">
+    //                     <Spinner />
+    //                     <p className="mt-5">Loading</p>
+    //                 </div>
+    //             )
+    //     }
+    // }, [transactionState])
 
-    return (
-        <ModalContainer>
-            <Modal title={'Pembayaran'} className="min-w-[40vw]" close={close}>
-                {Content}
-            </Modal>
-        </ModalContainer>
-    )
+    // return (
+    //     <ModalContainer>
+    //         <Modal title={'Pembayaran'} className="min-w-[40vw]" close={close}>
+    //             {Content}
+    //         </Modal>
+    //     </ModalContainer>
+    // )
+    return null
 }
 
 function CreateOrder({ transaction, orders, close, createTransaction }) {

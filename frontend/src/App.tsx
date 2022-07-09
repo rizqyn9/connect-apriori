@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
-import { SignIn, SignUp } from './pages/Auth.tsx'
+import { SignIn, SignUp } from './pages/Auth'
 import DashboardLayout from './pages/DashboardLayout'
 import { ProductPage } from './pages/InputProduct'
 import Catalog from './components/Catalog'
