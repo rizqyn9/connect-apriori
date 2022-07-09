@@ -1,29 +1,42 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import {
     useForm,
     UseControllerProps,
-    FieldValue,
     useController,
     FieldValues,
-    FieldPath,
-    Control,
 } from 'react-hook-form'
-import * as yup from 'yup'
-import { z, infer } from 'zod'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useAuth } from '../hooks/useAuth'
 import { useIsAuthenticated } from 'react-auth-kit'
+import { useAuth } from '../hooks/useAuth'
+import {
+    SignInSchema,
+    signInSchema,
+    SignUpSchema,
+    signUpSchema,
+} from '../utils/zod.schema'
+import { useToastStore } from '../components/Toast'
 
 type AuthProps = {
     children: React.ReactNode
 }
 function Auth({ children }: AuthProps) {
+    const { addToast, generateId } = useToastStore()
     const shouldAuthenticated = useIsAuthenticated()
+
     return !shouldAuthenticated() ? (
         <div className="bg-dark-2 flex h-screen overflow-hidden justify-center text-white">
             <div className="py-7 px-8 flex flex-col gap-2 bg-dark-1 w-3/5 min-w-max max-w-sm min-h-[10rem] self-center rounded-xl">
+                <button
+                    onClick={() =>
+                        addToast({
+                            msg: 'asdasd',
+                            id: generateId(),
+                        })
+                    }
+                >
+                    Test
+                </button>
                 {children}
             </div>
         </div>
@@ -31,29 +44,6 @@ function Auth({ children }: AuthProps) {
         <Navigate to={'/'} />
     )
 }
-
-const schema = yup
-    .object({
-        name: yup.string().required(),
-        email: yup.string().email('Email not valid').required(),
-        password: yup
-            .string()
-            .min(1, 'Min pass 8 characters')
-            .max(13, 'Max pass 13 characters')
-            .required('Password is required'),
-    })
-    .required()
-
-const signUpSchema = z.object({
-    name: z.string().min(1, 'Name required'),
-    email: z.string().email('Email not valid').min(1, 'Email required'),
-    password: z
-        .string()
-        .min(1, 'Min pass 8 characters')
-        .max(13, 'Max pass 13 characters'),
-})
-
-type SignUpSchema = z.infer<typeof signUpSchema>
 
 export function SignUp() {
     const { signUp: SignUpServices } = useAuth()
@@ -69,9 +59,7 @@ export function SignUp() {
 
     return (
         <Auth>
-            {/* TITLE */}
             <h1 className="text-xl font-bold py-3 mb-3 text-center">DAFTAR</h1>
-            {/* FORM */}
             <form
                 className={'w-full flex flex-col gap-5'}
                 onSubmit={handleSubmit(onSubmit)}
@@ -116,29 +104,18 @@ export function SignUp() {
 export function SignIn() {
     const { signIn } = useAuth()
 
-    const schema = yup
-        .object({
-            email: yup
-                .string()
-                .email('Email not valid')
-                .required('Email is required'),
-            password: yup.string().required('Password is required'),
-        })
-        .required()
-
-    const { control, handleSubmit } = useForm({
-        resolver: yupResolver(schema),
+    const { control, handleSubmit } = useForm<SignInSchema>({
+        resolver: zodResolver(signInSchema),
     })
 
-    const onSubmit = async (data) => {
+    const onSubmit = async (data: SignInSchema) => {
+        console.log(data)
         await signIn(data)
     }
 
     return (
         <Auth>
-            {/* TITLE */}
             <h1 className="text-xl font-bold py-3 mb-3 text-center">MASUK</h1>
-            {/* FORM */}
             <form
                 className={'w-full flex flex-col gap-4'}
                 onSubmit={handleSubmit(onSubmit)}
@@ -148,8 +125,10 @@ export function SignIn() {
                     label={'Email'}
                     name={'email'}
                     type={'email'}
+                    defaultValue=""
                 />
                 <FormInput
+                    defaultValue=""
                     control={control}
                     name={'password'}
                     label={'Password'}
@@ -157,7 +136,6 @@ export function SignIn() {
                 />
                 <button
                     type={'submit'}
-                    value={'Sign In'}
                     className={
                         'py-2 mt-8 rounded-lg bg-primary hover:bg-primary/80 cursor-pointer'
                     }
@@ -181,10 +159,11 @@ type FormInputProps<T extends FieldValues> = UseControllerProps<T> & {
     label: string
     type: React.HTMLInputTypeAttribute
 }
+
 function FormInput<T extends FieldValues = FieldValues>(
     props: FormInputProps<T>,
 ) {
-    const { field, fieldState } = useController(props)
+    const { field, fieldState } = useController({ ...props })
     return (
         <label htmlFor={field.name} className={'w-full flex flex-col'}>
             <p className="ml-1 pb-1 text-sm font-medium">{props.label}</p>

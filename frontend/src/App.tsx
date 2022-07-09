@@ -10,15 +10,13 @@ import { RequireAuth } from './components/WithAuth'
 import { OrderProvider } from './context/order-context'
 import { ROLES } from './hooks/useAuth'
 import { CookiesProvider } from 'react-cookie'
-import { ToastProvider } from './context/toast-context'
-import { ToastContainer } from './components/Toast'
 import { Provider } from 'jotai'
 import { AuthProvider } from 'react-auth-kit'
+import { ToastContainer } from './components/Toast'
 
 function App() {
     return (
         <GlobalProvider>
-            <ToastContainer />
             <Routes>
                 <Route
                     path="/"
@@ -58,22 +56,21 @@ function App() {
 }
 
 function LogOut() {
-    const { signOut } = useAuth()
+    // const { signOut } = useAuth()
     useEffect(() => {
-        signOut()
+        // signOut()
     }, [])
     return null
 }
 
-function GlobalProvider({ children }) {
+function GlobalProvider({ children }: { children: React.ReactNode }) {
     return (
         <CookiesProvider>
             <Provider>
-                <ToastProvider>
-                    <AuthProvider authType="cookie" authName="c_connect">
-                        <OrderProvider>{children}</OrderProvider>
-                    </AuthProvider>
-                </ToastProvider>
+                <AuthProvider authType="cookie" authName="c_connect">
+                    <ToastContainer />
+                    <OrderProvider>{children}</OrderProvider>
+                </AuthProvider>
             </Provider>
         </CookiesProvider>
     )

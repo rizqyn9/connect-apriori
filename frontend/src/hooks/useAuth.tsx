@@ -1,8 +1,11 @@
 import React from 'react'
-import { signInService, signUpService } from '../services'
 import { useNavigate } from 'react-router-dom'
-import { useAxiosPrivate } from '../hooks/useAxiosPrivate'
 import { useAuthUser, useSignIn, useSignOut } from 'react-auth-kit'
+
+import { signInService, signUpService } from '../services'
+import { useAxiosPrivate } from './useAxiosPrivate'
+import { SignInSchema, SignUpSchema } from '../utils/zod.schema'
+import api from '../services/index'
 
 export const ROLES = Object.freeze({
     ADMIN: 'admin',
@@ -16,8 +19,9 @@ export function useAuth() {
     const auth = useAuthUser()
     const axiosPrivate = useAxiosPrivate()
 
-    const signIn = async (data) =>
-        signInService(data)
+    const signIn = async (data: SignInSchema) => {
+        return await api
+            .post('/auth/signin', data)
             .then((val) => {
                 authSignIn({
                     token: val.data.token,
@@ -26,9 +30,10 @@ export function useAuth() {
                     authState: { ...val.data.user },
                 })
             })
-            .catch((val) => console.log(val))
+            .catch((err) => console.log(err))
+    }
 
-    const signUp = (data) =>
+    const signUp = (data: SignUpSchema) =>
         signUpService(data)
             .then((val) => navigate('/auth/signin'))
             .catch((err) => console.log(err))
@@ -40,5 +45,7 @@ export function useAuth() {
 
     const authUser = auth()
 
-    return { signIn, signUp, signOut, authUser }
+    return { signIn, signUp, signOut, authUser } as const
 }
+
+export type UseAuthReturn = ReturnType<typeof useAuth>

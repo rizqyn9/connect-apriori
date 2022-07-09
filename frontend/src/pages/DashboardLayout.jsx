@@ -11,9 +11,7 @@ export default function DashboardLayout() {
                 <div className="w-[7rem] bg-dark-2 flex-shrink">
                     <Sidebar />
                 </div>
-                <div className="flex flex-1 text-white">
-                    <Outlet />
-                </div>
+                <div className="flex flex-1 text-white">{/* <Outlet /> */}</div>
             </div>
         </OrderProvider>
     )
