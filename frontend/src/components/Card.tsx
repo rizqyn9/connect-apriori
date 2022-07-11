@@ -16,16 +16,20 @@ export default function Card({
     const navigate = useNavigate()
     const [menuType, setMenuType] = React.useState<MenuType>('hot')
     const ref = React.useRef<HTMLDivElement>(null)
-    const { addOrder, orders } = useOrderStore()
+    const { addOrder } = useOrderStore()
 
-    useOnClickOutside(ref, () => {
-        setActiveCard('')
-        ref.current
-    })
+    useOnClickOutside(ref, () => setActiveCard(''))
 
-    React.useEffect(() => {
-        console.log(orders)
-    }, [orders])
+    const handleAddOrder = React.useCallback(() => {
+        addOrder(idWithVariant, {
+            orderId: idWithVariant,
+            menuType,
+            menu,
+            price,
+            imageURL,
+            _id,
+        })
+    }, [])
 
     const idWithVariant = `${menuType}-${_id}`
 
@@ -61,15 +65,7 @@ export default function Card({
             </div>
             <button
                 className="text-xs bg-primary p-2 w-full text-center rounded-lg hover:opacity-80"
-                onClick={() => {
-                    addOrder(idWithVariant, {
-                        menuType,
-                        menu,
-                        price,
-                        imageURL,
-                        _id,
-                    })
-                }}
+                onClick={handleAddOrder}
             >
                 Add to billing
             </button>
@@ -88,7 +84,7 @@ function Variants({ setType, type }: VariantProps) {
             <div
                 className={clsx(
                     'w-8 h-8 p-1 grid place-content-center rounded-md cursor-pointer',
-                    type === 'hot'
+                    type == 'hot'
                         ? 'bg-primary/50 text-white'
                         : 'bg-dark-1 text-[#f7a474]',
                 )}

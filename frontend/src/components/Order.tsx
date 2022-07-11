@@ -8,7 +8,8 @@ import {
 } from '../hooks/useTransaction'
 import { OrderCard } from './OrderCard'
 import { ModalPayment } from './Modal'
-import { ModalPromo } from './Modal/ModalPromo'
+import { NewModalPromo } from './Modal'
+import { useModalStore } from '../hooks/useModal'
 
 type OrderContainerProps = {
     className: string
@@ -18,12 +19,13 @@ export default function Order({ className }: OrderContainerProps) {
     const [modalPayment, setModalPayment] = React.useState(false)
     const [modalScanPromo, setModalScanPromo] = React.useState(false)
     const { orders } = useOrderStore()
+    const { setActive } = useModalStore()
 
-    const { props, setProps, state } = useTransactionStore()
+    const { props, setProps, state, recalculate } = useTransactionStore()
 
     React.useEffect(() => {
-        console.log(orders)
-    }, [orders])
+        recalculate()
+    }, [])
 
     return (
         <div
@@ -34,12 +36,21 @@ export default function Order({ className }: OrderContainerProps) {
         >
             <div className="flex flex-col gap-2">
                 {modalScanPromo && (
-                    <ModalPromo close={() => setModalScanPromo(false)} />
+                    <NewModalPromo close={() => setModalScanPromo(false)} />
                 )}
                 <p className={'text-md font-bold'}>Order-ID #423848234</p>
                 <button
                     className="bg-primary p-2 rounded-md"
-                    onClick={() => setModalScanPromo(true)}
+                    onClick={() => {
+                        setActive({
+                            active: true,
+                            children: (
+                                <NewModalPromo
+                                    close={() => setActive({ active: false })}
+                                />
+                            ),
+                        })
+                    }}
                 >
                     Gunakan promo
                 </button>

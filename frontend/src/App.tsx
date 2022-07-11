@@ -13,6 +13,7 @@ import { CookiesProvider } from 'react-cookie'
 import { Provider } from 'jotai'
 import { AuthProvider } from 'react-auth-kit'
 import { ToastContainer } from './components/Toast'
+import { ModalContainer } from './hooks/useModal'
 
 function App() {
     return (
@@ -69,6 +70,7 @@ function GlobalProvider({ children }: { children: React.ReactNode }) {
             <Provider>
                 <AuthProvider authType="cookie" authName="c_connect">
                     <ToastContainer />
+                    <ModalContainer />
                     <OrderProvider>{children}</OrderProvider>
                 </AuthProvider>
             </Provider>

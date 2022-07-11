@@ -23,3 +23,21 @@ type OrderProps = ProductProps & {
     menuType: MenuType
     note?: string
 }
+
+type TransactionProps = {
+    method: PaymentMethod | null
+    total: number
+    promo: null
+}
+
+type KeyTransactionProps = keyof TransactionProps
+
+type TransactionStore = {
+    state: 'order' | 'create' | 'success' | 'fail'
+    props: TransactionProps
+    setProps: <TKey extends KeyTransactionProps = KeyTransactionProps>(
+        key: TKey,
+        val: TransactionProps[TKey],
+    ) => void
+    recalculate: () => void
+}
