@@ -7,7 +7,9 @@ type ProductProps = {
 
 type ProductStore = {
     products: ProductProps[]
-    getAllProducts: () => Promise<void>
+    getAllProducts(): Promise<void>
+    getProductId(id: string): Promise<ProductProps>
+    postProduct<T extends unknown>(product: T): Promise<void>
 }
 
 type CardProductProps = ProductProps & {

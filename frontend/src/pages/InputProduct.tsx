@@ -1,14 +1,19 @@
 import React, { useEffect, useState, useRef } from 'react'
-import clsx from 'clsx'
-import { useForm, useWatch } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
 import { Routes, Route, useParams } from 'react-router-dom'
-import { useProducts } from '../hooks/useProducts'
+import clsx from 'clsx'
+import {
+    FieldValues,
+    UseControllerProps,
+    useForm,
+    useController,
+    SubmitErrorHandler,
+    SubmitHandler,
+} from 'react-hook-form'
+import { useProductStore } from '../hooks/useProducts'
 import { GridRow } from '../components/Grid'
 import { H1 } from '../components/Typography'
-import { useImperativeHandle } from 'react'
-import { useCallback } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { ProductInputSchema, productInputSchema } from '../utils/zod.schema'
 
 export function ProductPage() {
     return (
@@ -19,30 +24,25 @@ export function ProductPage() {
     )
 }
 
-const schema = yup.object({
-    menu: yup.string('req').required('req'),
-    price: yup.number().required(),
-    image: yup.mixed().required(),
-})
-
 function InputProduct() {
     const { id } = useParams()
     const [stateSubmit, setStateSubmit] = useState('iddle')
     const [product, setProducts] = useState({})
-    const { getProductById, postProduct } = useProducts()
+    const { getProductId, postProduct } = useProductStore()
     const {
-        register,
         handleSubmit,
         setValue,
+        control,
         formState: { errors },
-    } = useForm({
-        resolver: yupResolver(schema),
+    } = useForm<ProductInputSchema>({
+        resolver: zodResolver(productInputSchema),
+        mode: 'onBlur',
     })
 
-    useEffect(async () => {
+    useEffect(() => {
         if (!id) return
         setStateSubmit('iddle')
-        await getProductById(id).then((val) => {
+        getProductId(id).then((val) => {
             setProducts(val)
             setValue('menu', val.menu)
             setValue('price', val.price)
@@ -64,8 +64,8 @@ function InputProduct() {
         setStateSubmit('iddle')
     }
 
-    const onError = async (data) => {
-        console.log(data)
+    const onError = async (errors: SubmitErrorHandler<{}>) => {
+        console.log(errors)
     }
 
     return (
@@ -81,7 +81,7 @@ function InputProduct() {
                 <form
                     onSubmit={handleSubmit(onSubmit, onError)}
                     encType="application/x-www-form-urlencoded"
-                    className={'h-full flex gap-2 py-8'}
+                    className="h-full flex gap-2 py-8"
                 >
                     {/*Input Image*/}
                     <div className="h-full w-full" style={{ flex: '1 1 55%' }}>
@@ -94,27 +94,17 @@ function InputProduct() {
                     </div>
 
                     {/*Form Input*/}
-                    <div
-                        className={
-                            'w-full flex-auto p-5 bg-dark-2 col-start-2 col-end-4 rounded-lg overflow-scroll'
-                        }
-                    >
+                    <div className="w-full flex-auto p-5 bg-dark-2 col-start-2 col-end-4 rounded-lg overflow-scroll">
                         <FormInput
-                            name={'menu'}
-                            register={register}
+                            control={control}
+                            name="menu"
                             label={'Nama Menu'}
-                            errors={errors.menu?.message}
-                        />{' '}
+                        />
                         <FormInput
+                            control={control}
                             name={'price'}
-                            register={register}
+                            type="number"
                             label={'Harga'}
-                            errors={errors.price?.message}
-                            other={{
-                                type: 'number',
-                                min: 5000,
-                                step: '500',
-                            }}
                         />
                         <button
                             type={'submit'}
@@ -129,29 +119,28 @@ function InputProduct() {
     )
 }
 
-function FormInput({
-    name,
-    register,
-    label,
-    errors,
-    type = 'text',
-    other = {},
-}) {
+type FormInputProps<T extends FieldValues> = UseControllerProps<T> & {
+    label: string
+    type?: React.HTMLInputTypeAttribute
+}
+
+function FormInput<T extends FieldValues = FieldValues>(
+    props: FormInputProps<T>,
+) {
+    const { field, fieldState } = useController({ ...props })
     return (
         <label
-            htmlFor={name}
+            htmlFor={props.name}
             className={'w-full flex flex-col gap-2 justify-around my-5'}
         >
-            <p className="ml-1 text-md font-medium">{label}</p>
+            <p className="ml-1 text-md font-medium">{props.label}</p>
             <input
-                id={name}
-                name={name}
-                type={type}
-                {...register(name)}
-                {...other}
+                id={props.name}
+                type={props.type ?? 'text'}
+                {...field}
                 className={clsx(
                     'py-2 px-3 rounded-md text-white bg-form outline-2 outline-offset-5 outline-red-200 outline-none',
-                    { 'border-2 border-red-500': errors }
+                    { 'border-2 border-red-500': fieldState.error },
                 )}
             />
         </label>
@@ -172,7 +161,7 @@ function ImagePlanInput({ name, setValue, errors, stateSubmit }) {
         }
     }
 
-    const removeImage = useCallback(() => {
+    const removeImage = React.useCallback(() => {
         setSelectedImage(null)
         imageRef.current.value = null
     }, [stateSubmit])

@@ -3,14 +3,14 @@ import Table from '../components/Table'
 import clsx from 'clsx'
 import { GridRow } from '../components/Grid'
 import { H1 } from '../components/Typography'
-import { useProducts } from '../hooks/useProducts'
+import { useProductStore } from '../hooks/useProducts'
 import { useAnalytics } from '../hooks/useAnalytics'
 
 export default function Analytics() {
     const [tabActive, setTabActive] = useState('Products')
     const [productParsed, setProductParsed] = useState([])
     const [transactionParsed, setTransactionParsed] = useState([])
-    const { products } = useProducts()
+    const { products } = useProductStore()
     const { getAllTransaction } = useAnalytics()
 
     useEffect(() => {
@@ -25,8 +25,8 @@ export default function Analytics() {
         setProductParsed(parsed)
     }, [products])
 
-    useEffect(async () => {
-        await getAllTransaction().then((val) => {
+    useEffect(() => {
+        getAllTransaction().then((val) => {
             const parsed =
                 val &&
                 val.map((val) => ({
@@ -100,7 +100,7 @@ function Tabs({ text, tabActive, setTabActive }) {
                     tabActive === text
                         ? 'bg-primary pointer-events-none border-white nav__active'
                         : ''
-                }`
+                }`,
             )}
             onClick={() => setTabActive(text)}
         >

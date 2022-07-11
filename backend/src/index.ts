@@ -20,8 +20,8 @@ app.use((req, res, next) => {
   next()
 })
 
-// app.use(cors({ credentials: true, origin: "http://localhost:3000" }), Routes)
-app.use(Routes)
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }), Routes)
+// app.use(Routes)
 
 // Error handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

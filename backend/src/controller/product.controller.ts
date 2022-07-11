@@ -23,7 +23,7 @@ const remove = async (id: string) =>
 const incrementOrderById = async (id: string, increment: number) =>
   await ProductModel.findByIdAndUpdate(id, {
     $inc: { totalOrdered: increment },
-  }).then((val) => val ?? Promise.reject("Product not found"))
+  }).then((val) => val ?? Promise.reject(`Product with id: ${id} not found`))
 
 export {
   getProductByID,

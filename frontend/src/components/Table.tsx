@@ -1,4 +1,3 @@
-import React from 'react'
 import { useTable } from 'react-table'
 import clsx from 'clsx'
 
@@ -18,7 +17,7 @@ export default function Table({ columns = [], data = [] }) {
                                     'py-2 px-5 text-left border-2 border-dark-line'
                                 }
                             >
-                                {column.render('Header')}
+                                <>{column.render('Header')}</>
                             </th>
                         ))}
                     </tr>
@@ -31,7 +30,7 @@ export default function Table({ columns = [], data = [] }) {
                         <tr
                             {...row.getRowProps()}
                             className={clsx(
-                                `${i % 2 === 0 ? 'bg-dark-2' : 'bg-dark-1'}`
+                                `${i % 2 === 0 ? 'bg-dark-2' : 'bg-dark-1'}`,
                             )}
                         >
                             {row.cells.map((cell) => {
@@ -42,7 +41,7 @@ export default function Table({ columns = [], data = [] }) {
                                             'px-4 py-2 border-2 border-dark-line'
                                         }
                                     >
-                                        {cell.render('Cell')}
+                                        <>{cell.render('Cell')}</>
                                     </td>
                                 )
                             })}

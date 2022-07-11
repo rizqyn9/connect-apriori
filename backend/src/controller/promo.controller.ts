@@ -1,4 +1,5 @@
 import PromoModel, { PromoProps } from "@/models/Promo.js"
+import { Types } from "mongoose"
 
 const getAll = async () =>
   await PromoModel.find().then(
@@ -30,8 +31,11 @@ const remove = async (id: string) =>
 
 const isValidPromo = async () => {}
 
-const assignProductToPromo = async (promo, productId) => {
-  return promo.products.push(productId)
+const assignProductToPromo = async (
+  promo: PromoProps,
+  productId: Types.ObjectId
+) => {
+  return promo.productsList.push(productId)
 }
 
 export {

@@ -1,10 +1,8 @@
-import responses from "../utils/responses"
+import { Router } from "express"
 import { parseOrder } from "@/lib/parseOrder"
 import * as TransactionController from "@/controller/transaction.controller"
 import * as productController from "@/controller/product.controller"
-
-import { Router } from "express"
-import { isValidKeyRequest, isValidObjectId } from "../utils/index.js"
+import { isValidKeyRequest } from "@/utils"
 
 const app = Router()
 
@@ -20,7 +18,7 @@ app.get("/", async (req, res, next) => {
 })
 
 /* ------------------------- Create new transaction ------------------------- */
-app.post("/crete", async (req, res) => {
+app.post("/create", async (req, res, next) => {
   try {
     isValidKeyRequest(["orders", "transaction"], req)
     const { orders, transaction } = req.body
@@ -54,10 +52,12 @@ app.post("/crete", async (req, res) => {
 
     console.log(listOrderId)
 
-    return responses.success(res, req.body)
+    res.json({
+      msg: "Success create transaction",
+      payload: listOrderId,
+    })
   } catch (error) {
-    if (error instanceof Error) responses.fail(res, {}, error.message)
-    else responses.error(res, "Server error")
+    next(error)
   }
 })
 

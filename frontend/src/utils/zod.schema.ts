@@ -18,4 +18,12 @@ const signUpSchema = z.object({
 
 export type SignUpSchema = z.infer<typeof signUpSchema>
 
-export { signUpSchema, signInSchema }
+const productInputSchema = z.object({
+    menu: z.string().min(1, 'Required'),
+    price: z.number().min(1, 'Pice must be set'),
+    image: z.object({}),
+})
+
+export type ProductInputSchema = z.infer<typeof productInputSchema>
+
+export { signUpSchema, signInSchema, productInputSchema }

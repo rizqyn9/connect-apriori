@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
+import { CookiesProvider } from 'react-cookie'
 import { SignIn, SignUp } from './pages/Auth'
 import DashboardLayout from './pages/DashboardLayout'
 import { ProductPage } from './pages/InputProduct'
@@ -7,10 +8,7 @@ import Catalog from './components/Catalog'
 import AccountManagement from './pages/AccountManagement'
 import Analytics from './pages/Analytics'
 import { RequireAuth } from './components/WithAuth'
-import { OrderProvider } from './context/order-context'
 import { ROLES } from './hooks/useAuth'
-import { CookiesProvider } from 'react-cookie'
-import { Provider } from 'jotai'
 import { AuthProvider } from 'react-auth-kit'
 import { ToastContainer } from './components/Toast'
 import { ModalContainer } from './hooks/useModal'
@@ -67,13 +65,11 @@ function LogOut() {
 function GlobalProvider({ children }: { children: React.ReactNode }) {
     return (
         <CookiesProvider>
-            <Provider>
-                <AuthProvider authType="cookie" authName="c_connect">
-                    <ToastContainer />
-                    <ModalContainer />
-                    <OrderProvider>{children}</OrderProvider>
-                </AuthProvider>
-            </Provider>
+            <AuthProvider authType="cookie" authName="c_connect">
+                <ToastContainer />
+                <ModalContainer />
+                {children}
+            </AuthProvider>
         </CookiesProvider>
     )
 }

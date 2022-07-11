@@ -1,7 +1,6 @@
 import { Router } from "express"
 import path from "path"
 import multer from "multer"
-import responses from "@/utils/responses"
 import * as ProductControl from "@/controller/product.controller"
 import Product from "@/models/Product"
 import { isValidObjectId } from "@/utils/index"
