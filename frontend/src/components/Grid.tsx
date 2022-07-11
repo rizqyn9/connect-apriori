@@ -10,13 +10,13 @@ function GridRow({ children, title, className }: GridRowProps) {
     return (
         <div
             className={clsx(
-                'grid w-full h-screen overflow-hidden relative',
+                'grid w-full h-screen max-h-screen overflow-hidden relative',
                 className,
             )}
-            style={{ gridTemplateRows: '8rem auto' }}
+            style={{ gridTemplateRows: '4rem auto' }}
         >
             {title && (
-                <div className="row-start-1 border-b-2 border-dark-line h-[8rem] w-full">
+                <div className="row-start-1 border-b border-dark-line h-[5rem] w-full">
                     {title}
                 </div>
             )}

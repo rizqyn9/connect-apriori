@@ -10,6 +10,8 @@ import { OrderCard } from './OrderCard'
 import { ModalPayment } from './Modal'
 import { NewModalPromo } from './Modal'
 import { useModalStore } from '../hooks/useModal'
+import { AnimatePresence, motion } from 'framer-motion'
+import { Button } from './Button'
 
 type OrderContainerProps = {
     className: string
@@ -23,80 +25,72 @@ export default function Order({ className }: OrderContainerProps) {
 
     const { props, setProps, state, recalculate } = useTransactionStore()
 
-    React.useEffect(() => {
-        recalculate()
+    React.useEffect(recalculate, [])
+
+    const handleOpenPromoInpu = React.useCallback(() => {
+        setActive({
+            active: true,
+            children: (
+                <NewModalPromo close={() => setActive({ active: false })} />
+            ),
+        })
     }, [])
 
     return (
         <div
             className={clsx(
-                'w-full flex-auto flex flex-col justify-around ',
+                'w-full max-h-[calc(100%-5rem)] flex flex-col justify-between text-sm',
                 className,
             )}
         >
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col">
                 {modalScanPromo && (
                     <NewModalPromo close={() => setModalScanPromo(false)} />
                 )}
-                <p className={'text-md font-bold'}>Order-ID #423848234</p>
-                <button
-                    className="bg-primary p-2 rounded-md"
-                    onClick={() => {
-                        setActive({
-                            active: true,
-                            children: (
-                                <NewModalPromo
-                                    close={() => setActive({ active: false })}
-                                />
-                            ),
-                        })
-                    }}
-                >
-                    Gunakan promo
-                </button>
-                <p>status promo</p>
+                <p className={'font-bold'}>Order-ID #423848234</p>
+                <Button onClick={handleOpenPromoInpu}>Gunakan promo</Button>
+                <p className="mt-3 mb-2">status promo</p>
             </div>
             {/*Order Products*/}
-            <div className="relative flex-1 overflow-y-scroll border-b-2 border-t-2 py-3 flex flex-col gap-3 border-dark-line pr-4 max-h-[50vh]">
-                {showOrder &&
-                    orders &&
-                    Object.entries(orders).map(([key, val]) => (
-                        <OrderCard key={key} {...val} orderId={key} />
-                    ))}
-
-                {!showOrder && <Transaction close={() => setShowOrder(true)} />}
-            </div>
-
-            <div className={'my-5 text-sm text-white/70 flex flex-col gap-3'}>
-                <div className={'flex justify-between'}>
-                    <p>Diskon</p>
-                    <p>{props.promo ?? 'none'}</p>
-                </div>{' '}
-                <div className={'flex justify-between'}>
-                    <p>Total Harga</p>
-                    <p>{props.total}</p>
+            <AnimatePresence>
+                <div className="relative flex-1 overflow-y-scroll overflow-x-hidden border-b-2 border-t-2 py-3 flex flex-col gap-3 border-dark-line pr-4 max-h-[50vh]">
+                    <AnimatePresence>
+                        {showOrder &&
+                            orders &&
+                            Object.entries(orders).map(([key, val]) => (
+                                <OrderCard key={key} {...val} orderId={key} />
+                            ))}
+                    </AnimatePresence>
+                    {!showOrder && (
+                        <Transaction close={() => setShowOrder(true)} />
+                    )}
                 </div>
-                <div className={'flex justify-between'}>
-                    <p>Metode Pembayaran</p>
-                    <p>{props.method ?? '-'}</p>
-                </div>
+            </AnimatePresence>
+
+            <div className={'my-5 text-xs text-white/70 flex flex-col gap-3'}>
+                <GridTwoCol left="Diskom" right={props.promo ?? '-'} />
+                <GridTwoCol left="Total Harga" right={props.total} />
+                <GridTwoCol
+                    left="Metode Pembayaran"
+                    right={props.method ?? '-'}
+                />
             </div>
             {showOrder ? (
-                <button
-                    className="text-md bg-primary p-2 w-full text-center rounded-lg hover:opacity-80 disabled:bg-gray-700 disabled:cursor-not-allowed"
+                <Button
+                    className="disabled:cursor-not-allowed disabled:bg-primary/10"
                     disabled={Object.keys(orders).length == 0}
                     onClick={() => setShowOrder(!showOrder)}
                 >
                     Metode pembayaran
-                </button>
+                </Button>
             ) : (
-                <button
-                    className="text-md bg-primary p-2 w-full text-center rounded-lg hover:opacity-80 disabled:bg-gray-700 disabled:cursor-not-allowed"
+                <Button
+                    className="disabled:cursor-not-allowed disabled:bg-primary/10"
                     disabled={props.method == null || state == 'create'}
                     onClick={() => setModalPayment(true)}
                 >
                     Buat order
-                </button>
+                </Button>
             )}
             {modalPayment && (
                 <ModalPayment close={() => setModalPayment(false)} />
@@ -114,23 +108,25 @@ function Transaction({ close }: { close: () => void }) {
     }
 
     return (
-        <div className="flex flex-col gap-5 max-h-full">
+        <motion.div
+            initial={{ x: 400, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: -200, opacity: 0 }}
+            className="flex flex-col gap-5 max-h-full"
+        >
             <div className="sticky top-0 bg-dark-2 z-10 w-full pb-3">
                 <button
                     onClick={handleBack}
                     className="border-2 border-primary px-3 py-2 rounded-md w-full"
-                >
-                    back
-                </button>
+                    children={'back'}
+                />
             </div>
-            <div className="">
-                <div className="grid w-full gap-5 grid-cols-2">
-                    {paymentMethodExist.map((val, i) => (
-                        <TransactionTypeCard key={i} type={val} />
-                    ))}
-                </div>
+            <div className="grid w-full gap-5 grid-cols-2">
+                {paymentMethodExist.map((val, i) => (
+                    <TransactionTypeCard key={i} type={val} />
+                ))}
             </div>
-        </div>
+        </motion.div>
     )
 }
 
@@ -148,5 +144,18 @@ function TransactionTypeCard({ type }: { type: PaymentMethod }) {
                 {type}
             </div>
         </button>
+    )
+}
+
+type GridTwoColProps = {
+    left: string | React.ReactNode
+    right: string | React.ReactNode
+}
+function GridTwoCol(props: GridTwoColProps) {
+    return (
+        <div className={'flex justify-between'}>
+            <p>{props.left}</p>
+            <p>{props.right}</p>
+        </div>
     )
 }

@@ -1642,14 +1642,13 @@ react-cookie@^4.1.1:
     hoist-non-react-statics "^3.0.0"
     universal-cookie "^4.0.0"
 
-react-dom@^17.0.0:
-  version "17.0.2"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-17.0.2.tgz#ecffb6845e3ad8dbfcdc498f0d0a939736502c23"
-  integrity sha512-s4h96KtLDUQlsENhMn1ar8t2bEa+q/YAtj8pPPdIjPDGBDIVNsrD9aXNWqspUe6AzKCIG0C1HZZLqLV7qpOBGA==
+react-dom@^18.3.0-next-e61fd91f5-20220630:
+  version "18.3.0-next-e61fd91f5-20220630"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.3.0-next-e61fd91f5-20220630.tgz#b4293848726648d6a33f0756229d89d57d0b0012"
+  integrity sha512-5xhLAVVKAptlfkHxIjnWKxVWlMSSYcMU+P/L25sl1fwCiP5IjUlVkH3vtt+79keNTIj40083qRopgY33bPTb3A==
   dependencies:
     loose-envify "^1.1.0"
-    object-assign "^4.1.1"
-    scheduler "^0.20.2"
+    scheduler "0.24.0-next-e61fd91f5-20220630"
 
 react-fast-compare@^3.1.1:
   version "3.2.0"
@@ -1718,13 +1717,12 @@ react@>=16.8.0:
   dependencies:
     loose-envify "^1.1.0"
 
-react@^17.0.0:
-  version "17.0.2"
-  resolved "https://registry.yarnpkg.com/react/-/react-17.0.2.tgz#d0b5cc516d29eb3eee383f75b62864cfb6800037"
-  integrity sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA==
+react@^18.3.0-next-e61fd91f5-20220630:
+  version "18.3.0-next-e61fd91f5-20220630"
+  resolved "https://registry.yarnpkg.com/react/-/react-18.3.0-next-e61fd91f5-20220630.tgz#4a73056d8245c8d80796a91415948899e4f3f535"
+  integrity sha512-jzDW0AfVj6COXrcNDXam4WD4HohcvmQxevczVc3C6TOcobaf+wdjwON0/nIVI+Twx/LO+1SsbwRBSFYdnnK3xA==
   dependencies:
     loose-envify "^1.1.0"
-    object-assign "^4.1.1"
 
 readdirp@~3.6.0:
   version "3.6.0"
@@ -1835,13 +1833,12 @@ sass@^1.48.0:
     immutable "^4.0.0"
     source-map-js ">=0.6.2 <2.0.0"
 
-scheduler@^0.20.2:
-  version "0.20.2"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.20.2.tgz#4baee39436e34aa93b4874bddcbf0fe8b8b50e91"
-  integrity sha512-2eWfGgAqqWFGqtdMmcL5zCMK1U8KlXv8SQFGglL3CEtd0aDVDWgeF/YoCmvln55m5zSk3J/20hTaSBeSObsQDQ==
+scheduler@0.24.0-next-e61fd91f5-20220630:
+  version "0.24.0-next-e61fd91f5-20220630"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.24.0-next-e61fd91f5-20220630.tgz#8fa1bd912f56ba2156958a9d3c3ad82419cb4712"
+  integrity sha512-1x8QqYTo8HIVbTPuhwxQxXUeuwDK+UC02/AdwcclUYDRkdzeB9sk0RsWAIadiXnP7vxUWxZusizAnc/ZsK9z/Q==
   dependencies:
     loose-envify "^1.1.0"
-    object-assign "^4.1.1"
 
 semver@^6.3.0:
   version "6.3.0"
