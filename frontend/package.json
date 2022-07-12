@@ -18,6 +18,7 @@
         "got": "^12.0.1",
         "jotai": "^1.5.3",
         "nookies": "^2.5.2",
+        "rc-table": "^7.25.0",
         "react": "^18.3.0-next-e61fd91f5-20220630",
         "react-auth-kit": "^2.1.0",
         "react-cookie": "^4.1.1",

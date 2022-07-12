@@ -27,9 +27,6 @@ function InputProduct() {
     const { id } = useParams()
     const [stateSubmit, setStateSubmit] = useState('iddle')
     const { getProductId, postProduct } = useProductStore()
-    const [a, b] = useTransition()
-
-    console.log(a)
 
     const {
         handleSubmit,
@@ -72,7 +69,7 @@ function InputProduct() {
     return (
         <>
             <GridRow
-                className="px-5 w-full flex-auto"
+                className="px-5 w-full flex-auto text-sm overflow-y-scroll"
                 title={
                     <div className="flex flex-col justify-center h-full w-full">
                         <H1>Input Product</H1>
@@ -83,13 +80,10 @@ function InputProduct() {
                     <form
                         onSubmit={handleSubmit(onSubmit)}
                         encType="application/x-www-form-urlencoded"
-                        className="h-full flex gap-2 py-8"
+                        className="h-full flex gap-2 py-8 flex-col lg:flex-row"
                     >
                         {/*Input Image*/}
-                        <div
-                            className="h-full w-full"
-                            style={{ flex: '1 1 55%' }}
-                        >
+                        <div className="lg:h-full w-full lg:flex-[1_1_55%]">
                             <ImagePlaceInput
                                 name={'image'}
                                 setValue={(file) => setValue('image', file)}
@@ -211,7 +205,7 @@ function ImagePlaceInput(props: ImagePlaceInputProps) {
                 <>
                     <label
                         htmlFor="thumbnail"
-                        className="max-h-[55vh] overflow-hidden rounded-lg border-2 border-primary"
+                        className=" overflow-hidden rounded-lg border-2 border-primary"
                     >
                         <img src={getHref()} />
                     </label>

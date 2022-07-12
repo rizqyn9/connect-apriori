@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import Card from './Card'
 import Order from './Order'
-import { GridRow } from './Grid'
+import { GridRow, GridRowMotion } from './Grid'
 import { useAuth } from '../hooks/useAuth'
 import { useProductStore } from '../hooks/useProducts'
 import { useToastStore } from './Toast'
 import { Button } from './Button'
+import { motion } from 'framer-motion'
 
 export default function Catalog() {
     const { addToast } = useToastStore()
     const { getAllProducts, products } = useProductStore()
 
     const [activeCard, setActiveCard] = useState('')
+    const [showCart, setShowCart] = useState()
 
     useEffect(() => {
         if (products.length == 0) fetchProduct()
@@ -20,7 +22,7 @@ export default function Catalog() {
     const fetchProduct = React.useCallback(() => {
         getAllProducts()
             .then(() => addToast({ msg: 'update catalog' }))
-            .catch((err) => addToast({ msg: err, type: 'error' }))
+            .catch((err: any) => addToast({ msg: err, type: 'error' }))
     }, [])
 
     return (
