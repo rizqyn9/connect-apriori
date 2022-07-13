@@ -12,7 +12,7 @@ import { GridRow } from '../components/Grid'
 import { H1 } from '../components/Typography'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ProductInputSchema, productInputSchema } from '../utils/zod.schema'
-import { useTransition } from 'react'
+import { Button } from '../components/Button'
 
 export function ProductPage() {
     return (
@@ -31,39 +31,29 @@ function InputProduct() {
     const {
         handleSubmit,
         setValue,
-        getValues,
         control,
         watch,
-        formState: { errors },
+        formState: { errors, isValid },
     } = useForm<ProductInputSchema>({
         resolver: zodResolver(productInputSchema),
-        mode: 'onBlur',
+        mode: 'all',
     })
-
-    const watchImage = watch('image')
 
     useEffect(() => {
         if (!id) return
-        setStateSubmit('iddle')
-        getProductId(id).then((val) => {
-            // setProducts(val)
-            setValue('menu', val.menu)
-            setValue('price', val.price)
-        })
+        setValue(
+            'image',
+            'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg',
+        )
+        // setStateSubmit('iddle')
+        // getProductId(id).then((val) => {})
     }, [])
 
-    const onSubmit = async (data: ProductInputSchema) => {
+    const onSubmit = async (data: Omit<ProductInputSchema, 'image'>) => {
         const formData = new FormData()
-        Object.entries(data).forEach(([key, val]) => {
-            formData.append(key, String(val))
-        })
-
-        await postProduct(formData).then((val) => {
-            console.log(val)
-            setStateSubmit('finish')
-        })
-
-        setStateSubmit('iddle')
+        const formArray: [string, string | File][] = Object.entries({ ...data })
+        formArray.forEach(([key, val]) => formData.append(key, val))
+        console.log(formData)
     }
 
     return (
@@ -87,7 +77,7 @@ function InputProduct() {
                             <ImagePlaceInput
                                 name={'image'}
                                 setValue={(file) => setValue('image', file)}
-                                value={getValues('image')}
+                                value={watch('image')}
                                 errors={errors?.image?.message}
                             />
                         </div>
@@ -98,21 +88,18 @@ function InputProduct() {
                                 control={control}
                                 name="menu"
                                 label={'Nama Menu'}
+                                defaultValue=""
                             />
                             <FormInput
                                 control={control}
-                                name={'price'}
+                                name="price"
+                                defaultValue=""
                                 type="number"
-                                label={'Harga'}
+                                label="Harga"
                             />
-                            <button
-                                type={'submit'}
-                                className={
-                                    'bg-primary p-3 w-full rounded-lg mt-5'
-                                }
-                            >
+                            <Button className="w-full" type="submit">
                                 Tambahkan
-                            </button>
+                            </Button>
                         </div>
                     </form>
                 </fieldset>
@@ -126,9 +113,10 @@ type FormInputProps<T extends FieldValues> = UseControllerProps<T> & {
     type?: React.HTMLInputTypeAttribute
 }
 
-function FormInput<T extends FieldValues = FieldValues>(
-    props: FormInputProps<T>,
-) {
+function FormInput<T extends FieldValues = FieldValues>({
+    type,
+    ...props
+}: FormInputProps<T>) {
     const { field, fieldState } = useController({ ...props })
     return (
         <label
@@ -138,13 +126,14 @@ function FormInput<T extends FieldValues = FieldValues>(
             <p className="ml-1 text-md font-medium">{props.label}</p>
             <input
                 id={props.name}
-                type={props.type ?? 'text'}
                 {...field}
+                type={type}
                 className={clsx(
                     'py-2 px-3 rounded-md text-white bg-form outline-2 outline-offset-5 outline-red-200 outline-none',
                     { 'border-2 border-red-500': fieldState.error },
                 )}
             />
+            {fieldState.error && <p>{fieldState.error.message}</p>}
         </label>
     )
 }
@@ -152,72 +141,57 @@ function FormInput<T extends FieldValues = FieldValues>(
 type ImagePlaceInputProps = {
     name: string
     setValue(arg: File): void
-    value: File | null
+    value: null | string | File
     errors?: string
 }
 
 function ImagePlaceInput(props: ImagePlaceInputProps) {
     const { name, setValue, value, errors } = props
     const imageRef = useRef<HTMLInputElement>(null)
-    const [selectedImage, setSelectedImage] = useState<null | File | string>(
-        value,
-    )
+    const [selectedImage, setSelectedImage] = useState<null | string>(null)
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
-            console.log(e.target.files[0])
-
             setValue(e.target.files[0])
-            setSelectedImage(e.target.files[0])
+            setSelectedImage(URL.createObjectURL(e.target.files[0]))
         }
     }
 
+    useEffect(() => {
+        if (!value) return
+        if (value instanceof File) setSelectedImage(URL.createObjectURL(value))
+        else setSelectedImage(value)
+    }, [value])
+
     const removeImage = React.useCallback(() => {
         setSelectedImage(null)
-        if (imageRef?.current?.value) {
-            imageRef.current.value = ''
-        }
+        if (imageRef?.current?.value) imageRef.current.value = ''
     }, [imageRef.current])
-
-    const getHref = React.useCallback(() => {
-        return selectedImage
-            ? new URL(
-                  selectedImage instanceof File
-                      ? URL.createObjectURL(selectedImage)
-                      : 'https://hackernoon.imgix.net/drafts/sool3tca.png?auto=format&fit=max&w=1920',
-              ).href
-            : undefined
-    }, [props, selectedImage])
 
     return (
         <div className="bg-dark-2 rounded-lg p-6 flex flex-col gap-4">
             <input
                 accept="image/*"
                 type="file"
-                id="thumbnail"
+                hidden
                 name={name}
-                className="block w-full py-4 px-2 border-2 border-primary rounded-lg text-center"
                 ref={imageRef}
                 onChange={onChange}
             />
-            {errors && <p className="text-red-400">{errors}</p>}
-            {getHref() && (
-                <>
-                    <label
-                        htmlFor="thumbnail"
-                        className=" overflow-hidden rounded-lg border-2 border-primary"
-                    >
-                        <img src={getHref()} />
-                    </label>
-                    <button
-                        className="bg-red-700 hover:bg-red-800 rounded-md w-1/2 mx-auto p-3"
-                        onClick={removeImage}
-                        type="button"
-                    >
-                        Remove Image
-                    </button>
-                </>
+            {selectedImage ? (
+                <Button onClick={removeImage}>Remove</Button>
+            ) : (
+                <Button
+                    onClick={(e) => {
+                        e.preventDefault()
+                        imageRef.current?.click()
+                    }}
+                >
+                    Upload Image
+                </Button>
             )}
+            {errors && <p className="text-red-400">{'as'}</p>}
+            {selectedImage && <img src={selectedImage} />}
         </div>
     )
 }

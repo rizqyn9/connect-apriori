@@ -31,7 +31,7 @@ const useProductStore = create<ProductStore>((set, get) => ({
     async getProductId(id: string) {
         try {
             return await axiosPrivate
-                .get<{ payload: ProductProps }>(id)
+                .get<{ payload: ProductProps }>(`/products/${id}`)
                 .then((res) => res.data.payload)
         } catch (error) {
             return Promise.reject(error)

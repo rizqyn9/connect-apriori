@@ -1,5 +1,5 @@
 import React from 'react'
-import { hydrateRoot, createRoot } from 'react-dom/client'
+import { createRoot } from 'react-dom/client'
 import './static/css/index.scss'
 import App from './App'
 import { BrowserRouter as Router } from 'react-router-dom'
