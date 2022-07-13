@@ -34,15 +34,18 @@ function ToastContainer() {
     const { toasts } = useToastStore()
 
     const toastContainer = document.getElementById('toast-container')
-    return createPortal(
-        <div className="absolute top-0 w-full flex flex-col gap-2 items-center pt-5">
-            <AnimatePresence>
-                {Object.entries(toasts).map(([key, val]) => (
-                    <Toast key={key} {...val} id={Number(key)} />
-                ))}
-            </AnimatePresence>
-        </div>,
-        toastContainer!,
+    return (
+        document.body &&
+        createPortal(
+            <div className="absolute top-0 w-full flex flex-col gap-2 items-center pt-5">
+                <AnimatePresence>
+                    {Object.entries(toasts).map(([key, val]) => (
+                        <Toast key={key} {...val} id={Number(key)} />
+                    ))}
+                </AnimatePresence>
+            </div>,
+            toastContainer!,
+        )
     )
 }
 

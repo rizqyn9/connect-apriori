@@ -8,7 +8,7 @@ import { useAnalytics } from '../hooks/useAnalytics'
 
 export default function Analytics() {
     const [tabActive, setTabActive] = useState('Products')
-    const [productParsed, setProductParsed] = useState([])
+    const [productParsed, setProductParsed] = useState<object[]>([])
     const [transactionParsed, setTransactionParsed] = useState([])
     const { products } = useProductStore()
     const { getAllTransaction } = useAnalytics()
@@ -39,14 +39,14 @@ export default function Analytics() {
 
     return (
         <GridRow
-            className={'px-5 w-full flex-auto'}
+            className={'px-5 w-full flex-auto overflow-x-scroll text-sm'}
             title={
                 <div className="flex flex-col justify-center h-full w-full">
                     <H1>Analitycs</H1>
                 </div>
             }
         >
-            <div className={'py-8'}>
+            <div className={'py-8 overflow-x-scroll'}>
                 {/*Tabs Container*/}
                 <div className={'flex gap-3 text-white mb-6'}>
                     <Tabs
@@ -109,7 +109,7 @@ function Tabs({ text, tabActive, setTabActive }) {
     )
 }
 
-function getProductHeaders(isAdmin) {
+function getProductHeaders(isAdmin: boolean) {
     return isAdmin
         ? [
               ...PRODUCT_HEADERS,

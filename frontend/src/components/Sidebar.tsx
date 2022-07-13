@@ -1,5 +1,5 @@
-import clsx from 'clsx'
 import React from 'react'
+import clsx from 'clsx'
 import { useLocation, NavLink } from 'react-router-dom'
 import { GridRow } from './Grid'
 import Icon from './Icon'
@@ -10,14 +10,12 @@ export default function Sidebar() {
             className={'justify-center'}
             title={
                 <div
-                    className={
-                        'text-primary font-extrabold text-4xl w-full h-full flex items-center justify-center'
-                    }
+                    className="text-primary font-extrabold text-2xl w-full h-full flex items-center justify-center"
                     children="CC"
                 />
             }
         >
-            <div className="flex flex-col gap-5 py-8">
+            <div className="flex flex-col gap-5 py-8 items-center">
                 <NavItem to="/" title="Dashboard" icon={<Icon.Home />} />
                 <NavItem to="/product" title="Input" icon={<Icon.History />} />
                 <NavItem
@@ -52,18 +50,14 @@ function NavItem({ to, title, icon }: NavItemProps) {
     let isActive = pathname === to
 
     return (
-        <NavLink to={to || 'mock'} className={'text-primary'}>
-            {/* Logo */}
-            <div
-                className={clsx(
-                    'p-[16px] rounded-md w-[56px] h-[56px]',
-                    isActive
-                        ? 'bg-primary text-white nav__active'
-                        : 'text-primary hover:text-white',
-                )}
-            >
-                {icon || <Icon.Home />}
-            </div>
+        <NavLink
+            to={to || 'mock'}
+            className={clsx('h-[3rem] w-[3rem] relative p-3 rounded-lg', {
+                'text-white bg-primary ': isActive,
+                'text-primary': !isActive,
+            })}
+        >
+            {icon || <Icon.Home />}
         </NavLink>
     )
 }

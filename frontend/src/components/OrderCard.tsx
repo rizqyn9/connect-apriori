@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import React from 'react'
 import { useOrderStore } from '../hooks/useOrder'
 import Icon from './Icon'
@@ -6,47 +7,44 @@ import Icon from './Icon'
  * Untuk menampilkan barang yang diorder
  */
 
-function OrderCard({
-    orderId,
-    _id,
-    menu,
-    imageURL,
-    price,
-    menuType,
-    quantity,
-}: OrderProps) {
+function OrderCard(props: OrderProps) {
+    const { orderId, _id, menu, imageURL, price, menuType, quantity } = props
     const { removeOrder, setNotes, updateQuantity } = useOrderStore()
 
     return (
-        <div className="bg-dark-1 p-2 rounded-md flex flex-col gap-2">
+        <motion.div
+            initial={{ x: 100, scale: 0.8 }}
+            animate={{ x: 0, scale: 1 }}
+            exit={{ x: -200, scale: 0.8 }}
+            transition={{ duration: 0.3 }}
+            className="bg-dark-1 p-2 rounded-md flex flex-col gap-2"
+        >
             {/*Image & Menu Details*/}
-            <div className={'flex gap-3'}>
+            <div className={'grid grid-cols-3'}>
                 {/*Product Image*/}
-                <div className="w-[6rem] h-[6rem] rounded-lg border-2 border-primary/70 overflow-hidden">
+                <div className="w-[5rem] h-[5rem] rounded-lg border-2 border-primary/70 overflow-hidden col-span-1">
                     <img src={imageURL} className="" alt={''} />
                 </div>
                 <div className="flex flex-col justify-between">
                     {/*Menu & Type*/}
-                    <div className={'flex gap-4 align-center'}>
+                    <div className={'flex gap-2 align-center'}>
                         <div className="w-5 h-5 flex items-center justify-center">
                             {menuType === 'hot' ? <Icon.Hot /> : <Icon.Ice />}
                         </div>
-                        <h2 className="font-bold text-md">{menu}</h2>
+                        <h2 className="font-bold text-sm">{menu}</h2>
                     </div>
-                    <h2 className="text-sm">Rp. {price * quantity}</h2>
+                    <h2 className="text-xs">Rp. {price * quantity}</h2>
                     <IncrDcr
                         quantity={quantity}
                         decrement={() => updateQuantity(orderId, -1)}
-                        incremnt={() => updateQuantity(orderId, 1)}
+                        increment={() => updateQuantity(orderId, 1)}
                     />
                 </div>
             </div>
             <div className="flex gap-3">
                 <input
-                    className={
-                        'flex-auto h-8 bg-dark-2 p-2 rounded-md border-2 border-dark-line text-white text-sm'
-                    }
-                    placeholder={'Notes'}
+                    className="flex-auto h-8 bg-dark-2 p-2 rounded-md border-2 border-dark-line text-white text-sm"
+                    placeholder="Notes"
                     onChange={(e) => setNotes(orderId, e.target.value)}
                 />
                 <button
@@ -56,35 +54,31 @@ function OrderCard({
                     <Icon.Delete />
                 </button>
             </div>
-        </div>
+        </motion.div>
     )
 }
 
 type IncrDcrProps = {
     quantity: number
-    incremnt: () => void
+    increment: () => void
     decrement: () => void
 }
 
-function IncrDcr({ quantity, incremnt, decrement }: IncrDcrProps) {
+function IncrDcr({ quantity, increment, decrement }: IncrDcrProps) {
     return (
-        <div className={'h-6 w-max flex overflow-hidden rounded-md'}>
+        <div className="h-6 w-[5rem] bg-red-200 flex overflow-hidden rounded-md">
             <button
-                onClick={() => decrement()}
-                className={'bg-primary flex-center p-2 h-full'}
+                onClick={decrement}
+                className={'bg-primary flex-1 h-full grid place-content-center'}
             >
                 -
             </button>
-            <p
-                className={
-                    'bg-dark-2 text-white flex-center p-2 h-full text-xs'
-                }
-            >
+            <p className="bg-dark-2 h-full text-[.7rem] min-w-[1.7rem] grid place-content-center">
                 {quantity}
             </p>
             <button
-                onClick={() => incremnt()}
-                className={'bg-primary flex-center p-2 h-full'}
+                onClick={increment}
+                className="bg-primary h-full flex-1 grid place-content-center"
             >
                 +
             </button>

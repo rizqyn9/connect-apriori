@@ -1,7 +1,9 @@
-import { useTable } from 'react-table'
+import { useTable, UseTableOptions, Column } from 'react-table'
 import clsx from 'clsx'
 
-export default function Table({ columns = [], data = [] }) {
+type TableProps<D extends object = object> = UseTableOptions<D>
+
+export default function Table({ columns, data }: TableProps) {
     const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
         useTable({ columns, data })
 

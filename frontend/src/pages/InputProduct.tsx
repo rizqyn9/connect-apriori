@@ -6,14 +6,13 @@ import {
     UseControllerProps,
     useForm,
     useController,
-    SubmitErrorHandler,
-    SubmitHandler,
 } from 'react-hook-form'
 import { useProductStore } from '../hooks/useProducts'
 import { GridRow } from '../components/Grid'
 import { H1 } from '../components/Typography'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ProductInputSchema, productInputSchema } from '../utils/zod.schema'
+import { Button } from '../components/Button'
 
 export function ProductPage() {
     return (
@@ -27,93 +26,83 @@ export function ProductPage() {
 function InputProduct() {
     const { id } = useParams()
     const [stateSubmit, setStateSubmit] = useState('iddle')
-    const [product, setProducts] = useState({})
     const { getProductId, postProduct } = useProductStore()
+
     const {
         handleSubmit,
         setValue,
         control,
-        formState: { errors },
+        watch,
+        formState: { errors, isValid },
     } = useForm<ProductInputSchema>({
         resolver: zodResolver(productInputSchema),
-        mode: 'onBlur',
+        mode: 'all',
     })
 
     useEffect(() => {
         if (!id) return
-        setStateSubmit('iddle')
-        getProductId(id).then((val) => {
-            setProducts(val)
-            setValue('menu', val.menu)
-            setValue('price', val.price)
-        })
+        setValue(
+            'image',
+            'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg',
+        )
+        // setStateSubmit('iddle')
+        // getProductId(id).then((val) => {})
     }, [])
 
-    const onSubmit = async (data) => {
-        console.log(data)
+    const onSubmit = async (data: Omit<ProductInputSchema, 'image'>) => {
         const formData = new FormData()
-        Object.entries(data).forEach(([key, val]) => {
-            formData.append(key, val)
-        })
-
-        await postProduct(formData).then((val) => {
-            console.log(val)
-            setStateSubmit('finish')
-        })
-
-        setStateSubmit('iddle')
-    }
-
-    const onError = async (errors: SubmitErrorHandler<{}>) => {
-        console.log(errors)
+        const formArray: [string, string | File][] = Object.entries({ ...data })
+        formArray.forEach(([key, val]) => formData.append(key, val))
+        console.log(formData)
     }
 
     return (
         <>
             <GridRow
-                className={'px-5 w-full flex-auto'}
+                className="px-5 w-full flex-auto text-sm overflow-y-scroll"
                 title={
                     <div className="flex flex-col justify-center h-full w-full">
                         <H1>Input Product</H1>
                     </div>
                 }
             >
-                <form
-                    onSubmit={handleSubmit(onSubmit, onError)}
-                    encType="application/x-www-form-urlencoded"
-                    className="h-full flex gap-2 py-8"
-                >
-                    {/*Input Image*/}
-                    <div className="h-full w-full" style={{ flex: '1 1 55%' }}>
-                        <ImagePlanInput
-                            name={'image'}
-                            setValue={setValue}
-                            errors={errors.image?.message}
-                            stateSubmit={stateSubmit}
-                        />
-                    </div>
+                <fieldset disabled={stateSubmit == ''}>
+                    <form
+                        onSubmit={handleSubmit(onSubmit)}
+                        encType="application/x-www-form-urlencoded"
+                        className="h-full flex gap-2 py-8 flex-col lg:flex-row"
+                    >
+                        {/*Input Image*/}
+                        <div className="lg:h-full w-full lg:flex-[1_1_55%]">
+                            <ImagePlaceInput
+                                name={'image'}
+                                setValue={(file) => setValue('image', file)}
+                                value={watch('image')}
+                                errors={errors?.image?.message}
+                            />
+                        </div>
 
-                    {/*Form Input*/}
-                    <div className="w-full flex-auto p-5 bg-dark-2 col-start-2 col-end-4 rounded-lg overflow-scroll">
-                        <FormInput
-                            control={control}
-                            name="menu"
-                            label={'Nama Menu'}
-                        />
-                        <FormInput
-                            control={control}
-                            name={'price'}
-                            type="number"
-                            label={'Harga'}
-                        />
-                        <button
-                            type={'submit'}
-                            className={'bg-primary p-3 w-full rounded-lg mt-5'}
-                        >
-                            Tambahkan
-                        </button>
-                    </div>
-                </form>
+                        {/*Form Input*/}
+                        <div className="w-full flex-auto p-5 bg-dark-2 col-start-2 col-end-4 rounded-lg overflow-scroll">
+                            <FormInput
+                                control={control}
+                                name="menu"
+                                label={'Nama Menu'}
+                                defaultValue=""
+                            />
+                            <FormInput
+                                control={control}
+                                name="price"
+                                defaultValue=""
+                                type="number"
+                                label="Harga"
+                            />
+                            <Button className="w-full" type="submit">
+                                Tambahkan
+                            </Button>
+                        </div>
+                    </form>
+                </fieldset>
             </GridRow>
         </>
     )
@@ -124,9 +113,10 @@ type FormInputProps<T extends FieldValues> = UseControllerProps<T> & {
     type?: React.HTMLInputTypeAttribute
 }
 
-function FormInput<T extends FieldValues = FieldValues>(
-    props: FormInputProps<T>,
-) {
+function FormInput<T extends FieldValues = FieldValues>({
+    type,
+    ...props
+}: FormInputProps<T>) {
     const { field, fieldState } = useController({ ...props })
     return (
         <label
@@ -136,67 +126,72 @@ function FormInput<T extends FieldValues = FieldValues>(
             <p className="ml-1 text-md font-medium">{props.label}</p>
             <input
                 id={props.name}
-                type={props.type ?? 'text'}
                 {...field}
+                type={type}
                 className={clsx(
                     'py-2 px-3 rounded-md text-white bg-form outline-2 outline-offset-5 outline-red-200 outline-none',
                     { 'border-2 border-red-500': fieldState.error },
                 )}
             />
+            {fieldState.error && <p>{fieldState.error.message}</p>}
         </label>
     )
 }
 
-function ImagePlanInput({ name, setValue, errors, stateSubmit }) {
-    const imageRef = useRef(null)
-    const [selectedImage, setSelectedImage] = useState(null)
+type ImagePlaceInputProps = {
+    name: string
+    setValue(arg: File): void
+    value: null | string | File
+    errors?: string
+}
 
-    useEffect(() => {
-        setValue(name, selectedImage)
-    }, [selectedImage])
+function ImagePlaceInput(props: ImagePlaceInputProps) {
+    const { name, setValue, value, errors } = props
+    const imageRef = useRef<HTMLInputElement>(null)
+    const [selectedImage, setSelectedImage] = useState<null | string>(null)
 
-    const onChange = (e) => {
-        if (e.target.files && e.target.files.length > 0) {
-            setSelectedImage(e.target.files[0])
+    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            setValue(e.target.files[0])
+            setSelectedImage(URL.createObjectURL(e.target.files[0]))
         }
     }
 
+    useEffect(() => {
+        if (!value) return
+        if (value instanceof File) setSelectedImage(URL.createObjectURL(value))
+        else setSelectedImage(value)
+    }, [value])
+
     const removeImage = React.useCallback(() => {
         setSelectedImage(null)
-        imageRef.current.value = null
-    }, [stateSubmit])
+        if (imageRef?.current?.value) imageRef.current.value = ''
+    }, [imageRef.current])
 
     return (
         <div className="bg-dark-2 rounded-lg p-6 flex flex-col gap-4">
             <input
                 accept="image/*"
                 type="file"
-                id={'thumbnail'}
+                hidden
                 name={name}
-                className={
-                    'block w-full py-4 px-2 border-2 border-primary rounded-lg text-center'
-                }
                 ref={imageRef}
                 onChange={onChange}
             />
-            {errors && <p className="text-red-400">{errors}</p>}
-            {selectedImage && (
-                <>
-                    <label
-                        htmlFor="thumbnail"
-                        className="max-h-[55vh] overflow-hidden rounded-lg border-2 border-primary"
-                    >
-                        <img src={URL.createObjectURL(selectedImage)} />
-                    </label>
-                    <button
-                        className="bg-red-700 hover:bg-red-800 rounded-md w-1/2 mx-auto p-3"
-                        onClick={removeImage}
-                        type={'button'}
-                    >
-                        Remove Image
-                    </button>
-                </>
+            {selectedImage ? (
+                <Button onClick={removeImage}>Remove</Button>
+            ) : (
+                <Button
+                    onClick={(e) => {
+                        e.preventDefault()
+                        imageRef.current?.click()
+                    }}
+                >
+                    Upload Image
+                </Button>
             )}
+            {errors && <p className="text-red-400">{'as'}</p>}
+            {selectedImage && <img src={selectedImage} />}
         </div>
     )
 }

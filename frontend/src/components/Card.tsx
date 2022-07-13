@@ -4,15 +4,10 @@ import { useNavigate } from 'react-router-dom'
 import Icon from './Icon'
 import { useOrderStore } from '../hooks/useOrder'
 import { useOnClickOutside } from '../hooks/useClickOutside'
+import { Button } from './Button'
 
-export default function Card({
-    menu,
-    imageURL,
-    price,
-    _id,
-    activeCard,
-    setActiveCard,
-}: CardProductProps) {
+export default function Card(props: CardProductProps) {
+    const { menu, imageURL, price, _id, activeCard, setActiveCard } = props
     const navigate = useNavigate()
     const [menuType, setMenuType] = React.useState<MenuType>('hot')
     const ref = React.useRef<HTMLDivElement>(null)
@@ -29,15 +24,19 @@ export default function Card({
             imageURL,
             _id,
         })
-    }, [])
+    }, [menuType, props])
+
+    const handleEdit = React.useCallback(() => {
+        navigate(`product/${_id}`)
+    }, [_id])
 
     const idWithVariant = `${menuType}-${_id}`
 
     return (
         <div
             className={clsx(
-                'w-[12rem] h-[23rem] p-2 rounded-2xl flex flex-col gap-4 items-center justify-around bg-dark-2 relative',
-                { 'shadow-active': activeCard },
+                'w-[8rem] h-[17rem] p-2 rounded-2xl flex flex-col items-center justify-between bg-dark-2 relative overflow-hidden',
+                { 'shadow-md': activeCard },
             )}
             data-active={activeCard}
             onClick={() => setActiveCard(_id)}
@@ -45,65 +44,54 @@ export default function Card({
         >
             {/* Edit Icon */}
             <button
-                onClick={() => navigate(`product/${_id}`)}
-                className="absolute top-5 hover:bg-primary cursor-pointer left-5 bg-gray-50 w-6 h-6 rounded-full z-10"
-            ></button>
-
+                onClick={handleEdit}
+                className="absolute top-0 hover:bg-primary cursor-pointer left-0 bg-gray-50 h-5 px-4 rounded-br-md z-10 text-primary hover:text-white"
+                children={'Edit'}
+            />
             <div className="w-full pt-[100%] relative bg-primary rounded-xl overflow-hidden">
-                <img
-                    src={imageURL}
-                    className="absolute top-0 left-0"
-                    alt="dummy"
-                />
+                <img src={imageURL} className="absolute inset-0" alt="dummy" />
             </div>
-            <div className="flex flex-col gap-2 items-center justify-center">
-                <h2 className="text-lg">{menu}</h2>
-                <p className="text-sm text-white/80">Rp. {price}</p>
-            </div>
-            <div className={'flex gap-5'}>
+            <h2 className="text-sm">{menu}</h2>
+            <p className="text-xs text-white/80">Rp. {price}</p>
+            <div className={'flex gap-2'}>
                 <Variants setType={setMenuType} type={menuType} />
             </div>
-            <button
-                className="text-xs bg-primary p-2 w-full text-center rounded-lg hover:opacity-80"
-                onClick={handleAddOrder}
-            >
+            <Button onClick={handleAddOrder} className="text-xs w-full py-2">
                 Add to billing
-            </button>
+            </Button>
         </div>
     )
 }
 
 type VariantProps = {
-    setType: (type: MenuType) => void
+    setType(type: MenuType): void
     type: MenuType
 }
 
 function Variants({ setType, type }: VariantProps) {
     return (
         <>
-            <div
+            <button
                 className={clsx(
-                    'w-8 h-8 p-1 grid place-content-center rounded-md cursor-pointer',
+                    'w-7 h-7 p-1 grid bg-dark-1 place-content-center rounded-md cursor-pointer',
                     type == 'hot'
-                        ? 'bg-primary/50 text-white'
-                        : 'bg-dark-1 text-[#f7a474]',
+                        ? '!bg-primary/50 text-white'
+                        : ' text-[#f7a474]',
                 )}
                 onClick={() => setType('hot')}
-            >
-                <Icon.Hot />
-            </div>
-            <div
+                children={<Icon.Hot />}
+            />
+            <button
                 className={clsx(
-                    'w-8 h-8 p-1 grid place-content-center rounded-md cursor-pointer',
+                    'w-7 h-7 bg-dark-1 p-1 grid place-content-center rounded-md cursor-pointer',
                     type === 'ice'
-                        ? 'bg-primary/50 text-red-900'
-                        : 'bg-dark-1 text-[#89f1f5]',
+                        ? '!bg-primary/50 text-red-900'
+                        : ' text-[#89f1f5]',
                 )}
                 style={{ color: 'cyan' }}
                 onClick={() => setType('ice')}
-            >
-                <Icon.Ice />
-            </div>
+                children={<Icon.Ice />}
+            />
         </>
     )
 }
