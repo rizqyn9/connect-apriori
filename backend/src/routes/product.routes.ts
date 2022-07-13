@@ -50,6 +50,7 @@ app.post("/", upload.single("image"), async (req, res, next) => {
 app.post("/:id", async (req, res, next) => {
   try {
     isValidObjectId(req.params.id)
+    console.log("asd")
 
     await ProductControl.update(req.params.id, req.body).then((payload) =>
       res.json({ payload })
