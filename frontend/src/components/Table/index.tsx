@@ -3,7 +3,7 @@ import { HTMLAttributes } from 'react'
 
 type THProps = HTMLAttributes<HTMLTableCellElement>
 const TH = ({ className, ...rest }: THProps) => (
-    <th {...rest} className={clsx('border-2 border-white py-5', className)} />
+    <th {...rest} className={clsx('border-2 border-white py-3', className)} />
 )
 
 type TRProps = HTMLAttributes<HTMLTableRowElement>

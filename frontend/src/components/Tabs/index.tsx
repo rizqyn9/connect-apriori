@@ -7,7 +7,7 @@ function ButtonTab({ label }: ButtonTabProps) {
         <Tab
             className={({ selected }: { selected: boolean }) =>
                 clsx(
-                    'w-full rounded-lg py-2.5 leading-5 text-lg text-white font-bold',
+                    'w-full rounded-lg py-2 leading-5 text-md text-white font-bold',
                     'ring-primary ring-opacity-60 ring-offset-2 focus:outline-none focus:ring-2',
                     selected
                         ? 'bg-primary shadow'
