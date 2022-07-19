@@ -11,7 +11,6 @@ import { RequireAuth } from './components/WithAuth'
 import { ROLES } from './hooks/useAuth'
 import { AuthProvider } from 'react-auth-kit'
 import { ToastContainer } from './components/Toast'
-import { ModalContainer } from './hooks/useModal'
 
 function App() {
     return (
@@ -67,7 +66,6 @@ function GlobalProvider({ children }: { children: React.ReactNode }) {
         <CookiesProvider>
             <AuthProvider authType="cookie" authName="c_connect">
                 <ToastContainer />
-                <ModalContainer />
                 {children}
             </AuthProvider>
         </CookiesProvider>

@@ -7,7 +7,6 @@ import {
     PaymentMethod,
 } from '../hooks/useTransaction'
 import { OrderCard } from './OrderCard'
-import { useModalStore } from '../hooks/useModal'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Button } from './Button'
 import { DialogPayment } from './Dialog/DialogPayment'
@@ -21,7 +20,6 @@ export default function Order({ className }: OrderContainerProps) {
     const [isDialogPayment, setIsDialogPayment] = React.useState(false)
     const [isDialogPromo, setIsDialogPromo] = React.useState(false)
     const { orders } = useOrderStore()
-    const { setActive } = useModalStore()
 
     const { props, setProps, state, recalculate } = useTransactionStore()
 

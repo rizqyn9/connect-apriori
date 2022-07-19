@@ -9,6 +9,9 @@ export function DialogPromo(props: DialogContainerProps) {
         <DialogContainer {...props}>
             <Dialog.Panel className="bg-dark-2 border-2 border-white p-5 text-white rounded-lg w-[50vw] h-[80vh]">
                 <H1>Promo</H1>
+                <form>
+                    <input value={'asdad'} />
+                </form>
             </Dialog.Panel>
         </DialogContainer>
     )
