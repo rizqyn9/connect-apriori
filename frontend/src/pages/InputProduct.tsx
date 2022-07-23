@@ -13,6 +13,7 @@ import { H1 } from '../components/Typography'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ProductInputSchema, productInputSchema } from '../utils/zod.schema'
 import { Button } from '../components/Button'
+import { useToastStore } from '../components/Toast'
 
 export function ProductPage() {
     return (
@@ -27,13 +28,14 @@ function InputProduct() {
     const { id } = useParams()
     const [stateSubmit, setStateSubmit] = useState('iddle')
     const { getProductId, postProduct } = useProductStore()
+    const { addToast } = useToastStore()
 
     const {
         handleSubmit,
         setValue,
         control,
         watch,
-        formState: { errors, isValid },
+        formState: { errors },
     } = useForm<ProductInputSchema>({
         resolver: zodResolver(productInputSchema),
         mode: 'all',
@@ -45,15 +47,15 @@ function InputProduct() {
             'image',
             'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg',
         )
-        // setStateSubmit('iddle')
-        // getProductId(id).then((val) => {})
     }, [])
 
     const onSubmit = async (data: Omit<ProductInputSchema, 'image'>) => {
         const formData = new FormData()
         const formArray: [string, string | File][] = Object.entries({ ...data })
         formArray.forEach(([key, val]) => formData.append(key, val))
-        console.log(formData)
+        await postProduct(formData)
+            .then((res) => addToast({ msg: String(res) }))
+            .catch((err) => addToast({ msg: err, type: 'error' }))
     }
 
     return (

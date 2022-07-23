@@ -1,10 +1,6 @@
-import { atom, useAtom } from 'jotai'
-import { useAxiosPrivate } from './useAxiosPrivate'
 import create from 'zustand'
 import { axiosPrivate } from '../services'
-import { ProductInputSchema } from '../utils/zod.schema'
-
-const atomProducts = atom([])
+import { AxiosError } from 'axios'
 
 const useProductStore = create<ProductStore>((set, get) => ({
     products: [],
@@ -39,13 +35,24 @@ const useProductStore = create<ProductStore>((set, get) => ({
     },
     async postProduct(product: unknown) {
         try {
-            await axiosPrivate
-                .post<{ payload: ProductProps }>('/products', product)
-                .then()
+            console.log(product)
+            return await axiosPrivate
+                .post<{
+                    payload: { menu: string; price: number; image: File }
+                }>('/products', product)
+                .then((res) => {
+                    console.log(res)
+                    return Promise.resolve(
+                        `Success create new menu ${res.data.payload.menu}`,
+                    )
+                })
+                .catch((err: AxiosError) =>
+                    Promise.reject(err.response?.data.err ?? 'Server error'),
+                )
         } catch (error) {
             return Promise.reject(error)
         }
     },
 }))
 
-export { atomProducts, useProductStore }
+export { useProductStore }

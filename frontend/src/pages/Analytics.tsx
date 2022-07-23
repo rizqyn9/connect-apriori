@@ -1,14 +1,40 @@
-import { useState } from 'react'
+import React from 'react'
 import { GridRow } from '../components/Grid'
-import { useProductStore } from '../hooks/useProducts'
-import { useAnalytics } from '../hooks/useAnalytics'
+import { useAnalyticsStore } from '../hooks/useAnalytics'
 import { ButtonTab } from '../components/Tabs'
 import { Tab } from '@headlessui/react'
 import TableAnalyticProduct from '../components/Table/TableAnalyticProduct'
 import TableAnalyticTransaction from '../components/Table/TableAnalyticTransaction'
 import TableAnalyticPromo from '../components/Table/TableAnalyticPromo'
 
+type AnalyticsDataProps = {
+    transactions: Array<unknown>
+    promos: Array<unknown>
+    products: Array<unknown>
+}
+
 export default function Analytics() {
+    const { getProducts, getTransaction, getPromo } = useAnalyticsStore()
+    const [state, setState] = React.useState<AnalyticsDataProps>({
+        transactions: [],
+        promos: [],
+        products: [],
+    })
+
+    React.useEffect(() => {
+        fetchAnalytics()
+    }, [])
+
+    async function fetchAnalytics() {
+        const a = await Promise.all([
+            getProducts(),
+            getTransaction(),
+            getPromo(),
+        ]).then((val) => {
+            console.log(val)
+        })
+    }
+
     return (
         <GridRow
             className="px-5 w-full flex-auto overflow-x-scroll text-sm"

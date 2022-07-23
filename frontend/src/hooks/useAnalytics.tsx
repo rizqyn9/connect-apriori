@@ -1,25 +1,21 @@
-import { atom, useAtom } from 'jotai'
-import { useAxiosPrivate } from './useAxiosPrivate'
+import create from 'zustand'
 
-const analyticsAtom = atom({
-    transactionList: [],
-})
-
-function useAnalytics() {
-    const [analytics, setAnalytics] = useAtom(analyticsAtom)
-
-    const axiosPrivate = useAxiosPrivate()
-
-    const getAllTransaction = async () => {
-        return await axiosPrivate
-            .get('/transaction')
-            .then((val) => val.data.transaction)
-    }
-
-    return {
-        analytics,
-        getAllTransaction,
-    }
+type AnalyticsStore = {
+    getProducts(): Promise<Array<unknown>>
+    getTransaction(): Promise<Array<unknown>>
+    getPromo(): Promise<Array<unknown>>
 }
 
-export { useAnalytics }
+const useAnalyticsStore = create<AnalyticsStore>((set, get) => ({
+    async getProducts() {
+        return []
+    },
+    async getTransaction() {
+        return []
+    },
+    async getPromo() {
+        return []
+    },
+}))
+
+export { useAnalyticsStore }
