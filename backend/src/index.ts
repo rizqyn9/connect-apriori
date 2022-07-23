@@ -27,8 +27,10 @@ app.use(cors({ credentials: true, origin: "http://localhost:3000" }), Routes)
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.log(err)
   if (err instanceof Error) {
+    res.status(400)
     res.json({ err: err.message })
   } else {
+    res.status(500)
     res.json({ err })
   }
 })
