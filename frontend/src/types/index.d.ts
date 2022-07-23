@@ -37,9 +37,10 @@ type KeyTransactionProps = keyof TransactionProps
 type TransactionStore = {
     state: 'order' | 'create' | 'success' | 'fail'
     props: TransactionProps
-    setProps: <TKey extends KeyTransactionProps = KeyTransactionProps>(
+    setProps<TKey extends KeyTransactionProps = KeyTransactionProps>(
         key: TKey,
         val: TransactionProps[TKey],
-    ) => void
-    recalculate: () => void
+    ): void
+    recalculate(): void
+    clearTransaction(): void
 }

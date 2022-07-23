@@ -20,3 +20,6 @@ const TD = ({ className, ...rest }: TDProps) => (
 )
 
 export { TH, TR, TD }
+export * from './TableAnalyticProduct'
+export * from './TableAnalyticPromo'
+export * from './TableAnalyticTransaction'

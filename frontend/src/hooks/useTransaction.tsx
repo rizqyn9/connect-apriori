@@ -25,6 +25,15 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
             .reduce((prev, curr) => prev + curr, 0)
         get().setProps('total', count)
     },
+    clearTransaction() {
+        set({
+            props: {
+                method: null,
+                total: 0,
+                promo: null,
+            },
+        })
+    },
 }))
 
 export { useTransactionStore }

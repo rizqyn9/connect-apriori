@@ -20,4 +20,4 @@ function ButtonTab({ label }: ButtonTabProps) {
     )
 }
 
-export { ButtonTab }
+export { ButtonTab, Tab }

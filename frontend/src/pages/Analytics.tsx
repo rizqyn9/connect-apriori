@@ -1,16 +1,16 @@
 import React from 'react'
 import { GridRow } from '../components/Grid'
 import { useAnalyticsStore, AnalyticsDataProps } from '../hooks/useAnalytics'
-import { ButtonTab } from '../components/Tabs'
-import { Tab } from '@headlessui/react'
-import TableAnalyticProduct from '../components/Table/TableAnalyticProduct'
-import TableAnalyticTransaction from '../components/Table/TableAnalyticTransaction'
-import TableAnalyticPromo from '../components/Table/TableAnalyticPromo'
+import { ButtonTab, Tab } from '../components/Tabs'
 import { useToastStore } from '../components/Toast'
 import { useOnce } from '../hooks/useOnce'
+import {
+    TableAnalyticProduct,
+    TableAnalyticPromo,
+    TableAnalyticTransaction,
+} from '../components/Table'
 
 export default function Analytics() {
-    const shouldFetch = React.useRef(false)
     const { getAllAnalytics } = useAnalyticsStore()
     const { addToast } = useToastStore()
     const [state, setState] = React.useState<AnalyticsDataProps>({
@@ -26,6 +26,7 @@ export default function Analytics() {
     async function fetchAnalytics() {
         getAllAnalytics()
             .then((res) => {
+                setState(res)
                 addToast({ msg: 'Success update analytics' })
             })
             .catch((err) => console.log({ err }))
@@ -48,13 +49,15 @@ export default function Analytics() {
 
                         <div className="border-2 border-white rounded-xl max-h-[70vh] overflow-auto">
                             <Tab.Panel>
-                                <TableAnalyticProduct data={[]} />
+                                <TableAnalyticProduct data={state.products} />
                             </Tab.Panel>
                             <Tab.Panel>
-                                <TableAnalyticTransaction data={[]} />
+                                <TableAnalyticTransaction
+                                    data={state.transactions}
+                                />
                             </Tab.Panel>
                             <Tab.Panel>
-                                <TableAnalyticPromo data={[]} />
+                                <TableAnalyticPromo data={state.promos} />
                             </Tab.Panel>
                         </div>
                     </Tab.Group>

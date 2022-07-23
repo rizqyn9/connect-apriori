@@ -2,7 +2,7 @@ import create from 'zustand'
 import { axiosPrivate } from '../services'
 
 export type AnalyticsDataProps = {
-    products: Array<unknown>
+    products: Array<ProductProps>
     transactions: Array<unknown>
     promos: Array<unknown>
 }
@@ -11,7 +11,7 @@ type AnalyticsStore = {
     getProducts(): Promise<AnalyticsDataProps['products']>
     getTransactions(): Promise<AnalyticsDataProps['transactions']>
     getPromos(): Promise<AnalyticsDataProps['promos']>
-    getAllAnalytics(): Promise<unknown>
+    getAllAnalytics(): Promise<AnalyticsDataProps>
 }
 
 const useAnalyticsStore = create<AnalyticsStore>((set, get) => ({
@@ -25,8 +25,13 @@ const useAnalyticsStore = create<AnalyticsStore>((set, get) => ({
         return []
     },
     async getAllAnalytics() {
-        return axiosPrivate.get('/analytics').then((val) => console.log(val))
-        // return { products, transactions, promos }
+        return axiosPrivate
+            .get<{ payload: AnalyticsDataProps }>('/analytics')
+            .then((res) => {
+                const { payload } = res.data
+                console.log({ payload })
+                return payload
+            })
     },
 }))
 

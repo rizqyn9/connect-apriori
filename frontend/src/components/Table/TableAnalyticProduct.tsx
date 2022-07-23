@@ -5,7 +5,7 @@ type TableAnalyticPoductsProps = {
     data: ProductProps[]
 }
 
-export default function TableAnalyticProduct(props: TableAnalyticPoductsProps) {
+export function TableAnalyticProduct(props: TableAnalyticPoductsProps) {
     return (
         <table className="w-full bg-dark-2 rounded-lg">
             <thead>

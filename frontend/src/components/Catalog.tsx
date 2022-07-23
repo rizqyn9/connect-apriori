@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Card from './Card'
 import Order from './Order'
-import { GridRow, GridRowMotion } from './Grid'
+import { GridRow } from './Grid'
 import { useAuth } from '../hooks/useAuth'
 import { useProductStore } from '../hooks/useProducts'
 import { useToastStore } from './Toast'
@@ -13,8 +13,7 @@ export default function Catalog() {
     const { addToast } = useToastStore()
     const { getAllProducts, products } = useProductStore()
 
-    const [activeCard, setActiveCard] = useState('')
-    const [showCart, setShowCart] = useState()
+    const [activeCard, setActiveCard] = React.useState('')
 
     useOnce(() => {
         if (products.length == 0) fetchProduct()

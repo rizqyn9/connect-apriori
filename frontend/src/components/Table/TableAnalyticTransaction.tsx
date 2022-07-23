@@ -4,9 +4,7 @@ import { Button } from '../Button'
 type TableAnalyticTransactionProps = {
     data: TransactionProps[]
 }
-export default function TableAnalyticTransaction(
-    props: TableAnalyticTransactionProps,
-) {
+export function TableAnalyticTransaction(props: TableAnalyticTransactionProps) {
     return (
         <table className="w-full bg-dark-2 rounded-lg">
             <thead>

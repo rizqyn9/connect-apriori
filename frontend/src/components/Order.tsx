@@ -16,10 +16,9 @@ type OrderContainerProps = {
     className: string
 }
 export default function Order({ className }: OrderContainerProps) {
-    const [showOrder, setShowOrder] = React.useState(true)
     const [isDialogPayment, setIsDialogPayment] = React.useState(false)
     const [isDialogPromo, setIsDialogPromo] = React.useState(false)
-    const { orders } = useOrderStore()
+    const { orders, state: orderState, updateState } = useOrderStore()
 
     const { props, setProps, state, recalculate } = useTransactionStore()
 
@@ -39,7 +38,6 @@ export default function Order({ className }: OrderContainerProps) {
                 )}
             >
                 <div className="flex flex-col">
-                    <p className="font-bold">Order-ID #423848234</p>
                     <Button onClick={() => setIsDialogPromo(true)}>
                         Gunakan promo
                     </Button>
@@ -49,7 +47,7 @@ export default function Order({ className }: OrderContainerProps) {
                 <AnimatePresence>
                     <div className="relative flex-1 overflow-y-scroll overflow-x-hidden border-b-2 border-t-2 py-3 flex flex-col gap-3 border-dark-line pr-4 max-h-[50vh]">
                         <AnimatePresence>
-                            {showOrder &&
+                            {orderState == 'choose product' &&
                                 orders &&
                                 Object.entries(orders).map(([key, val]) => (
                                     <OrderCard
@@ -59,8 +57,10 @@ export default function Order({ className }: OrderContainerProps) {
                                     />
                                 ))}
                         </AnimatePresence>
-                        {!showOrder && (
-                            <Transaction close={() => setShowOrder(true)} />
+                        {orderState == 'choose payment' && (
+                            <Transaction
+                                close={() => updateState('choose product')}
+                            />
                         )}
                     </div>
                 </AnimatePresence>
@@ -75,11 +75,12 @@ export default function Order({ className }: OrderContainerProps) {
                         right={props.method ?? '-'}
                     />
                 </div>
-                {showOrder ? (
+                {orderState == 'choose product' &&
+                Object.keys(orders).length != 0 ? (
                     <Button
                         className="disabled:cursor-not-allowed disabled:bg-primary/10"
                         disabled={Object.keys(orders).length == 0}
-                        onClick={() => setShowOrder(!showOrder)}
+                        onClick={() => updateState('choose payment')}
                     >
                         Metode pembayaran
                     </Button>
