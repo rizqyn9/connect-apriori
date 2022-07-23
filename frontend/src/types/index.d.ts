@@ -42,5 +42,6 @@ type TransactionStore = {
         val: TransactionProps[TKey],
     ): void
     recalculate(): void
+    create(): Promise<unknown>
     clearTransaction(): void
 }

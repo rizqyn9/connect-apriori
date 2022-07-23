@@ -34,6 +34,7 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
             },
         })
     },
+    async create() {},
 }))
 
 export { useTransactionStore }

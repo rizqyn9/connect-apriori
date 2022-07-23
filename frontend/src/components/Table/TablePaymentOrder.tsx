@@ -16,7 +16,7 @@ export function TablePaymentOrder({ orders }: TablePaymentOrderProps) {
             </thead>
             <tbody className="border-2 border-white">
                 {orders.map((val, i) => (
-                    <TR>
+                    <TR key={i}>
                         <TD className="p-2 text-center">{val.menuType}</TD>
                         <TD>{val.menu}</TD>
                         <TD className="text-center">{val.quantity}</TD>

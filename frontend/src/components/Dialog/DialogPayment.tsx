@@ -1,13 +1,12 @@
 import React from 'react'
 import { Dialog } from '@headlessui/react'
-import { useOrderStore } from '../../hooks/useOrder'
-import { useTransactionStore } from '../../hooks/useTransaction'
 import { Button } from '../Button'
 import { H1 } from '../Typography'
 import { DialogContainer, DialogContainerProps } from './DialogContainer'
-import clsx from 'clsx'
 import { TablePaymentOrder } from '../Table/TablePaymentOrder'
 import { useToastStore } from '../Toast'
+import { useOrderStore } from '../../hooks/useOrder'
+import { useTransactionStore } from '../../hooks/useTransaction'
 import { useOnce } from '../../hooks/useOnce'
 
 type DialogPaymentProps = DialogContainerProps & {}
@@ -35,9 +34,11 @@ export function DialogPayment(props: DialogPaymentProps) {
         updateState('choose product')
     }, [])
 
+    const handleCancel = React.useCallback(() => props.setIsOpen(false), [])
+
     return (
         <DialogContainer {...props}>
-            <Dialog.Panel className="bg-dark-2 border-2 border-white p-5 text-white rounded-lg w-[50vw] h-[90vh] flex flex-col">
+            <Dialog.Panel className="bg-dark-2 border border-white p-5 text-white rounded-lg w-[50vw] h-[90vh] flex flex-col">
                 <H1>Payment</H1>
                 <div className="flex flex-col h-[95%] justify-between">
                     {loading ? (
@@ -65,7 +66,12 @@ export function DialogPayment(props: DialogPaymentProps) {
                                     {transaction.total}
                                 </p>
                                 <div className="flex justify-end gap-5">
-                                    <Button className="w-1/4">Cancel</Button>
+                                    <Button
+                                        className="w-1/4"
+                                        onClick={handleCancel}
+                                    >
+                                        Cancel
+                                    </Button>
                                     <Button
                                         className="w-1/4"
                                         onClick={handleOnPaid}
@@ -79,24 +85,5 @@ export function DialogPayment(props: DialogPaymentProps) {
                 </div>
             </Dialog.Panel>
         </DialogContainer>
-    )
-}
-
-type OrderReceiptProps = {
-    menu: string
-    quantity: number
-    price: number
-    menuType: MenuType
-    className?: string
-}
-
-function OrderReceipt(props: OrderReceiptProps) {
-    return (
-        <div className={clsx('flex w-full justify-between', props.className)}>
-            <p className="text-left capitalize">{props.menuType}</p>
-            <p className="text-left">{props.menu}</p>
-            <p className="text-right">{props.quantity}</p>
-            <p className="text-left">{props.price}</p>
-        </div>
     )
 }
