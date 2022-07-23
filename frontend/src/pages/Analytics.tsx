@@ -1,38 +1,34 @@
 import React from 'react'
 import { GridRow } from '../components/Grid'
-import { useAnalyticsStore } from '../hooks/useAnalytics'
+import { useAnalyticsStore, AnalyticsDataProps } from '../hooks/useAnalytics'
 import { ButtonTab } from '../components/Tabs'
 import { Tab } from '@headlessui/react'
 import TableAnalyticProduct from '../components/Table/TableAnalyticProduct'
 import TableAnalyticTransaction from '../components/Table/TableAnalyticTransaction'
 import TableAnalyticPromo from '../components/Table/TableAnalyticPromo'
-
-type AnalyticsDataProps = {
-    transactions: Array<unknown>
-    promos: Array<unknown>
-    products: Array<unknown>
-}
+import { useToastStore } from '../components/Toast'
+import { useOnce } from '../hooks/useOnce'
 
 export default function Analytics() {
-    const { getProducts, getTransaction, getPromo } = useAnalyticsStore()
+    const shouldFetch = React.useRef(false)
+    const { getAllAnalytics } = useAnalyticsStore()
+    const { addToast } = useToastStore()
     const [state, setState] = React.useState<AnalyticsDataProps>({
         transactions: [],
         promos: [],
         products: [],
     })
 
-    React.useEffect(() => {
+    useOnce(() => {
         fetchAnalytics()
     }, [])
 
     async function fetchAnalytics() {
-        const a = await Promise.all([
-            getProducts(),
-            getTransaction(),
-            getPromo(),
-        ]).then((val) => {
-            console.log(val)
-        })
+        getAllAnalytics()
+            .then((res) => {
+                addToast({ msg: 'Success update analytics' })
+            })
+            .catch((err) => console.log({ err }))
     }
 
     return (

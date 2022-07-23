@@ -7,6 +7,7 @@ import { useProductStore } from '../hooks/useProducts'
 import { useToastStore } from './Toast'
 import { Button } from './Button'
 import { motion } from 'framer-motion'
+import { useOnce } from '../hooks/useOnce'
 
 export default function Catalog() {
     const { addToast } = useToastStore()
@@ -15,7 +16,7 @@ export default function Catalog() {
     const [activeCard, setActiveCard] = useState('')
     const [showCart, setShowCart] = useState()
 
-    useEffect(() => {
+    useOnce(() => {
         if (products.length == 0) fetchProduct()
     }, [])
 

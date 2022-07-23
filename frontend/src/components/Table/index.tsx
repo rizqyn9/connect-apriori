@@ -13,6 +13,7 @@ const TR = ({ className, ...rest }: TRProps) => (
 
 type TDProps = HTMLAttributes<HTMLTableCellElement> & {
     width?: string | number
+    colSpan?: number
 }
 const TD = ({ className, ...rest }: TDProps) => (
     <td {...rest} className={className} />

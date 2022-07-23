@@ -17,19 +17,27 @@ export default function TableAnalyticPromo(props: TableAnalyticPromoProps) {
                 </tr>
             </thead>
             <tbody className="border-2 border-white">
-                {props.data.map((val, i) => (
-                    <TR>
-                        <TD className="p-2 text-center" width={100}>
-                            {i + 1}
-                        </TD>
-                        <TD>{val.menu}</TD>
-                        <TD>{val.price}</TD>
-                        <TD className="flex gap-5">
-                            <Button className="w-1/3">Edit</Button>
-                            <Button className="w-1/3">Remove</Button>
+                {props.data.length == 0 ? (
+                    <TR className="text-center">
+                        <TD className="py-8" colSpan={4}>
+                            Data Not found
                         </TD>
                     </TR>
-                ))}
+                ) : (
+                    props.data.map((val, i) => (
+                        <TR>
+                            <TD className="p-2 text-center" width={100}>
+                                {i + 1}
+                            </TD>
+                            <TD>{val.menu}</TD>
+                            <TD>{val.price}</TD>
+                            <TD className="flex gap-5">
+                                <Button className="w-1/3">Edit</Button>
+                                <Button className="w-1/3">Remove</Button>
+                            </TD>
+                        </TR>
+                    ))
+                )}
             </tbody>
         </table>
     )
