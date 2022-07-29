@@ -14,18 +14,30 @@ type DialogPaymentProps = DialogContainerProps & {}
 export function DialogPayment(props: DialogPaymentProps) {
     const [loading, setLoading] = React.useState(false)
     const { addToast } = useToastStore()
-    const { props: transaction, clearTransaction } = useTransactionStore()
+    const {
+        props: transaction,
+        clearTransaction,
+        doPaid,
+    } = useTransactionStore()
     const { orders, clearOrders, state, updateState } = useOrderStore()
 
     const handleOnPaid = React.useCallback(async () => {
-        setLoading(true)
-        await new Promise((res) => setTimeout(res, 3000))
-        addToast({ msg: 'Transaction success' })
-        clearOrders()
-        clearTransaction()
-        updateState('choose product')
-        setLoading(false)
-        props.setIsOpen(false)
+        try {
+            setLoading(true)
+            await doPaid()
+            addToast({ msg: 'Transaction success' })
+        } catch (error) {
+            console.log(error)
+
+            addToast({ msg: 'Transaction failed', type: 'error' })
+        } finally {
+            setLoading(false)
+            props.setIsOpen(false)
+        }
+        // await new Promise((res) => setTimeout(res, 3000))
+        // clearOrders()
+        // clearTransaction()
+        // updateState('choose product')
     }, [setLoading])
 
     const handlePaidSuccess = () => {}

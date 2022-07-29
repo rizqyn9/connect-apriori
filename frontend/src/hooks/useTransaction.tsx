@@ -1,5 +1,8 @@
+import { AxiosError } from 'axios'
 import create from 'zustand'
+import { axiosPrivate } from '../services'
 import { useOrderStore } from './useOrder'
+import { useProductStore } from './useProducts'
 
 export const paymentMethodExist = ['dana', 'ovo', 'gopay'] as const
 
@@ -35,6 +38,16 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
         })
     },
     async create() {},
+    async doPaid() {
+        const { props } = get()
+        const orders = useOrderStore.getState().orders
+        console.log({ transaction: props, orders })
+
+        return await axiosPrivate
+            .post('/transaction/create', { transaction: props, orders })
+            .then((val) => console.log(val))
+            .catch((err) => console.log(err))
+    },
 }))
 
 export { useTransactionStore }

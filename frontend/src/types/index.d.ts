@@ -44,4 +44,5 @@ type TransactionStore = {
     recalculate(): void
     create(): Promise<unknown>
     clearTransaction(): void
+    doPaid(): Promise<void>
 }

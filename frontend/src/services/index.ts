@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const SERVER_ENDPOINT =
-    String(import.meta.env.VITE_SERVER) ?? 'http://localhost:3000'
+    String(import.meta.env.VITE_SERVER) ?? 'http://localhost:5000'
 
 console.log(SERVER_ENDPOINT)
 

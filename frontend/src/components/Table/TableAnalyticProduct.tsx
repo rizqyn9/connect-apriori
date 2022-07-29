@@ -25,7 +25,7 @@ export function TableAnalyticProduct(props: TableAnalyticPoductsProps) {
                     </TR>
                 ) : (
                     props.data.map((val, i) => (
-                        <TR>
+                        <TR key={i}>
                             <TD className="p-2 text-center" width={100}>
                                 {i + 1}
                             </TD>
