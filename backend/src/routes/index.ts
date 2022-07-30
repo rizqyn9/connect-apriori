@@ -18,6 +18,7 @@ let dataKTP = { id: 123123, isNewUser: true }
 app.get("/test", (req, res) => {
   res.json({ payload: { ...dataKTP } })
 })
+
 app.use("/auth", AuthRouter)
 // app.use(VerifyToken)
 

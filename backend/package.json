@@ -21,7 +21,8 @@
     "pm2": "^5.2.0"
   },
   "prettier": {
-    "semi": false
+    "semi": false,
+    "printWidth": 140
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.3",

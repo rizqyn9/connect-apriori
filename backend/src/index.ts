@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser"
 import { MongoConnect } from "./lib/mongo"
 import { config } from "@/lib/config"
 import Routes from "./routes"
+import { ZodError } from "zod"
 
 const app = express()
 
@@ -20,11 +21,13 @@ app.use((req, res, next) => {
   next()
 })
 
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }), Routes)
-// app.use(Routes)
+app.use(Routes)
 
 // Error handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  if (err instanceof ZodError) {
+    return res.json(err.flatten().fieldErrors)
+  }
   console.log(err)
   if (err instanceof Error) {
     res.status(400)
