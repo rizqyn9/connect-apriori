@@ -17,4 +17,6 @@ const incrementOrderById = async (id: MongoObject, increment: number) =>
     $inc: { totalOrdered: increment },
   }).then((val) => val ?? Promise.reject(`Product with id: ${id} not found`))
 
-export { getProductByID, getAllProduts, create, update, remove, incrementOrderById }
+const decrementOrderById = async (id: MongoObject, decrement: number) => await incrementOrderById(id, decrement * -1)
+
+export { getProductByID, getAllProduts, create, update, remove, incrementOrderById, decrementOrderById }

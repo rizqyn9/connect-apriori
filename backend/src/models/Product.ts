@@ -21,6 +21,7 @@ const ProductSchema = new Schema<ProductProps>({
   },
   totalOrdered: {
     type: Number,
+    default: 0,
   },
 })
 

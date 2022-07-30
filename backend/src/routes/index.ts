@@ -9,6 +9,7 @@ import TransactionRouter from "./transaction.routes"
 import AdminRouter from "./admin.routes"
 import PromoRouter from "./promo.routes"
 import AnalyticsRouter from "./analytics.routes"
+import AprioriRouter from "./apriori.routes"
 
 // import { VerifyToken } from "../../middleware/token"
 
@@ -29,5 +30,6 @@ app.use("/admin", AdminRouter)
 app.use("/customer", CustomerRouter)
 app.use("/promo", PromoRouter)
 app.use("/analytics", AnalyticsRouter)
+app.use("/apriori", AprioriRouter)
 
 export default app

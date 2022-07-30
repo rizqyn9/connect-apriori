@@ -1,10 +1,13 @@
 import { z } from "zod"
 import { mongoObject, paymentAllowed } from "./misc.schema"
 
+const menuType = z.enum(["hot", "ice"])
+
+export type MenuType = z.infer<typeof menuType>
+
 const orderSchema = z.object({
-  quantity: z.number(),
   menuId: mongoObject,
-  menuType: z.enum(["hot", "ice"]),
+  variants: z.record(menuType, z.number()),
 })
 
 export type OrderSchema = z.infer<typeof orderSchema>

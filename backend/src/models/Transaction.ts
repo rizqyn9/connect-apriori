@@ -1,13 +1,15 @@
 import { Schema, Types, model } from "mongoose"
-import type { TransactionSchema } from "@/types/transaction.schema"
+import type { TransactionSchema, OrderSchema } from "@/types/transaction.schema"
 
-const OrderModel = new Schema<TransactionSchema["orderList"][number]>({
+const OrderModel = new Schema<OrderSchema>({
   menuId: {
     type: Types.ObjectId,
     ref: "Product",
   },
-  menuType: { type: String, required: true },
-  quantity: { type: Number, required: true },
+  variants: {
+    ice: { type: Number, default: 0 },
+    hot: { type: Number, default: 0 },
+  },
 })
 
 const TransactionModel = new Schema<TransactionSchema & { created_at?: Date }>({
@@ -21,7 +23,10 @@ const TransactionModel = new Schema<TransactionSchema & { created_at?: Date }>({
     type: Types.ObjectId,
     ref: "Promos",
   },
-  orderList: [OrderModel],
+  orderList: {
+    type: [OrderModel],
+    default: [],
+  },
   created_at: {
     type: Date,
     default: Date.now(),
