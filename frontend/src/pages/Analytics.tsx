@@ -1,19 +1,15 @@
-import React from 'react'
+import { useState, useCallback } from 'react'
 import { GridRow } from '../components/Grid'
 import { useAnalyticsStore, AnalyticsDataProps } from '../hooks/useAnalytics'
 import { ButtonTab, Tab } from '../components/Tabs'
 import { useToastStore } from '../components/Toast'
 import { useOnce } from '../hooks/useOnce'
-import {
-    TableAnalyticProduct,
-    TableAnalyticPromo,
-    TableAnalyticTransaction,
-} from '../components/Table'
+import { TableAnalyticProduct, TableAnalyticPromo, TableAnalyticTransaction } from '../components/Table'
 
 export default function Analytics() {
     const { getAllAnalytics } = useAnalyticsStore()
     const { addToast } = useToastStore()
-    const [state, setState] = React.useState<AnalyticsDataProps>({
+    const [state, setState] = useState<AnalyticsDataProps>({
         transactions: [],
         promos: [],
         products: [],
@@ -22,6 +18,8 @@ export default function Analytics() {
     useOnce(() => {
         fetchAnalytics()
     }, [])
+
+    const update = useCallback(() => fetchAnalytics(), [])
 
     async function fetchAnalytics() {
         getAllAnalytics()
@@ -33,10 +31,7 @@ export default function Analytics() {
     }
 
     return (
-        <GridRow
-            className="px-5 w-full flex-auto overflow-x-scroll text-sm"
-            title="Analitycs"
-        >
+        <GridRow className="px-5 w-full flex-auto overflow-x-scroll text-sm" title="Analitycs">
             <div className="py-8 overflow-x-scroll">
                 {/*Tabs Container*/}
                 <div className={'flex flex-col gap-8 text-white mb-6'}>
@@ -52,9 +47,7 @@ export default function Analytics() {
                                 <TableAnalyticProduct data={state.products} />
                             </Tab.Panel>
                             <Tab.Panel>
-                                <TableAnalyticTransaction
-                                    data={state.transactions}
-                                />
+                                <TableAnalyticTransaction data={state.transactions} update={update} />
                             </Tab.Panel>
                             <Tab.Panel>
                                 <TableAnalyticPromo data={state.promos} />

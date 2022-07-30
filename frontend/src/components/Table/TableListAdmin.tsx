@@ -18,7 +18,7 @@ export function TableListAdmin({ data }: TableListAdminProps) {
             </thead>
             <tbody className="border-2 border-white">
                 {data.map((val, i) => (
-                    <TR>
+                    <TR key={i}>
                         <TD className="p-2 text-center" width={100}>
                             {i + 1}
                         </TD>

@@ -2,7 +2,12 @@ import { TD, TH, TR } from '.'
 import { Button } from '../Button'
 
 type TableAnalyticPoductsProps = {
-    data: ProductProps[]
+    data: {
+        _id: string
+        menu: string
+        totalOrdered: number
+        price: number
+    }[]
 }
 
 export function TableAnalyticProduct(props: TableAnalyticPoductsProps) {
@@ -13,6 +18,7 @@ export function TableAnalyticProduct(props: TableAnalyticPoductsProps) {
                     <TH>No</TH>
                     <TH>Menu</TH>
                     <TH>Price</TH>
+                    <TH>Order</TH>
                     <TH>Action</TH>
                 </tr>
             </thead>
@@ -30,8 +36,9 @@ export function TableAnalyticProduct(props: TableAnalyticPoductsProps) {
                                 {i + 1}
                             </TD>
                             <TD>{val.menu}</TD>
-                            <TD>{val.price}</TD>
-                            <TD className="flex gap-5">
+                            <TD className="text-center">{val.price}</TD>
+                            <TD className="text-center">{val.totalOrdered ?? 0}</TD>
+                            <TD className="flex gap-5 justify-center">
                                 <Button className="w-1/3">Edit</Button>
                                 <Button className="w-1/3">Remove</Button>
                             </TD>

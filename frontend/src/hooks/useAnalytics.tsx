@@ -25,13 +25,11 @@ const useAnalyticsStore = create<AnalyticsStore>((set, get) => ({
         return []
     },
     async getAllAnalytics() {
-        return axiosPrivate
-            .get<{ payload: AnalyticsDataProps }>('/analytics')
-            .then((res) => {
-                const { payload } = res.data
-                console.log({ payload })
-                return payload
-            })
+        return axiosPrivate.get<{ payload: AnalyticsDataProps }>('/analytics').then((res) => {
+            const { payload } = res.data
+            // console.log({ payload })
+            return payload
+        })
     },
 }))
 

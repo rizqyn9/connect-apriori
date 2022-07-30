@@ -2,6 +2,7 @@ import create from 'zustand'
 import { axiosPrivate } from '../services'
 import { useOrderStore } from './useOrder'
 import { useProductStore } from './useProducts'
+import { MenuType, OrderSchema } from '../types/order.schema'
 
 export const paymentMethodExist = ['dana', 'ovo', 'gopay', 'tunai'] as const
 
@@ -41,23 +42,22 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
         const { props } = get()
         const orders = useOrderStore.getState().orders
 
+        const parsed = Object.values(orders).reduce((prev, curr) => {
+            let exist: OrderSchema | undefined = prev.get(curr._id)
+
+            if (!exist) return prev.set(curr._id, { menuId: curr._id, variants: { [curr.menuType]: curr.quantity } })
+            else return prev.set(curr._id, { ...exist, variants: { ...exist.variants, [curr.menuType]: curr.quantity } })
+        }, new Map<string, OrderSchema>())
+
         const payload = {
             paymentMethod: props.method,
             price: props.total,
             promo: props.promo,
             customerId: null, // TODO
-            orderList: [
-                ...Object.entries(orders).map(([key, order]) => ({
-                    quantity: order.quantity,
-                    menuId: order._id,
-                    menuType: order.menuType,
-                })),
-            ],
+            orderList: [...parsed.values()],
         }
-        return await axiosPrivate
-            .post('/transaction', { ...payload })
-            .then((val) => console.log(val))
-            .catch((err) => console.log(err))
+
+        return await axiosPrivate.post('/transaction', { ...payload }).then((val) => val.data)
     },
 }))
 
