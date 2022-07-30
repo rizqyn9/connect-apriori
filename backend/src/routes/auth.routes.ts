@@ -1,6 +1,5 @@
 import { Router } from "express"
 import User from "../models/User.js"
-import responses from "../utils/responses.js"
 import jwt from "jsonwebtoken"
 import { config } from "@/lib/config.js"
 

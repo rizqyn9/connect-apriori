@@ -3,10 +3,10 @@ import { Schema, Types, model } from "mongoose"
 export type TransactionProps = {
   price: number
   paymentMethod: string
-  customerId: Types.ObjectId
+  customerId?: Types.ObjectId
   orderList: Types.ObjectId[]
-  promo: Types.ObjectId
-  discount: number
+  promo?: Types.ObjectId
+  discount?: number
   created_at?: Date
 }
 
@@ -19,6 +19,7 @@ const TransactionModel = new Schema<TransactionProps>({
     {
       type: Types.ObjectId,
       ref: "Products",
+      default: [],
     },
   ],
   price: {

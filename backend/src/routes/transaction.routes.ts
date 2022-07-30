@@ -1,7 +1,6 @@
 import { Router } from "express"
 import * as transactionController from "@/controller/transaction.controller"
 import * as productController from "@/controller/product.controller"
-import { isValidKeyRequest } from "@/utils"
 import z from "zod"
 import {
   CreateSchema,
