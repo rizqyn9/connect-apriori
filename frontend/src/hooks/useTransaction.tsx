@@ -1,10 +1,9 @@
-import { AxiosError } from 'axios'
 import create from 'zustand'
 import { axiosPrivate } from '../services'
 import { useOrderStore } from './useOrder'
 import { useProductStore } from './useProducts'
 
-export const paymentMethodExist = ['dana', 'ovo', 'gopay'] as const
+export const paymentMethodExist = ['dana', 'ovo', 'gopay', 'tunai'] as const
 
 export type PaymentMethod = typeof paymentMethodExist[number]
 
@@ -41,10 +40,22 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
     async doPaid() {
         const { props } = get()
         const orders = useOrderStore.getState().orders
-        console.log({ transaction: props, orders })
 
+        const payload = {
+            paymentMethod: props.method,
+            price: props.total,
+            promo: props.promo,
+            customerId: null, // TODO
+            orderList: [
+                ...Object.entries(orders).map(([key, order]) => ({
+                    quantity: order.quantity,
+                    menuId: order._id,
+                    menuType: order.menuType,
+                })),
+            ],
+        }
         return await axiosPrivate
-            .post('/transaction/create', { transaction: props, orders })
+            .post('/transaction', { ...payload })
             .then((val) => console.log(val))
             .catch((err) => console.log(err))
     },

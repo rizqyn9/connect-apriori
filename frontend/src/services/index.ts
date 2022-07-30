@@ -12,7 +12,7 @@ const api = axios.create({
 const axiosPrivate = axios.create({
     baseURL: SERVER_ENDPOINT,
     headers: { 'Content-Type': 'application/json' },
-    withCredentials: true,
+    // withCredentials: true,
 })
 
 export default api

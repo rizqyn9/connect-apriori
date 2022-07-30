@@ -28,7 +28,6 @@ export function DialogPayment(props: DialogPaymentProps) {
             addToast({ msg: 'Transaction success' })
         } catch (error) {
             console.log(error)
-
             addToast({ msg: 'Transaction failed', type: 'error' })
         } finally {
             setLoading(false)
@@ -39,8 +38,6 @@ export function DialogPayment(props: DialogPaymentProps) {
         // clearTransaction()
         // updateState('choose product')
     }, [setLoading])
-
-    const handlePaidSuccess = () => {}
 
     useOnce(() => {
         updateState('choose product')
