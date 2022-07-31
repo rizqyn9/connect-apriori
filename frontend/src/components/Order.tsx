@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import React, { useTransition } from 'react'
+import React from 'react'
 import { useOrderStore } from '../hooks/useOrder'
 import {
     useTransactionStore,
@@ -7,95 +7,94 @@ import {
     PaymentMethod,
 } from '../hooks/useTransaction'
 import { OrderCard } from './OrderCard'
-import { ModalPayment } from './Modal'
-import { NewModalPromo } from './Modal'
-import { useModalStore } from '../hooks/useModal'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Button } from './Button'
+import { DialogPayment } from './Dialog/DialogPayment'
+import { DialogPromo } from './Dialog/DialogPromo'
 
 type OrderContainerProps = {
     className: string
 }
 export default function Order({ className }: OrderContainerProps) {
-    const [showOrder, setShowOrder] = React.useState(true)
-    const [modalPayment, setModalPayment] = React.useState(false)
-    const [modalScanPromo, setModalScanPromo] = React.useState(false)
-    const { orders } = useOrderStore()
-    const { setActive } = useModalStore()
+    const [isDialogPayment, setIsDialogPayment] = React.useState(false)
+    const [isDialogPromo, setIsDialogPromo] = React.useState(false)
+    const { orders, state: orderState, updateState } = useOrderStore()
 
     const { props, setProps, state, recalculate } = useTransactionStore()
 
     React.useEffect(recalculate, [])
 
-    const handleOpenPromoInpu = React.useCallback(() => {
-        setActive({
-            active: true,
-            children: (
-                <NewModalPromo close={() => setActive({ active: false })} />
-            ),
-        })
-    }, [])
-
     return (
-        <div
-            className={clsx(
-                'w-full max-h-[calc(100%-5rem)] flex flex-col justify-between text-sm',
-                className,
-            )}
-        >
-            <div className="flex flex-col">
-                {modalScanPromo && (
-                    <NewModalPromo close={() => setModalScanPromo(false)} />
+        <>
+            <DialogPromo isOpen={isDialogPromo} setIsOpen={setIsDialogPromo} />
+            <DialogPayment
+                isOpen={isDialogPayment}
+                setIsOpen={setIsDialogPayment}
+            />
+            <div
+                className={clsx(
+                    'w-full max-h-[calc(100%-5rem)] flex flex-col justify-between text-sm',
+                    className,
                 )}
-                <p className={'font-bold'}>Order-ID #423848234</p>
-                <Button onClick={handleOpenPromoInpu}>Gunakan promo</Button>
-                <p className="mt-3 mb-2">status promo</p>
-            </div>
-            {/*Order Products*/}
-            <AnimatePresence>
-                <div className="relative flex-1 overflow-y-scroll overflow-x-hidden border-b-2 border-t-2 py-3 flex flex-col gap-3 border-dark-line pr-4 max-h-[50vh]">
-                    <AnimatePresence>
-                        {showOrder &&
-                            orders &&
-                            Object.entries(orders).map(([key, val]) => (
-                                <OrderCard key={key} {...val} orderId={key} />
-                            ))}
-                    </AnimatePresence>
-                    {!showOrder && (
-                        <Transaction close={() => setShowOrder(true)} />
-                    )}
+            >
+                <div className="flex flex-col">
+                    <Button onClick={() => setIsDialogPromo(true)}>
+                        Gunakan promo
+                    </Button>
+                    <p className="mt-3 mb-2">Status promo</p>
                 </div>
-            </AnimatePresence>
+                {/*Order Products*/}
+                <AnimatePresence>
+                    <div className="relative flex-1 overflow-y-scroll overflow-x-hidden border-b-2 border-t-2 py-3 flex flex-col gap-3 border-dark-line pr-4 max-h-[50vh]">
+                        <AnimatePresence>
+                            {orderState == 'choose product' &&
+                                orders &&
+                                Object.entries(orders).map(([key, val]) => (
+                                    <OrderCard
+                                        key={key}
+                                        {...val}
+                                        orderId={key}
+                                    />
+                                ))}
+                        </AnimatePresence>
+                        {orderState == 'choose payment' && (
+                            <Transaction
+                                close={() => updateState('choose product')}
+                            />
+                        )}
+                    </div>
+                </AnimatePresence>
 
-            <div className={'my-5 text-xs text-white/70 flex flex-col gap-3'}>
-                <GridTwoCol left="Diskom" right={props.promo ?? '-'} />
-                <GridTwoCol left="Total Harga" right={props.total} />
-                <GridTwoCol
-                    left="Metode Pembayaran"
-                    right={props.method ?? '-'}
-                />
+                <div
+                    className={'my-5 text-xs text-white/70 flex flex-col gap-3'}
+                >
+                    <GridTwoCol left="Diskom" right={props.promo ?? '-'} />
+                    <GridTwoCol left="Total Harga" right={props.total} />
+                    <GridTwoCol
+                        left="Metode Pembayaran"
+                        right={props.method ?? '-'}
+                    />
+                </div>
+                {orderState == 'choose product' &&
+                Object.keys(orders).length != 0 ? (
+                    <Button
+                        className="disabled:cursor-not-allowed disabled:bg-primary/10"
+                        disabled={Object.keys(orders).length == 0}
+                        onClick={() => updateState('choose payment')}
+                    >
+                        Metode pembayaran
+                    </Button>
+                ) : (
+                    <Button
+                        className="disabled:cursor-not-allowed disabled:bg-primary/10"
+                        disabled={props.method == null || state == 'create'}
+                        onClick={() => setIsDialogPayment(true)}
+                    >
+                        Buat order
+                    </Button>
+                )}
             </div>
-            {showOrder ? (
-                <Button
-                    className="disabled:cursor-not-allowed disabled:bg-primary/10"
-                    disabled={Object.keys(orders).length == 0}
-                    onClick={() => setShowOrder(!showOrder)}
-                >
-                    Metode pembayaran
-                </Button>
-            ) : (
-                <Button
-                    className="disabled:cursor-not-allowed disabled:bg-primary/10"
-                    disabled={props.method == null || state == 'create'}
-                    onClick={() => setModalPayment(true)}
-                >
-                    Buat order
-                </Button>
-            )}
-            {modalPayment && (
-                <ModalPayment close={() => setModalPayment(false)} />
-            )}
-        </div>
+        </>
     )
 }
 
@@ -114,7 +113,7 @@ function Transaction({ close }: { close: () => void }) {
             exit={{ x: -200, opacity: 0 }}
             className="flex flex-col gap-5 max-h-full"
         >
-            <div className="sticky top-0 bg-dark-2 z-10 w-full pb-3">
+            <div className="sticky top-0 bg-dark-2 w-full pb-3">
                 <button
                     onClick={handleBack}
                     className="border-2 border-primary px-3 py-2 rounded-md w-full"

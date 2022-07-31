@@ -11,7 +11,7 @@ import { RequireAuth } from './components/WithAuth'
 import { ROLES } from './hooks/useAuth'
 import { AuthProvider } from 'react-auth-kit'
 import { ToastContainer } from './components/Toast'
-import { ModalContainer } from './hooks/useModal'
+import Apriori from './pages/Apriori'
 
 function App() {
     return (
@@ -28,22 +28,15 @@ function App() {
                     <Route
                         index
                         element={
-                            <RequireAuth
-                                allowedRoles={[ROLES.ADMIN, ROLES.USER]}
-                            >
+                            <RequireAuth allowedRoles={[ROLES.ADMIN, ROLES.USER]}>
                                 <Catalog />
                             </RequireAuth>
                         }
                     />
                     <Route path={'product/*'} element={<ProductPage />} />
-                    <Route
-                        path={'product-management'}
-                        element={<Analytics />}
-                    />
-                    <Route
-                        path={'admin/account-management'}
-                        element={<AccountManagement />}
-                    />
+                    <Route path={'product-management'} element={<Analytics />} />
+                    <Route path={'admin/account-management'} element={<AccountManagement />} />
+                    <Route path={'apriori'} element={<Apriori />} />
                 </Route>
                 <Route path="/auth/signin" element={<SignIn />} />
                 <Route path="/auth/signup" element={<SignUp />} />
@@ -67,7 +60,6 @@ function GlobalProvider({ children }: { children: React.ReactNode }) {
         <CookiesProvider>
             <AuthProvider authType="cookie" authName="c_connect">
                 <ToastContainer />
-                <ModalContainer />
                 {children}
             </AuthProvider>
         </CookiesProvider>

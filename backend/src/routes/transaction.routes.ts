@@ -1,61 +1,48 @@
 import { Router } from "express"
-import { parseOrder } from "@/lib/parseOrder"
-import * as TransactionController from "@/controller/transaction.controller"
+import * as transactionController from "@/controller/transaction.controller"
 import * as productController from "@/controller/product.controller"
-import { isValidKeyRequest } from "@/utils"
+import { transactionSchema } from "@/types/transaction.schema"
+import { mongoObject } from "../types/misc.schema"
 
 const app = Router()
 
 /* -------------------------- Get all transactions -------------------------- */
 app.get("/", async (req, res, next) => {
   try {
-    await TransactionController.getAll().then((payload) =>
-      res.json({ payload })
-    )
+    await transactionController.getAll().then((payload) => res.json({ payload }))
   } catch (error) {
     next(error)
   }
 })
 
 /* ------------------------- Create new transaction ------------------------- */
-app.post("/create", async (req, res, next) => {
+app.post("/", async (req, res, next) => {
   try {
-    isValidKeyRequest(["orders", "transaction"], req)
-    const { orders, transaction } = req.body
+    const parsed = transactionSchema.parse(req.body)
+    const { orderList } = parsed
 
-    const parsedOrder = parseOrder(orders)
-
-    // Update total order menu
-    const listOrderId = await Promise.all(
-      Object.entries(parsedOrder).map(([key, val]) =>
-        productController.incrementOrderById(key, val.quantity)
-      )
+    /* --------------------- Update quantity ordered product -------------------- */
+    await Promise.all(
+      Array.from(orderList).map(({ menuId, variants: { ice = 0, hot = 0 } }) => productController.incrementOrderById(menuId, ice + hot))
     )
-    // .then(async (val) => {
-    //   return await TransactionModel.create({
-    //     orderList: val.map((data) => data._id),
-    //     price: transaction.price,
-    //     paymentMethod: transaction.paymentMethod,
-    //     promo: isValidObjectId(transaction.promo, false) || null,
-    //     discount: transaction.discount,
-    //   })
-    //     .then((data) => data)
-    //     .catch((err) => {
-    //       console.log(err)
-    //       throw new Error("Transaction cant created")
-    //     })
-    // })
-    // .catch((err) => {
-    //   console.log(err)
-    //   throw new Error("Update product error")
-    // })
 
-    console.log(listOrderId)
+    /* --------------------------- Create transaction --------------------------- */
+    const transaction = await transactionController.create({ ...parsed })
 
     res.json({
       msg: "Success create transaction",
-      payload: listOrderId,
+      payload: transaction,
     })
+  } catch (error) {
+    next(error)
+  }
+})
+
+/* --------------------------- Remove Transaction --------------------------- */
+app.delete("/:id", async (req, res, next) => {
+  try {
+    const id = mongoObject.parse(req.params.id)
+    await transactionController.remove(id).then((val) => res.json({ payload: val }))
   } catch (error) {
     next(error)
   }

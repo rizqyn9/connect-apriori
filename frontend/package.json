@@ -9,16 +9,16 @@
         "build:css": "tailwindcss "
     },
     "dependencies": {
+        "@headlessui/react": "^1.6.6",
         "@hookform/resolvers": "^2.8.8",
         "@tailwindcss/aspect-ratio": "^0.4.0",
         "@tailwindcss/forms": "^0.4.0",
+        "@tanstack/react-table": "^8.2.6",
         "axios": "^0.25.0",
         "clsx": "^1.1.1",
         "framer-motion": "^6.4.3",
-        "got": "^12.0.1",
         "jotai": "^1.5.3",
         "nookies": "^2.5.2",
-        "rc-table": "^7.25.0",
         "react": "^18.3.0-next-e61fd91f5-20220630",
         "react-auth-kit": "^2.1.0",
         "react-cookie": "^4.1.1",
@@ -26,10 +26,8 @@
         "react-helmet": "^6.1.0",
         "react-hook-form": "^7.24.2",
         "react-router-dom": "^6",
-        "react-table": "^7.7.0",
         "react-use-cookie": "^1.4.0",
         "sass": "^1.48.0",
-        "yup": "^0.32.11",
         "zod": "^3.17.3",
         "zustand": "^4.0.0-rc.1"
     },
@@ -50,6 +48,7 @@
         "trailingComma": "all",
         "tabWidth": 4,
         "semi": false,
-        "singleQuote": true
+        "singleQuote": true,
+        "printWidth": 145
     }
 }

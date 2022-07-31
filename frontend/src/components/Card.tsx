@@ -45,7 +45,7 @@ export default function Card(props: CardProductProps) {
             {/* Edit Icon */}
             <button
                 onClick={handleEdit}
-                className="absolute top-0 hover:bg-primary cursor-pointer left-0 bg-gray-50 h-5 px-4 rounded-br-md z-10 text-primary hover:text-white"
+                className="absolute top-0 hover:bg-primary cursor-pointer left-0 bg-gray-50 h-5 px-4 rounded-br-md z-[2] text-primary hover:text-white"
                 children={'Edit'}
             />
             <div className="w-full pt-[100%] relative bg-primary rounded-xl overflow-hidden">

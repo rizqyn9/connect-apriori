@@ -8,26 +8,14 @@ export default function Sidebar() {
     return (
         <GridRow
             className={'justify-center'}
-            title={
-                <div
-                    className="text-primary font-extrabold text-2xl w-full h-full flex items-center justify-center"
-                    children="CC"
-                />
-            }
+            title={<div className="text-primary font-extrabold text-2xl w-full h-full flex items-center justify-center" children="CC" />}
         >
             <div className="flex flex-col gap-5 py-8 items-center">
                 <NavItem to="/" title="Dashboard" icon={<Icon.Home />} />
                 <NavItem to="/product" title="Input" icon={<Icon.History />} />
-                <NavItem
-                    to="/product-management"
-                    title="Product Management"
-                    icon={<Icon.Setting />}
-                />
-                <NavItem
-                    to="/admin/account-management"
-                    title="Account Management"
-                    icon={<Icon.AccountManager />}
-                />
+                <NavItem to="/product-management" title="Product Management" icon={<Icon.Setting />} />
+                <NavItem to="/admin/account-management" title="Account Management" icon={<Icon.AccountManager />} />
+                <NavItem to="/apriori" title="Apriori" icon={<Icon.Bot />} />
                 {/* <NavItem
                     to="/logout"
                     title="Account Management"

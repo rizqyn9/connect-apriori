@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const SERVER_ENDPOINT =
-    String(import.meta.env.VITE_SERVER) ?? 'http://localhost:3000'
+    String(import.meta.env.VITE_SERVER) ?? 'http://localhost:5000'
 
 console.log(SERVER_ENDPOINT)
 
@@ -12,7 +12,7 @@ const api = axios.create({
 const axiosPrivate = axios.create({
     baseURL: SERVER_ENDPOINT,
     headers: { 'Content-Type': 'application/json' },
-    withCredentials: true,
+    // withCredentials: true,
 })
 
 export default api

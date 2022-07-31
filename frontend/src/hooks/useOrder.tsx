@@ -1,13 +1,17 @@
 import create from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 
+export type KeyUIState = 'choose product' | 'choose payment' | 'payment'
+
 export type OrderStore = {
     orders: Record<string, OrderProps>
-    addOrder: (id: string, order: Omit<OrderProps, 'quantity'>) => void
-    removeOrder: (id: string) => void
-    updateQuantity: (id: string, quantity: number) => void
-    setNotes: (id: string, note: string | null) => void
-    clearOrders: () => void
+    addOrder(id: string, order: Omit<OrderProps, 'quantity'>): void
+    removeOrder(id: string): void
+    updateQuantity(id: string, quantity: number): void
+    setNotes(id: string, note: string | null): void
+    clearOrders(): void
+    state: KeyUIState
+    updateState(state: KeyUIState): void
 }
 
 export type UseOrderStoreReturn = ReturnType<typeof useOrderStore>
@@ -53,8 +57,11 @@ const useOrderStore = create<OrderStore>()(
                     }
                 },
                 clearOrders() {
-                    const { orders } = get()
-                    set({ orders })
+                    set({ orders: {} })
+                },
+                state: 'choose product',
+                updateState(state) {
+                    set({ state })
                 },
             }),
             {

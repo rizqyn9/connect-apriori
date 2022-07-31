@@ -1,6 +1,6 @@
 import { Router } from "express"
 import * as CustomerController from "@/controller/customer.controller"
-import { isMongooseError, isValidObjectId } from "@/utils"
+import { isValidObjectId } from "@/utils"
 
 const app = Router()
 

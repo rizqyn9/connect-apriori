@@ -9,7 +9,7 @@ type ProductStore = {
     products: ProductProps[]
     getAllProducts(): Promise<void>
     getProductId(id: string): Promise<ProductProps>
-    postProduct<T extends unknown>(product: T): Promise<void>
+    postProduct<T extends unknown>(product: T): Promise<unknown>
 }
 
 type CardProductProps = ProductProps & {
@@ -37,9 +37,12 @@ type KeyTransactionProps = keyof TransactionProps
 type TransactionStore = {
     state: 'order' | 'create' | 'success' | 'fail'
     props: TransactionProps
-    setProps: <TKey extends KeyTransactionProps = KeyTransactionProps>(
+    setProps<TKey extends KeyTransactionProps = KeyTransactionProps>(
         key: TKey,
         val: TransactionProps[TKey],
-    ) => void
-    recalculate: () => void
+    ): void
+    recalculate(): void
+    create(): Promise<unknown>
+    clearTransaction(): void
+    doPaid(): Promise<void>
 }

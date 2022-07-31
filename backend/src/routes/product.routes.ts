@@ -3,7 +3,7 @@ import path from "path"
 import multer from "multer"
 import * as ProductControl from "@/controller/product.controller"
 import Product from "@/models/Product"
-import { isValidObjectId } from "@/utils/index"
+import { mongoObject } from "@/types/misc.schema"
 
 const app = Router()
 
@@ -20,9 +20,7 @@ var upload = multer({ storage: storage })
 /* ---------------------------- Get all products ---------------------------- */
 app.get("/", async (req, res, next) => {
   try {
-    await ProductControl.getAllProduts().then((payload) =>
-      res.json({ payload })
-    )
+    await ProductControl.getAllProduts().then((payload) => res.json({ payload }))
   } catch (error) {
     next(error)
   }
@@ -34,8 +32,7 @@ app.post("/", upload.single("image"), async (req, res, next) => {
     if (!req.file) throw new Error("Image is required")
 
     // Check product is exist
-    if (await Product.exists({ menu: req.body.menu }))
-      throw new Error(`Menu ${req.body.menu} exist`)
+    if (await Product.exists({ menu: req.body.menu })) throw new Error(`Menu ${req.body.menu} exist`)
 
     await ProductControl.create({
       ...req.body,
@@ -49,12 +46,9 @@ app.post("/", upload.single("image"), async (req, res, next) => {
 /* ------------------------ Update data product by id ----------------------- */
 app.post("/:id", async (req, res, next) => {
   try {
-    isValidObjectId(req.params.id)
-    console.log("asd")
+    const id = mongoObject.parse(req.params.id)
 
-    await ProductControl.update(req.params.id, req.body).then((payload) =>
-      res.json({ payload })
-    )
+    await ProductControl.update(id, req.body).then((payload) => res.json({ payload }))
   } catch (error) {
     next(error)
   }
@@ -63,10 +57,9 @@ app.post("/:id", async (req, res, next) => {
 /* --------------------------- Get a product by id -------------------------- */
 app.get("/:id", async (req, res, next) => {
   try {
-    isValidObjectId(req.params.id)
-    await ProductControl.getProductByID(req.params.id).then((payload) =>
-      res.json({ payload })
-    )
+    const id = mongoObject.parse(req.params.id)
+
+    await ProductControl.getProductByID(id).then((payload) => res.json({ payload }))
   } catch (error) {
     next(error)
   }
@@ -75,10 +68,9 @@ app.get("/:id", async (req, res, next) => {
 /* -------------------------- Delete Product By ID -------------------------- */
 app.delete("/:id", async (req, res, next) => {
   try {
-    isValidObjectId(req.params.id)
-    await ProductControl.remove(req.params.id).then((payload) =>
-      res.json({ msg: "Success delete", payload })
-    )
+    const id = mongoObject.parse(req.params.id)
+
+    await ProductControl.remove(id).then((payload) => res.json({ msg: "Success delete", payload }))
   } catch (error) {
     next(error)
   }

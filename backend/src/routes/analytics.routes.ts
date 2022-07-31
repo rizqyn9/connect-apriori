@@ -1,14 +1,24 @@
-import Product from "@/models/Product"
 import { Router } from "express"
-import responses from "@/utils/responses"
+import { getAllProduts } from "@/controller/product.controller"
+import { getAll as getAllPromos } from "@/controller/promo.controller"
+import { getAll as getAllTransactions } from "@/controller/transaction.controller"
 
 const app = Router()
 
-app.get("/products", async (req, res) => {
-  Product.find().then((val, err) => {
-    if (err) responses.fail(res, "Something Error")
-    else responses.success(res, val)
-  })
+app.get("/", async (req, res, next) => {
+  try {
+    const [products, transactions, promos] = await Promise.all([
+      getAllProduts(),
+      getAllTransactions(),
+      getAllPromos(),
+    ])
+
+    const payload = { products, transactions, promos }
+
+    return res.json({ payload })
+  } catch (error) {
+    next(error)
+  }
 })
 
-module.exports = app
+export default app

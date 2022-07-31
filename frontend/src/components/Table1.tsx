@@ -31,17 +31,13 @@ export default function Table({ columns, data }: TableProps) {
                     return (
                         <tr
                             {...row.getRowProps()}
-                            className={clsx(
-                                `${i % 2 === 0 ? 'bg-dark-2' : 'bg-dark-1'}`,
-                            )}
+                            className="even:bg-primary/40"
                         >
                             {row.cells.map((cell) => {
                                 return (
                                     <td
                                         {...cell.getCellProps()}
-                                        className={
-                                            'px-4 py-2 border-2 border-dark-line'
-                                        }
+                                        className="px-4 py-2 border-2 border-dark-line"
                                     >
                                         <>{cell.render('Cell')}</>
                                     </td>
