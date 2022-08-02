@@ -16,6 +16,7 @@ export default function Sidebar() {
                 <NavItem to="/product-management" title="Product Management" icon={<Icon.Setting />} />
                 <NavItem to="/admin/account-management" title="Account Management" icon={<Icon.AccountManager />} />
                 <NavItem to="/apriori" title="Apriori" icon={<Icon.Bot />} />
+                <NavItem to="/config" title="Config" icon={<Icon.Bot />} />
                 {/* <NavItem
                     to="/logout"
                     title="Account Management"
@@ -41,7 +42,7 @@ function NavItem({ to, title, icon }: NavItemProps) {
         <NavLink
             to={to || 'mock'}
             className={clsx('h-[3rem] w-[3rem] relative p-3 rounded-lg', {
-                'text-white bg-primary ': isActive,
+                'text-white bg-primary shadow-active': isActive,
                 'text-primary': !isActive,
             })}
         >

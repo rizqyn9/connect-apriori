@@ -12,6 +12,7 @@ import { ROLES } from './hooks/useAuth'
 import { AuthProvider } from 'react-auth-kit'
 import { ToastContainer } from './components/Toast'
 import Apriori from './pages/Apriori'
+import ConfigPage from './pages/Config'
 
 function App() {
     return (
@@ -37,6 +38,7 @@ function App() {
                     <Route path={'product-management'} element={<Analytics />} />
                     <Route path={'admin/account-management'} element={<AccountManagement />} />
                     <Route path={'apriori'} element={<Apriori />} />
+                    <Route path={'config'} element={<ConfigPage />} />
                 </Route>
                 <Route path="/auth/signin" element={<SignIn />} />
                 <Route path="/auth/signup" element={<SignUp />} />
