@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { CookiesProvider } from 'react-cookie'
 import { SignIn, SignUp } from './pages/Auth'
 import DashboardLayout from './pages/DashboardLayout'
@@ -42,7 +42,7 @@ function App() {
                 </Route>
                 <Route path="/auth/signin" element={<SignIn />} />
                 <Route path="/auth/signup" element={<SignUp />} />
-                <Route path={'*'} element={<div>Notfound</div>} />
+                <Route path={'*'} element={<Navigate to="/" />} />
                 <Route path="/logout" element={<LogOut />} />
             </Routes>
         </GlobalProvider>

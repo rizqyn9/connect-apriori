@@ -5,12 +5,12 @@ import { Person } from '../../types/person.schema'
 import { useAxiosPrivate } from '../../hooks/useAxiosPrivate'
 import { useOnce } from '../../hooks/useOnce'
 
-export function TableListAdmin() {
+export function TableListUser() {
     const axios = useAxiosPrivate()
     const [data, setData] = useState<Person[]>([])
 
     useOnce(() => {
-        axios.get<{ payload: Person[] }>('/person/admin').then((res) => setData(res.data.payload))
+        axios.get<{ payload: Person[] }>('/person/user').then((res) => setData(res.data.payload))
     }, [])
 
     return (

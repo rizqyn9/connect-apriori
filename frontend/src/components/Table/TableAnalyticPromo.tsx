@@ -2,7 +2,10 @@ import { TD, TH, TR } from '.'
 import { Button } from '../Button'
 
 type TableAnalyticPromoProps = {
-    data: ProductProps[]
+    data: {
+        menu: string
+        price: number
+    }[]
 }
 
 export function TableAnalyticPromo(props: TableAnalyticPromoProps) {
@@ -31,8 +34,8 @@ export function TableAnalyticPromo(props: TableAnalyticPromoProps) {
                             </TD>
                             <TD>{val.menu}</TD>
                             <TD>{val.price}</TD>
-                            <TD className="flex gap-5">
-                                <Button className="w-1/3">Remove</Button>
+                            <TD className="flex gap-5 justify-center items-center p-2">
+                                <Button size="sm">Remove</Button>
                             </TD>
                         </TR>
                     ))
