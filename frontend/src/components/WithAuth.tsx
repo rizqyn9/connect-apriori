@@ -4,7 +4,7 @@ import { Navigate } from 'react-router-dom'
 
 const RequireAuth = ({ allowedRoles, children }) => {
     const isAuthenticated = useIsAuthenticated()
-    return isAuthenticated() ? <>{children}</> : <Navigate to={'/auth/login'} />
+    return isAuthenticated() ? <>{children}</> : <Navigate to={'/auth/signin'} />
 }
 
 export { RequireAuth }

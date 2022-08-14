@@ -19,4 +19,5 @@ const incrementOrderById = async (id: MongoObject, increment: number) =>
 
 const decrementOrderById = async (id: MongoObject, decrement: number) => await incrementOrderById(id, decrement * -1)
 
+
 export { getProductByID, getAllProduts, create, update, remove, incrementOrderById, decrementOrderById }

@@ -7,26 +7,20 @@ import { H1 } from '../Typography'
 import { axiosPrivate } from '../../services'
 import { useAnalyticsStore } from '../../hooks/useAnalytics'
 import { useToastStore } from '../Toast'
+import { Transaction } from '../../types'
 
 type TableAnalyticTransactionProps = {
-    data: TransactionData[]
+    data: Transaction[]
     update(): void
-}
-
-type TransactionData = {
-    orderList: string[]
-    paymentMethod: string
-    price: number
-    _id: string
 }
 
 export function TableAnalyticTransaction(props: TableAnalyticTransactionProps) {
     const [deleteOpen, setDeleteOpen] = useState(false)
-    const [deleteData, setDeleteData] = useState<TransactionData | null>(null)
+    const [deleteData, setDeleteData] = useState<Transaction | null>(null)
     const { getAllAnalytics } = useAnalyticsStore()
     const { addToast } = useToastStore()
 
-    const handleRemove = (data: TransactionData) => {
+    const handleRemove = (data: Transaction) => {
         setDeleteData(data)
         if (!deleteData) return
         setDeleteOpen(true)
@@ -79,8 +73,10 @@ export function TableAnalyticTransaction(props: TableAnalyticTransactionProps) {
                                 </TD>
                                 <TD>{val._id}</TD>
                                 <TD>{val.price}</TD>
-                                <TD className="flex gap-5 justify-center">
-                                    <Button onClick={() => handleRemove(val)}>Remove</Button>
+                                <TD className="flex gap-5 justify-center items-center">
+                                    <Button onClick={() => handleRemove(val)} size="sm">
+                                        Remove
+                                    </Button>
                                 </TD>
                             </TR>
                         ))

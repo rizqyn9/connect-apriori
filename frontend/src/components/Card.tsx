@@ -5,6 +5,7 @@ import Icon from './Icon'
 import { useOrderStore } from '../hooks/useOrder'
 import { useOnClickOutside } from '../hooks/useClickOutside'
 import { Button } from './Button'
+import { CardProductProps, MenuType } from '../types'
 
 export default function Card(props: CardProductProps) {
     const { menu, imageURL, price, _id, activeCard, setActiveCard } = props
@@ -34,10 +35,9 @@ export default function Card(props: CardProductProps) {
 
     return (
         <div
-            className={clsx(
-                'w-[8rem] h-[17rem] p-2 rounded-2xl flex flex-col items-center justify-between bg-dark-2 relative overflow-hidden',
-                { 'shadow-md': activeCard },
-            )}
+            className={clsx('w-[8rem] h-[17rem] p-2 rounded-2xl flex flex-col items-center justify-between bg-dark-2 relative overflow-hidden', {
+                'shadow-md': activeCard,
+            })}
             data-active={activeCard}
             onClick={() => setActiveCard(_id)}
             ref={ref}
@@ -74,9 +74,7 @@ function Variants({ setType, type }: VariantProps) {
             <button
                 className={clsx(
                     'w-7 h-7 p-1 grid bg-dark-1 place-content-center rounded-md cursor-pointer',
-                    type == 'hot'
-                        ? '!bg-primary/50 text-white'
-                        : ' text-[#f7a474]',
+                    type == 'hot' ? '!bg-primary/50 text-white' : ' text-[#f7a474]',
                 )}
                 onClick={() => setType('hot')}
                 children={<Icon.Hot />}
@@ -84,9 +82,7 @@ function Variants({ setType, type }: VariantProps) {
             <button
                 className={clsx(
                     'w-7 h-7 bg-dark-1 p-1 grid place-content-center rounded-md cursor-pointer',
-                    type === 'ice'
-                        ? '!bg-primary/50 text-red-900'
-                        : ' text-[#89f1f5]',
+                    type === 'ice' ? '!bg-primary/50 text-red-900' : ' text-[#89f1f5]',
                 )}
                 style={{ color: 'cyan' }}
                 onClick={() => setType('ice')}

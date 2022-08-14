@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import React from 'react'
 import { useOrderStore } from '../hooks/useOrder'
+import { OrderProps } from '../types'
 import Icon from './Icon'
 
 /**
@@ -28,17 +29,11 @@ function OrderCard(props: OrderProps) {
                 <div className="flex flex-col justify-between">
                     {/*Menu & Type*/}
                     <div className={'flex gap-2 align-center'}>
-                        <div className="w-5 h-5 flex items-center justify-center">
-                            {menuType === 'hot' ? <Icon.Hot /> : <Icon.Ice />}
-                        </div>
+                        <div className="w-5 h-5 flex items-center justify-center">{menuType === 'hot' ? <Icon.Hot /> : <Icon.Ice />}</div>
                         <h2 className="font-bold text-sm">{menu}</h2>
                     </div>
                     <h2 className="text-xs">Rp. {price * quantity}</h2>
-                    <IncrDcr
-                        quantity={quantity}
-                        decrement={() => updateQuantity(orderId, -1)}
-                        increment={() => updateQuantity(orderId, 1)}
-                    />
+                    <IncrDcr quantity={quantity} decrement={() => updateQuantity(orderId, -1)} increment={() => updateQuantity(orderId, 1)} />
                 </div>
             </div>
             <div className="flex gap-3">
@@ -67,19 +62,11 @@ type IncrDcrProps = {
 function IncrDcr({ quantity, increment, decrement }: IncrDcrProps) {
     return (
         <div className="h-6 w-[5rem] bg-red-200 flex overflow-hidden rounded-md">
-            <button
-                onClick={decrement}
-                className={'bg-primary flex-1 h-full grid place-content-center'}
-            >
+            <button onClick={decrement} className={'bg-primary flex-1 h-full grid place-content-center'}>
                 -
             </button>
-            <p className="bg-dark-2 h-full text-[.7rem] min-w-[1.7rem] grid place-content-center">
-                {quantity}
-            </p>
-            <button
-                onClick={increment}
-                className="bg-primary h-full flex-1 grid place-content-center"
-            >
+            <p className="bg-dark-2 h-full text-[.7rem] min-w-[1.7rem] grid place-content-center">{quantity}</p>
+            <button onClick={increment} className="bg-primary h-full flex-1 grid place-content-center">
                 +
             </button>
         </div>

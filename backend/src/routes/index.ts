@@ -4,7 +4,7 @@ import { Router } from "express"
 import AuthRouter from "./auth.routes"
 import ProductRouter from "./product.routes"
 import CustomerRouter from "./customer.routes"
-import UserRouter from "./user.routes"
+import PersonRouter from "./person.routes"
 import TransactionRouter from "./transaction.routes"
 import AdminRouter from "./admin.routes"
 import PromoRouter from "./promo.routes"
@@ -23,7 +23,7 @@ app.get("/test", (req, res) => {
 app.use("/auth", AuthRouter)
 // app.use(VerifyToken)
 
-app.use("/user", UserRouter)
+app.use("/person", PersonRouter)
 app.use("/transaction", TransactionRouter)
 app.use("/products", ProductRouter)
 app.use("/admin", AdminRouter)

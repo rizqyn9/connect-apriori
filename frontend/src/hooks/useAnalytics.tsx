@@ -1,9 +1,10 @@
 import create from 'zustand'
 import { axiosPrivate } from '../services'
+import { ProductProps, Transaction } from '../types'
 
 export type AnalyticsDataProps = {
     products: Array<ProductProps>
-    transactions: Array<unknown>
+    transactions: Array<Transaction>
     promos: Array<unknown>
 }
 

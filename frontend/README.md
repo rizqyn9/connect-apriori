@@ -1,17 +1,4 @@
-##Task :
+#TODO
 
--   Feat: Add to billing
--   Payment method
--   Transaction
-
-##Page :
-
--   Account validation
--   Post Product
--   Table product
--   Editable product
--   Admin authorization
-
-##BUG
-
--   Bug vercel mixed content, (Try to adding SSL in server domain)
+-   Prevent same existing name menu when submitting new product
+-   Edit catalog only showing when client role is Admin (Important)

@@ -1,5 +1,6 @@
 import create from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
+import { OrderProps } from '../types'
 
 export type KeyUIState = 'choose product' | 'choose payment' | 'payment'
 

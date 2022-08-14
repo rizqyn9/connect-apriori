@@ -1,6 +1,7 @@
 import create from 'zustand'
 import { axiosPrivate } from '../services'
 import { AxiosError } from 'axios'
+import { ProductProps, ProductStore } from '../types'
 
 const useProductStore = create<ProductStore>((set, get) => ({
     products: [],
@@ -13,10 +14,7 @@ const useProductStore = create<ProductStore>((set, get) => ({
                     .then((res) =>
                         res.map((data) => ({
                             ...data,
-                            imageURL:
-                                import.meta.env.VITE_SERVER +
-                                '/' +
-                                data.imageURL,
+                            imageURL: import.meta.env.VITE_SERVER + '/' + data.imageURL,
                         })),
                     ),
             })
@@ -26,9 +24,7 @@ const useProductStore = create<ProductStore>((set, get) => ({
     },
     async getProductId(id: string) {
         try {
-            return await axiosPrivate
-                .get<{ payload: ProductProps }>(`/products/${id}`)
-                .then((res) => res.data.payload)
+            return await axiosPrivate.get<{ payload: ProductProps }>(`/products/${id}`).then((res) => res.data.payload)
         } catch (error) {
             return Promise.reject(error)
         }
@@ -42,13 +38,9 @@ const useProductStore = create<ProductStore>((set, get) => ({
                 }>('/products', product)
                 .then((res) => {
                     console.log(res)
-                    return Promise.resolve(
-                        `Success create new menu ${res.data.payload.menu}`,
-                    )
+                    return Promise.resolve(`Success create new menu ${res.data.payload.menu}`)
                 })
-                .catch((err: AxiosError) =>
-                    Promise.reject(err.response?.data.err ?? 'Server error'),
-                )
+                .catch((err: AxiosError) => Promise.reject(err.response?.data.err ?? 'Server error'))
         } catch (error) {
             return Promise.reject(error)
         }

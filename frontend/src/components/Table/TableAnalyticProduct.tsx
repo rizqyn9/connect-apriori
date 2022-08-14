@@ -32,15 +32,15 @@ export function TableAnalyticProduct(props: TableAnalyticPoductsProps) {
                 ) : (
                     props.data.map((val, i) => (
                         <TR key={i}>
-                            <TD className="p-2 text-center" width={100}>
+                            <TD className="text-center" width={100}>
                                 {i + 1}
                             </TD>
                             <TD>{val.menu}</TD>
                             <TD className="text-center">{val.price}</TD>
                             <TD className="text-center">{val.totalOrdered ?? 0}</TD>
-                            <TD className="flex gap-5 justify-center">
-                                <Button className="w-1/3">Edit</Button>
-                                <Button className="w-1/3">Remove</Button>
+                            <TD className="flex gap-5 justify-center items-center p-2">
+                                <Button size="sm">Edit</Button>
+                                <Button size="sm">Remove</Button>
                             </TD>
                         </TR>
                     ))

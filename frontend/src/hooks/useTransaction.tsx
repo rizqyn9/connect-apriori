@@ -3,6 +3,7 @@ import { axiosPrivate } from '../services'
 import { useOrderStore } from './useOrder'
 import { useProductStore } from './useProducts'
 import { MenuType, OrderSchema } from '../types/order.schema'
+import { TransactionStore } from '../types'
 
 export const paymentMethodExist = ['dana', 'ovo', 'gopay', 'tunai'] as const
 

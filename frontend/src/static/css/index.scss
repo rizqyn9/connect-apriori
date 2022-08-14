@@ -15,10 +15,6 @@ body {
 // @import "additional-styles/theme.scss";
 
 @layer components {
-    .nav__active {
-        box-shadow: 0px 8px 24px rgba(234, 124, 105, 0.32);
-    }
-
     .catalog {
         //background-color: red;
         height: 100%;
@@ -47,10 +43,6 @@ body {
     input[type='number']::-webkit-outer-spin-button {
         -webkit-appearance: none;
         margin: 0;
-    }
-
-    td {
-        @apply py-2 px-3;
     }
 
     .flex-center {

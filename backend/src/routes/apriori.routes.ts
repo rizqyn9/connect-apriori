@@ -24,7 +24,7 @@ router.get("/", async (req, res, next) => {
     })
 
     await apriori.exec(transactions).then((result) => {
-      result = result.itemsets.filter(({ items }) => items.length >= itemMin)
+      // a = result.itemsets.filter(({ items }) => items.length >= itemMin)
 
       return res.json({ payload: result })
     })
