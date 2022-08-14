@@ -35,7 +35,7 @@ app.post("/signin", async (req, res, next) => {
         return res.json({ token, payload })
       }
     })
-
+    // TODO remove res | throw
     // If user not found
     throw new Error("User not found")
   } catch (error) {
