@@ -3,11 +3,18 @@ import { useAuthUser, useSignIn, useSignOut } from 'react-auth-kit'
 import { SignInSchema, SignUpSchema } from '../utils/zod.schema'
 import api from '../services'
 import { useToastStore } from '../components/Toast'
+import create from 'zustand'
 
 export const ROLES = Object.freeze({
     ADMIN: 'admin',
     USER: 'user',
 })
+
+export const useAuthStore = create<{ getToken(): string }>((set, get) => ({
+    getToken() {
+        return 'Hhahah'
+    },
+}))
 
 export function useAuth() {
     const navigate = useNavigate()

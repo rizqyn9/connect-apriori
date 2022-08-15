@@ -6,9 +6,9 @@ const useAxiosPrivate = () => {
         () => {
             const requestIntercept = axiosPrivate.interceptors.request.use(
                 (config) => {
-                    return config
+                    return { data: 'asdasd', ...config }
                 },
-                (error) => Promise.reject(error)
+                (error) => Promise.reject(error),
             )
 
             const responseIntercept = axiosPrivate.interceptors.response.use(
@@ -25,7 +25,7 @@ const useAxiosPrivate = () => {
                         // return axiosPrivate(prevRequest)
                     }
                     return Promise.reject(error)
-                }
+                },
             )
 
             return () => {
@@ -36,7 +36,7 @@ const useAxiosPrivate = () => {
         [
             // cookies,
             // refresh
-        ]
+        ],
     )
 
     return axiosPrivate
