@@ -14,7 +14,7 @@ const api = axios.create({
 const axiosPrivate = axios.create({
     baseURL: SERVER_ENDPOINT,
     //  Snippet for adding the token
-    headers: { 'Content-Type': 'application/json', a: useAuthStore?.getState()?.getToken() || 'dasd' },
+    headers: { 'Content-Type': 'application/json' },
 })
 
 export default api
