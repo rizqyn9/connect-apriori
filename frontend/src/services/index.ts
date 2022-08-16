@@ -1,7 +1,9 @@
 import axios from 'axios'
+import { useOrderStore } from '../hooks/useOrder'
+import { useProductStore } from '../hooks/useProducts'
+import { useAuthStore } from '../hooks/useAuth'
 
-const SERVER_ENDPOINT =
-    String(import.meta.env.VITE_SERVER) ?? 'http://localhost:5000'
+const SERVER_ENDPOINT = String(import.meta.env.VITE_SERVER) ?? 'http://localhost:5000'
 
 console.log(SERVER_ENDPOINT)
 
@@ -11,8 +13,8 @@ const api = axios.create({
 
 const axiosPrivate = axios.create({
     baseURL: SERVER_ENDPOINT,
-    headers: { 'Content-Type': 'application/json' },
-    // withCredentials: true,
+    //  Snippet for adding the token
+    headers: { 'Content-Type': 'application/json', a: useAuthStore?.getState()?.getToken() || 'dasd' },
 })
 
 export default api
