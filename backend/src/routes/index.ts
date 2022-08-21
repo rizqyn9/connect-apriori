@@ -20,6 +20,10 @@ app.get("/test", (req, res) => {
   res.json({ payload: { ...dataKTP } })
 })
 
+app.get("/another-test", (req, res) => {
+  res.status(403).json({})
+})
+
 app.use("/auth", AuthRouter)
 // app.use(VerifyToken)
 
