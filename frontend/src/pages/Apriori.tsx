@@ -3,12 +3,18 @@ import { GridRow } from '../components/Grid'
 import { TD, TH, TR } from '../components/Table'
 import { H1 } from '../components/Typography'
 import { useState } from 'react'
+import { useAxios } from '../hooks/useAxios'
 
 export default function Apriori() {
     const [apriori, setApriori] = useState([])
+    const fetcher = useAxios()
+    const test = () => {
+        fetcher.get('/another-test')
+    }
     return (
         <GridRow className="px-5 w-full flex-auto overflow-x-scroll text-sm" title="Analitycs">
             <div className="py-8 overflow-x-scroll">
+                <Button onClick={test}>asdads</Button>
                 <H1>Get Promo Recomendation</H1>
                 <div className="bg-pimary flex flex-col gap-5">
                     <p>Result</p>

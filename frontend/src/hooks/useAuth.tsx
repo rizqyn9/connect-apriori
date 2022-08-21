@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom'
 import { useAuthUser, useSignIn, useSignOut } from 'react-auth-kit'
 import { SignInSchema, SignUpSchema } from '../utils/zod.schema'
-import api from '../services'
 import { useToastStore } from '../components/Toast'
 import create from 'zustand'
+import { useAxios } from './useAxios'
 
 export const ROLES = Object.freeze({
     ADMIN: 'admin',
@@ -16,17 +16,25 @@ export const useAuthStore = create<{ getToken(): string }>((set, get) => ({
     },
 }))
 
+type UserData = {
+    name: string
+    isAdmin: boolean
+    email: string
+}
+
 export function useAuth() {
     const navigate = useNavigate()
     const authSignIn = useSignIn()
     const authSignOut = useSignOut()
     const { addToast } = useToastStore()
     const auth = useAuthUser()
+    const api = useAxios()
 
     const signIn = async (data: SignInSchema) =>
         await api
             .post('/auth/signin', data)
             .then((val) => {
+                if (typeof val.data != 'object') throw new Error('Hahah')
                 if ('err' in val.data) throw new Error(val.data.err)
 
                 authSignIn({
@@ -37,12 +45,12 @@ export function useAuth() {
                 })
                 addToast({ msg: `Wellcome ${val.data.payload.name}` })
             })
-            .catch((err: Error) =>
+            .catch((err: Error) => {
                 addToast({
                     msg: err.message ?? 'Failed to signin',
                     type: 'error',
-                }),
-            )
+                })
+            })
 
     const signUp = async (data: SignUpSchema) =>
         await api
@@ -64,9 +72,8 @@ export function useAuth() {
         navigate('/auth/signin')
     }
 
-    const authUser = auth()
+    const authUser = () => auth() as UserData | null
 
     return { signIn, signUp, signOut, authUser } as const
 }
-
 export type UseAuthReturn = ReturnType<typeof useAuth>
