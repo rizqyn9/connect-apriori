@@ -31,12 +31,8 @@ export default function Catalog() {
                 className={'px-4 w-full text-sm'}
                 title={
                     <div className="text-white flex flex-col justify-center h-full w-full">
-                        <h1 className="text-lg font-bold mb-2">
-                            Connect Coffee
-                        </h1>
-                        <p className="text-xs font-thin">
-                            {new Date().toLocaleDateString('id')}
-                        </p>
+                        <h1 className="text-lg font-bold mb-2">Connect Coffee</h1>
+                        <p className="text-xs font-thin">{new Date().toLocaleDateString('id')}</p>
                     </div>
                 }
             >
@@ -60,10 +56,7 @@ export default function Catalog() {
                     </div>
                 </div>
             </GridRow>
-            <GridRow
-                title={<UserMemo />}
-                className="bg-dark-2 overflow-y-auto max-h-screen-auto px-3 max-w-[24rem] hidden md:block"
-            >
+            <GridRow title={<UserMemo />} className="bg-dark-2 overflow-y-auto max-h-screen-auto px-3 max-w-[24rem] hidden md:block">
                 <Order className="h-full row-start-2 py-8" />
             </GridRow>
         </>
@@ -81,11 +74,13 @@ function User() {
                 <img src={'./src/static/images/dummy.jpg'} alt={''} />
             </div>
             <div className={'flex flex-1 flex-col gap-2'}>
-                <h1 className="text-md font-bold">{authUser?.name}</h1>
-                <p className="text-xs font-thin opacity-70">{authUser?.role}</p>
+                <h1 className="text-md font-bold">{authUser()?.name}</h1>
+                <p className="text-xs font-thin opacity-70">{authUser()?.isAdmin ? 'Admin' : 'Casheer'}</p>
             </div>
             {/* Sign Out */}
-            <Button className="justify-self-end py-1">Sign Out</Button>
+            <Button className="justify-self-end py-1" onClick={signOut}>
+                Sign Out
+            </Button>
         </div>
     )
 }

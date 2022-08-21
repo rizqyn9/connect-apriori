@@ -7,11 +7,7 @@ const app = Router()
 
 app.get("/", async (req, res, next) => {
   try {
-    const [products, transactions, promos] = await Promise.all([
-      getAllProduts(),
-      getAllTransactions(),
-      getAllPromos(),
-    ])
+    const [products, transactions, promos] = await Promise.all([getAllProduts(), getAllTransactions(), getAllPromos()])
 
     const payload = { products, transactions, promos }
 

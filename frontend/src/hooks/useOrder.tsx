@@ -15,7 +15,6 @@ export type OrderStore = {
     updateState(state: KeyUIState): void
 }
 
-export type UseOrderStoreReturn = ReturnType<typeof useOrderStore>
 const useOrderStore = create<OrderStore>()(
     devtools(
         persist(

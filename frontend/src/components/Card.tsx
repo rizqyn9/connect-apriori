@@ -6,10 +6,12 @@ import { useOrderStore } from '../hooks/useOrder'
 import { useOnClickOutside } from '../hooks/useClickOutside'
 import { Button } from './Button'
 import { CardProductProps, MenuType } from '../types'
+import { useAuth } from '../hooks/useAuth'
 
 export default function Card(props: CardProductProps) {
     const { menu, imageURL, price, _id, activeCard, setActiveCard } = props
     const navigate = useNavigate()
+    const { authUser } = useAuth()
     const [menuType, setMenuType] = React.useState<MenuType>('hot')
     const ref = React.useRef<HTMLDivElement>(null)
     const { addOrder } = useOrderStore()
@@ -43,11 +45,13 @@ export default function Card(props: CardProductProps) {
             ref={ref}
         >
             {/* Edit Icon */}
-            <button
-                onClick={handleEdit}
-                className="absolute top-0 hover:bg-primary cursor-pointer left-0 bg-gray-50 h-5 px-4 rounded-br-md z-[2] text-primary hover:text-white"
-                children={'Edit'}
-            />
+            {authUser()?.isAdmin && (
+                <button
+                    onClick={handleEdit}
+                    className="absolute top-0 hover:bg-primary cursor-pointer left-0 bg-gray-50 h-5 px-4 rounded-br-md z-[2] text-primary hover:text-white"
+                    children={'Edit'}
+                />
+            )}
             <div className="w-full pt-[100%] relative bg-primary rounded-xl overflow-hidden">
                 <img src={imageURL} className="absolute inset-0" alt="dummy" />
             </div>

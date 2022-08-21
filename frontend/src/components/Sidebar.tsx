@@ -3,26 +3,40 @@ import clsx from 'clsx'
 import { useLocation, NavLink } from 'react-router-dom'
 import { GridRow } from './Grid'
 import Icon from './Icon'
+import { useAuth } from '../hooks/useAuth'
 
 export default function Sidebar() {
+    const { authUser } = useAuth()
+
+    const render = React.useMemo(() => {
+        if (authUser()?.isAdmin) {
+            return (
+                <>
+                    <NavItem to="/" title="Dashboard" icon={<Icon.Home />} />
+                    <NavItem to="/product" title="Input" icon={<Icon.History />} />
+                    <NavItem to="/product-management" title="Product Management" icon={<Icon.Setting />} />
+                    <NavItem to="/admin/account-management" title="Account Management" icon={<Icon.AccountManager />} />
+                    <NavItem to="/apriori" title="Apriori" icon={<Icon.Bot />} />
+                    <NavItem to="/config" title="Config" icon={<Icon.Bot />} />
+                </>
+            )
+        } else {
+            return (
+                <>
+                    <NavItem to="/" title="Dashboard" icon={<Icon.Home />} />
+                    <NavItem to="/product" title="Input" icon={<Icon.History />} />
+                    <NavItem to="/product-management" title="Product Management" icon={<Icon.Setting />} />
+                    <NavItem to="/admin/account-management" title="Account Management" icon={<Icon.AccountManager />} />
+                </>
+            )
+        }
+    }, [authUser()])
     return (
         <GridRow
             className={'justify-center'}
             title={<div className="text-primary font-extrabold text-2xl w-full h-full flex items-center justify-center" children="CC" />}
         >
-            <div className="flex flex-col gap-5 py-8 items-center">
-                <NavItem to="/" title="Dashboard" icon={<Icon.Home />} />
-                <NavItem to="/product" title="Input" icon={<Icon.History />} />
-                <NavItem to="/product-management" title="Product Management" icon={<Icon.Setting />} />
-                <NavItem to="/admin/account-management" title="Account Management" icon={<Icon.AccountManager />} />
-                <NavItem to="/apriori" title="Apriori" icon={<Icon.Bot />} />
-                <NavItem to="/config" title="Config" icon={<Icon.Bot />} />
-                {/* <NavItem
-                    to="/logout"
-                    title="Account Management"
-                    icon={<>LogOut</>}
-                /> */}
-            </div>
+            <div className="flex flex-col gap-5 py-8 items-center">{render}</div>
         </GridRow>
     )
 }
