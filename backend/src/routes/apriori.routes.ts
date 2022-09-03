@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { Apriori } from "node-apriori"
+import { Apriori } from "@/lib/apriori"
 import * as transactionController from "@/controller/transaction.controller"
 import * as productController from "@/controller/product.controller"
 
@@ -16,7 +16,10 @@ router.get("/", async (req, res, next) => {
       )
     })
 
-    const apriori = new Apriori(0)
+    const transactionTotal = transactions.length
+    console.log({ transactionTotal })
+
+    const apriori = new Apriori(0.7)
     const itemMin = 2
 
     apriori.on("data", (itemset) => {
@@ -29,6 +32,7 @@ router.get("/", async (req, res, next) => {
         payload: {
           itemsets: result.itemsets,
         },
+        transactions,
       })
     })
   } catch (error) {

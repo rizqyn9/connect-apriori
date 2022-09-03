@@ -49,6 +49,8 @@ export class Apriori<T> extends EventEmitter implements IAprioriEvents<T> {
     // Relative support.
     this._support = Math.ceil(this._support * transactions.length)
 
+    console.log({ support: this._support })
+
     return new Promise<IAprioriResults<T>>((resolve, reject) => {
       let time = process.hrtime()
 
@@ -61,6 +63,7 @@ export class Apriori<T> extends EventEmitter implements IAprioriEvents<T> {
         frequentItemsets.push(this.getFrequentKItemsets(frequentItemsets[i]))
         i++
       }
+      // console.log(frequentItemsets)
 
       let elapsedTime = process.hrtime(time)
 
@@ -118,6 +121,7 @@ export class Apriori<T> extends EventEmitter implements IAprioriEvents<T> {
       .reduce<T[]>((items: T[], itemset: Itemset<T>) => items.concat(itemset.items), [])
       .filter((item: T, index: number, that: T[]) => that.indexOf(item) === index)
 
+    console.log({ k, items })
     // Generating candidates and counting their occurence.
     return (
       this._getCandidatesCount(this._generateKCandidates(items, k))
