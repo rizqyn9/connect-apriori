@@ -14,11 +14,7 @@ type DialogPaymentProps = DialogContainerProps & {}
 export function DialogPayment(props: DialogPaymentProps) {
     const [loading, setLoading] = React.useState(false)
     const { addToast } = useToastStore()
-    const {
-        props: transaction,
-        clearTransaction,
-        doPaid,
-    } = useTransactionStore()
+    const { props: transaction, clearTransaction, doPaid } = useTransactionStore()
     const { orders, clearOrders, state, updateState } = useOrderStore()
 
     const handleOnPaid = React.useCallback(async () => {
@@ -51,40 +47,24 @@ export function DialogPayment(props: DialogPaymentProps) {
                 <H1>Payment</H1>
                 <div className="flex flex-col h-[95%] justify-between">
                     {loading ? (
-                        <div className="grid w-full h-full place-content-center">
-                            Create order
-                        </div>
+                        <div className="grid w-full h-full place-content-center">Create order</div>
                     ) : (
                         <>
                             <div className="py-4 h-[70%]">
-                                <p className="text-lg font-bold mb-3">
-                                    Menu order
-                                </p>
+                                <p className="text-lg font-bold mb-3">Menu order</p>
                                 <div className="rounded-md overflow-scroll h-full">
-                                    <TablePaymentOrder
-                                        orders={Object.values(orders)}
-                                    />
+                                    <TablePaymentOrder orders={Object.values(orders)} />
                                 </div>
                             </div>
                             <div className="flex flex-col gap-4">
-                                <p className="text-md font-bold">
-                                    Transaction details
-                                </p>
+                                <p className="text-md font-bold">Transaction details</p>
                                 <p className="text-md font-bold">Total</p>
-                                <p className="self-end text-lg">
-                                    {transaction.total}
-                                </p>
+                                <p className="self-end text-lg">{transaction.total}</p>
                                 <div className="flex justify-end gap-5">
-                                    <Button
-                                        className="w-1/4"
-                                        onClick={handleCancel}
-                                    >
+                                    <Button className="w-1/4" onClick={handleCancel}>
                                         Cancel
                                     </Button>
-                                    <Button
-                                        className="w-1/4"
-                                        onClick={handleOnPaid}
-                                    >
+                                    <Button className="w-1/4" onClick={handleOnPaid}>
                                         Paid
                                     </Button>
                                 </div>
