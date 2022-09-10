@@ -1,3 +1,4 @@
 #TODO
 
--   Edit catalog only showing when client role is Admin (Important)
+-   Order input promo field
+-   Order with customer data

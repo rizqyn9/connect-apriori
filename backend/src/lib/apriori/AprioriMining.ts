@@ -10,6 +10,8 @@ export class AprioriMining {
     let Li = new ItemsetCollection() // Large itemset in each iteration
     let Ci = new ItemsetCollection() // Pruned itemset in each iteration
 
+    console.log("/* -------------------------------------------------------------------------- */")
+
     // First iteration (1-item itemsets)
     for (var i = 0; i < I.length; i += 1) {
       Ci.push(Itemset.from([I[i]]))
@@ -29,13 +31,15 @@ export class AprioriMining {
         }
       }
 
+      console.log({ Li, L, Ci })
+
       // Set Ci for next iteration (find supersets of Li)
       Ci.clear()
       let subsets = Bit.findSubsets(Li.getUniqueItems(), k) // Get k-item subsets
       subsets.forEach((set) => Ci.push(set))
-      console.log({ subSet: subsets })
       k += 1
     }
+    console.log("/* ---------------------------End Mining----------------------------------------------- */")
 
     return L
   }

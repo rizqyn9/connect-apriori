@@ -28,6 +28,10 @@ export class Itemset extends Array {
     return removed
   }
 
+  log() {
+    return this
+  }
+
   toStringNoSupport() {
     return "{" + this.join(", ") + "}"
   }

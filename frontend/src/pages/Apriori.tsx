@@ -1,32 +1,31 @@
 import { Button } from '../components/Button'
 import { GridRow } from '../components/Grid'
-import { TD, TH, TR } from '../components/Table'
 import { useState } from 'react'
-import { useAxios } from '../hooks/useAxios'
 import { axiosPrivate } from '../services'
 import React from 'react'
+import { TableTransactions, TableSupport, TableConfidence } from '../components/Table/Apriori'
 
-type ResponseApriori = {
+export type ResponseApriori = {
     payload: {
-        itemsets:
-            | {
-                  support: number
-                  items: string[]
-              }[]
-            | null
+        transactions: string[][]
+        apriori: { menu: string[]; support: number }[]
+        confidence: {
+            Support: number
+            Confidence: number
+            X: string[]
+            Y: string[]
+        }[]
     }
 }
 
 export default function Apriori() {
     const [promoState, setPromoState] = React.useState<NewPromo>({ isActive: false, price: 0, menuId: null })
-    const [apriori, setApriori] = useState<NonNullable<ResponseApriori['payload']['itemsets']>>([])
+    const [apriori, setApriori] = useState<ResponseApriori['payload'] | null>(null)
     const handleGenerate = () => {
         axiosPrivate.get<ResponseApriori>('/apriori').then((val) => {
-            let data = val.data.payload
-            if (data && typeof data == 'object' && data.itemsets) {
-                console.log(val)
-                setApriori(data.itemsets)
-            }
+            console.log(val.data.payload)
+
+            setApriori(val.data.payload)
         })
     }
 
@@ -45,45 +44,9 @@ export default function Apriori() {
                 <h3 className="text-lg font-bold mb-3">Get Promo Recomendation</h3>
                 <div className="bg-pimary flex flex-col gap-5">
                     <div className="overflow-hidden rounded-md border-2 border-white">
-                        <table className="w-full bg-dark-2 rounded-lg">
-                            <thead>
-                                <tr className="bg-primary">
-                                    <TH>No</TH>
-                                    <TH>Menu</TH>
-                                    <TH>Support</TH>
-                                </tr>
-                            </thead>
-                            <tbody className="border-2 border-white">
-                                {apriori.length == 0 ? (
-                                    <TR className="text-center">
-                                        <TD className="py-8" colSpan={4}>
-                                            Data Not found
-                                        </TD>
-                                    </TR>
-                                ) : (
-                                    apriori.map((val, i) => (
-                                        <TR key={i}>
-                                            <TD className="p-2 text-center" width={50}>
-                                                {i + 1}
-                                            </TD>
-                                            <TD className="p-2 text-center" width={400}>
-                                                <div className="flex gap-4">
-                                                    {val.items.map((val) => (
-                                                        <span key={val}>{val}</span>
-                                                    ))}
-                                                </div>
-                                            </TD>
-                                            <TD className="">
-                                                {val.support}
-                                                {/* <Button className="" size="sm">
-                                                    Remove
-                                                </Button> */}
-                                            </TD>
-                                        </TR>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
+                        <TableTransactions data={apriori?.transactions || []} />
+                        <TableSupport data={apriori?.apriori ?? []} />
+                        <TableConfidence data={apriori?.confidence ?? []} />
                     </div>
                     <Button onClick={handleGenerate}>Generate</Button>
                 </div>

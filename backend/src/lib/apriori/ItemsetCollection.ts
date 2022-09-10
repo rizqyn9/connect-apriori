@@ -41,4 +41,11 @@ export class ItemsetCollection extends Array {
   toString() {
     return this.join("\n")
   }
+
+  toDataJSON() {
+    return this.map((x: Itemset) => ({
+      menu: x,
+      support: x.Support,
+    }))
+  }
 }
