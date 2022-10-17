@@ -1,51 +1,30 @@
+import { config } from "@/constant/config"
 import express, { NextFunction, Request, Response } from "express"
+import { ZodError } from "zod"
 import bodyParser from "body-parser"
 import cors from "cors"
 import cookieParser from "cookie-parser"
 
-import { MongoConnect } from "./lib/mongo"
-import { config } from "@/lib/config"
-import Routes from "./routes"
-import { ZodError } from "zod"
-
-// import ('./controller/transaction.controller')
+import { mongoConnect } from "@/lib/mongo"
+import routes from "@/routes"
 
 const app = express()
 
 app.use(cors())
 app.use(express.static("public"))
-
 app.use(cookieParser())
-// application/json
 app.use(bodyParser.json({ limit: "50mb" }))
 
-app.use((req, res, next) => {
-  next()
-})
-
-app.use(Routes)
+app.use(routes)
 
 // Error handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  if (err instanceof ZodError) {
-    return res.json(err.flatten().fieldErrors)
-  }
-  console.log(err)
-  if (err instanceof Error) {
-    res.status(400)
-    res.json({ err: err.message })
-  } else {
-    res.status(500)
-    res.json({ err })
-  }
+  if (err instanceof ZodError) return res.status(401).json({ msg: err.flatten().fieldErrors })
+  console.log({ err })
+
+  if (err instanceof Error) return res.status(400).json({ msg: err.message })
+  else return res.status(400).json({ msg: err })
 })
 
-MongoConnect()
-  .then(() => {
-    app.listen(config.port, () => {
-      console.log(`Server listening on http://localhost:${config.port}`)
-    })
-  })
-  .catch((e) => {
-    console.log(e)
-  })
+const server = () => app.listen(config.PORT, () => console.log(`Server listening on http://localhost:${config.PORT}`))
+mongoConnect().then(server).catch(console.log)

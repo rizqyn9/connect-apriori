@@ -11,7 +11,7 @@ import { Transaction } from '../../types'
 
 type TableAnalyticTransactionProps = {
     data: Transaction[]
-    update(): void
+    update?(): void
 }
 
 export function TableAnalyticTransaction(props: TableAnalyticTransactionProps) {
@@ -34,7 +34,7 @@ export function TableAnalyticTransaction(props: TableAnalyticTransactionProps) {
             .then(() => {
                 addToast({ msg: `Success delete ${id}` })
                 handleClose()
-                props.update()
+                props.update?.()
             })
             .catch(() => addToast({ msg: `Failed to delete ${id}`, type: 'error' }))
     }, [deleteData])

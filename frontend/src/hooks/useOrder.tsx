@@ -23,12 +23,8 @@ const useOrderStore = create<OrderStore>()(
                 addOrder(id, orderProps) {
                     const { orders, updateQuantity } = get()
                     if (!orders[id]) {
-                        set({
-                            orders: {
-                                ...orders,
-                                [id]: { ...orderProps, quantity: 1 },
-                            },
-                        })
+                        const order = { ...orderProps, quantity: 1 }
+                        set({ orders: { ...orders, [id]: order } })
                     } else updateQuantity(id, +1)
                 },
                 removeOrder(id) {

@@ -12,25 +12,24 @@ const OrderModel = new Schema<OrderSchema>({
   },
 })
 
-const TransactionModel = new Schema<TransactionSchema & { created_at?: Date }>({
-  paymentMethod: { type: String },
-  price: { type: Number },
-  customerId: {
-    type: Types.ObjectId,
-    ref: "Customers",
+const TransactionModel = new Schema<TransactionSchema & { created_at?: Date }>(
+  {
+    paymentMethod: { type: String },
+    price: { type: Number },
+    customerId: {
+      type: Types.ObjectId,
+      ref: "Customers",
+    },
+    promo: {
+      type: Types.ObjectId,
+      ref: "Promos",
+    },
+    orderList: {
+      type: [OrderModel],
+      default: [],
+    },
   },
-  promo: {
-    type: Types.ObjectId,
-    ref: "Promos",
-  },
-  orderList: {
-    type: [OrderModel],
-    default: [],
-  },
-  created_at: {
-    type: Date,
-    default: Date.now(),
-  },
-})
+  { timestamps: true }
+)
 
 export default model("Transactions", TransactionModel)

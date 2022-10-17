@@ -1,14 +1,35 @@
-import User from "@/models/User"
-import { UserProps } from "../models/User"
+import { UserModel } from "@/models"
+import { userProps, UserProps } from "@/types"
 
-const getAllAdmin = async () => await User.find({ isAdmin: true })
+const findByEmail = async (email: string) => (await UserModel.findOne({ email })) ?? Promise.reject("User not found")
+const findById = async (id: string) => (await UserModel.findById(id)) ?? Promise.reject("User not found")
 
-const getAllUser = async () => await User.find({ isAdmin: false })
+const create = async (data: Record<string, string>) => {
+  const user = userProps.omit({ isAdmin: true }).parse(data)
+  const exist = await findByEmail(user.email).catch((err) => !err)
+  if (exist) throw new Error("User already registered")
+  return await UserModel.create({ ...user, isAdmin: false })
+}
 
-const createNewUser = async (user: UserProps) => await User.create(user)
+const filter = async (isAdmin?: string) => {
+  const filter = typeof isAdmin == "undefined" ? {} : { isAdmin }
+  return await UserModel.find(filter)
+}
 
-const demoteAdmin = async (id: string) => await User.findByIdAndUpdate(id, { isAdmin: false })
+const updateRole = async (id: string, admin: true) => {
+  const user = await findById(id)
+  user.isAdmin = admin
+  return await user.save()
+}
 
-const promoteAdmin = async (id: string) => await User.findByIdAndUpdate(id, { isAdmin: true })
+const getAllAdmin = async () => await UserModel.find({ isAdmin: true })
 
-export { getAllAdmin, getAllUser, createNewUser, demoteAdmin, promoteAdmin }
+const getAllUser = async () => await UserModel.find({ isAdmin: false })
+
+const createNewUser = async (user: UserProps) => await UserModel.create(user)
+
+const demoteAdmin = async (id: string) => await UserModel.findByIdAndUpdate(id, { isAdmin: false })
+
+const promoteAdmin = async (id: string) => await UserModel.findByIdAndUpdate(id, { isAdmin: true })
+
+export const userController = { getAllAdmin, getAllUser, createNewUser, demoteAdmin, promoteAdmin, findByEmail, create, filter, updateRole }

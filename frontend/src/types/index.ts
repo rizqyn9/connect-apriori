@@ -8,9 +8,6 @@ export type ProductProps = {
 
 export type ProductStore = {
     products: ProductProps[]
-    getAllProducts(): Promise<void>
-    getProductId(id: string): Promise<ProductProps>
-    postProduct<T extends unknown>(product: T): Promise<unknown>
 }
 
 export type CardProductProps = ProductProps & {

@@ -1,9 +1,7 @@
 import create from 'zustand'
 import { axiosPrivate } from '../services'
 import { useOrderStore } from './useOrder'
-import { useProductStore } from './useProducts'
-import { MenuType, OrderSchema } from '../types/order.schema'
-import { TransactionStore } from '../types'
+import { TransactionStore, OrderSchema } from '../types'
 
 export const paymentMethodExist = ['dana', 'ovo', 'gopay', 'tunai'] as const
 
@@ -43,6 +41,7 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
         const { props } = get()
         const orders = useOrderStore.getState().orders
 
+        console.log({ orders })
         const parsed = Object.values(orders).reduce((prev, curr) => {
             let exist: OrderSchema | undefined = prev.get(curr._id)
 
@@ -57,6 +56,8 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
             customerId: null, // TODO
             orderList: [...parsed.values()],
         }
+
+        console.log({ payload })
 
         return await axiosPrivate.post('/transaction', { ...payload }).then((val) => val.data)
     },

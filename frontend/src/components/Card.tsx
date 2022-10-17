@@ -1,39 +1,28 @@
-import React from 'react'
+import { useState, useRef, useCallback, useMemo } from 'react'
 import clsx from 'clsx'
 import { useNavigate } from 'react-router-dom'
+import { useOrderStore, useOnClickOutside, useAuth } from '@/hooks'
+import { CardProductProps, MenuType } from '@/types'
 import Icon from './Icon'
-import { useOrderStore } from '../hooks/useOrder'
-import { useOnClickOutside } from '../hooks/useClickOutside'
 import { Button } from './Button'
-import { CardProductProps, MenuType } from '../types'
-import { useAuth } from '../hooks/useAuth'
 
 export default function Card(props: CardProductProps) {
     const { menu, imageURL, price, _id, activeCard, setActiveCard } = props
     const navigate = useNavigate()
+    const ref = useRef<HTMLDivElement>(null)
     const { authUser } = useAuth()
-    const [menuType, setMenuType] = React.useState<MenuType>('hot')
-    const ref = React.useRef<HTMLDivElement>(null)
+    const [menuType, setMenuType] = useState<MenuType>('hot')
     const { addOrder } = useOrderStore()
 
     useOnClickOutside(ref, () => setActiveCard(''))
 
-    const handleAddOrder = React.useCallback(() => {
-        addOrder(idWithVariant, {
-            orderId: idWithVariant,
-            menuType,
-            menu,
-            price,
-            imageURL,
-            _id,
-        })
-    }, [menuType, props])
+    const idWithVariant = useMemo(() => `${menuType}-${_id}`, [menuType, _id])
 
-    const handleEdit = React.useCallback(() => {
-        navigate(`product/${_id}`)
-    }, [_id])
+    const handleAddOrder = useCallback(() => {
+        addOrder(idWithVariant, { ...props, orderId: idWithVariant, menuType })
+    }, [menuType, props, idWithVariant])
 
-    const idWithVariant = `${menuType}-${_id}`
+    const handleEdit = useCallback(() => navigate(`product/${_id}`), [_id])
 
     return (
         <div
@@ -49,15 +38,15 @@ export default function Card(props: CardProductProps) {
                 <button
                     onClick={handleEdit}
                     className="absolute top-0 hover:bg-primary cursor-pointer left-0 bg-gray-50 h-5 px-4 rounded-br-md z-[2] text-primary hover:text-white"
-                    children={'Edit'}
+                    children="Edit"
                 />
             )}
             <div className="w-full pt-[100%] relative bg-primary rounded-xl overflow-hidden">
-                <img src={imageURL} className="absolute inset-0" alt="dummy" />
+                <img src={imageURL} className="absolute inset-0 h-full" alt="dummy" />
             </div>
             <h2 className="text-sm">{menu}</h2>
             <p className="text-xs text-white/80">Rp. {price}</p>
-            <div className={'flex gap-2'}>
+            <div className="flex gap-2">
                 <Variants setType={setMenuType} type={menuType} />
             </div>
             <Button onClick={handleAddOrder} className="text-xs w-full py-2">
@@ -85,10 +74,9 @@ function Variants({ setType, type }: VariantProps) {
             />
             <button
                 className={clsx(
-                    'w-7 h-7 bg-dark-1 p-1 grid place-content-center rounded-md cursor-pointer',
+                    'w-7 h-7 bg-dark-1 p-1 grid place-content-center rounded-md cursor-pointer text-[cyan]',
                     type === 'ice' ? '!bg-primary/50 text-red-900' : ' text-[#89f1f5]',
                 )}
-                style={{ color: 'cyan' }}
                 onClick={() => setType('ice')}
                 children={<Icon.Ice />}
             />

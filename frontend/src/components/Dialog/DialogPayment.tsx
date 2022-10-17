@@ -1,5 +1,6 @@
-import React from 'react'
+import { useCallback } from 'react'
 import { Dialog } from '@headlessui/react'
+import { useMutation } from '@tanstack/react-query'
 import { Button } from '../Button'
 import { H1 } from '../Typography'
 import { DialogContainer, DialogContainerProps } from './DialogContainer'
@@ -8,45 +9,30 @@ import { useToastStore } from '../Toast'
 import { useOrderStore } from '../../hooks/useOrder'
 import { useTransactionStore } from '../../hooks/useTransaction'
 import { useOnce } from '../../hooks/useOnce'
+import { transactionService } from '../../services'
 
 type DialogPaymentProps = DialogContainerProps & {}
 
 export function DialogPayment(props: DialogPaymentProps) {
-    const [loading, setLoading] = React.useState(false)
     const { addToast } = useToastStore()
-    const { props: transaction, clearTransaction, doPaid } = useTransactionStore()
-    const { orders, clearOrders, state, updateState } = useOrderStore()
+    const { props: transaction } = useTransactionStore()
+    const { orders, updateState } = useOrderStore()
 
-    const handleOnPaid = React.useCallback(async () => {
-        try {
-            setLoading(true)
-            await doPaid()
-            addToast({ msg: 'Transaction success' })
-        } catch (error) {
-            console.log(error)
-            addToast({ msg: 'Transaction failed', type: 'error' })
-        } finally {
-            setLoading(false)
-            props.setIsOpen(false)
-        }
-        // await new Promise((res) => setTimeout(res, 3000))
-        // clearOrders()
-        // clearTransaction()
-        // updateState('choose product')
-    }, [setLoading])
+    const paidMutation = useMutation(transactionService.create, {
+        onSuccess: () => addToast({ msg: 'Transaction success' }),
+        onError: () => addToast({ msg: 'Transaction failed', type: 'error' }),
+    })
 
-    useOnce(() => {
-        updateState('choose product')
-    }, [])
+    useOnce(() => updateState('choose product'), [])
 
-    const handleCancel = React.useCallback(() => props.setIsOpen(false), [])
+    const handleCancel = useCallback(() => props.setIsOpen(false), [])
 
     return (
         <DialogContainer {...props}>
             <Dialog.Panel className="bg-dark-2 border border-white p-5 text-white rounded-lg w-[50vw] h-[90vh] flex flex-col">
                 <H1>Payment</H1>
                 <div className="flex flex-col h-[95%] justify-between">
-                    {loading ? (
+                    {paidMutation.isLoading ? (
                         <div className="grid w-full h-full place-content-center">Create order</div>
                     ) : (
                         <>
@@ -64,7 +50,7 @@ export function DialogPayment(props: DialogPaymentProps) {
                                     <Button className="w-1/4" onClick={handleCancel}>
                                         Cancel
                                     </Button>
-                                    <Button className="w-1/4" onClick={handleOnPaid}>
+                                    <Button className="w-1/4" onClick={() => paidMutation.mutate()}>
                                         Paid
                                     </Button>
                                 </div>

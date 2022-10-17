@@ -1,22 +1,16 @@
 import { Router } from "express"
-import User from "../models/User.js"
 import jwt from "jsonwebtoken"
-import { config } from "@/lib/config.js"
+import { userController } from "@/controller"
 
 const app = Router()
 
 /* --------------------------- Handle user signup --------------------------- */
 app.post("/signup", async (req, res, next) => {
   try {
-    const { name, email, password } = req.body
-
-    // Check existing email
-    if (await User.exists({ email })) throw new Error("Email exist")
-
-    // Create new User
-    await User.create({ name, email, password }).then((payload) => {
-      return res.status(201).json({ msg: "created", payload })
-    })
+    const payload = (await userController.create(req.body)).toJSON()
+    // @ts-expect-error
+    delete payload.password
+    res.json({ payload })
   } catch (error) {
     next(error)
   }
@@ -25,16 +19,13 @@ app.post("/signup", async (req, res, next) => {
 /* ------------------------------ User sign in ------------------------------ */
 app.post("/signin", async (req, res, next) => {
   try {
-    let { email, password } = req.body
+    const user = (await userController.findByEmail(req.body.email)).toJSON()
 
-    const user = await User.findOne({ email: email })
+    if (user.password != req.body.password) throw new Error("Wrong password")
+    const token = jwt.sign({ email: user.email, id: user._id }, "secret")
 
-    if (!user) throw new Error("User not found")
-
-    if (user.password != password) throw new Error("Wrong password")
-
-    let token = jwt.sign({ email: user.email, id: user._id }, config.secretToken)
-
+    // @ts-expect-error
+    delete user.password
     return res.json({ token, payload: user })
   } catch (error) {
     next(error)

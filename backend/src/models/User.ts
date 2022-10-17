@@ -1,30 +1,18 @@
 import { Schema, model } from "mongoose"
+import { UserProps } from "@/types"
 
-export type UserProps = {
-  name: string
-  email: string
-  password: string
-  isAdmin: boolean
-}
+const UserSchema = new Schema<UserProps>(
+  {
+    name: String,
+    email: String,
+    password: String,
+    isAdmin: {
+      type: Boolean,
+      default: false,
+      required: true,
+    },
+  },
+  { timestamps: true }
+)
 
-const UserSchema = new Schema<UserProps>({
-  name: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  isAdmin: {
-    type: Boolean,
-    default: false,
-    required: true,
-  },
-})
-
-export default model("Users", UserSchema)
+export const UserModel = model("Users", UserSchema)

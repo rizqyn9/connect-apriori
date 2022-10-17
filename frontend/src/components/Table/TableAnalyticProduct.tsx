@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import { TD, TH, TR } from '.'
 import { Button } from '../Button'
 
@@ -11,6 +12,7 @@ type TableAnalyticPoductsProps = {
 }
 
 export function TableAnalyticProduct(props: TableAnalyticPoductsProps) {
+    const navigate = useNavigate()
     return (
         <table className="w-full bg-dark-2 rounded-lg">
             <thead>
@@ -26,7 +28,7 @@ export function TableAnalyticProduct(props: TableAnalyticPoductsProps) {
                 {props.data.length == 0 ? (
                     <TR className="text-center">
                         <TD className="py-8" colSpan={4}>
-                            Data Not found
+                            Data Empty
                         </TD>
                     </TR>
                 ) : (
@@ -39,7 +41,9 @@ export function TableAnalyticProduct(props: TableAnalyticPoductsProps) {
                             <TD className="text-center">{val.price}</TD>
                             <TD className="text-center">{val.totalOrdered ?? 0}</TD>
                             <TD className="flex gap-5 justify-center items-center p-2">
-                                <Button size="sm">Edit</Button>
+                                <Button size="sm" onClick={() => navigate(`/product/${val._id}`)}>
+                                    Edit
+                                </Button>
                                 <Button size="sm">Remove</Button>
                             </TD>
                         </TR>

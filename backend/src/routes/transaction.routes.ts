@@ -22,9 +22,6 @@ app.post("/", async (req, res, next) => {
     const { orderList } = parsed
 
     /* --------------------- Update quantity ordered product -------------------- */
-    await Promise.all(
-      Array.from(orderList).map(({ menuId, variants: { ice = 0, hot = 0 } }) => productController.incrementOrderById(menuId, ice + hot))
-    )
 
     /* --------------------------- Create transaction --------------------------- */
     const transaction = await transactionController.create({ ...parsed })

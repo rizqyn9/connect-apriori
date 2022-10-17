@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { CookiesProvider } from 'react-cookie'
-import { SignIn, SignUp } from './pages/Auth'
 import DashboardLayout from './pages/DashboardLayout'
 import { ProductPage } from './pages/InputProduct'
 import Catalog from './components/Catalog'
@@ -13,6 +12,7 @@ import { AuthProvider } from 'react-auth-kit'
 import { ToastContainer } from './components/Toast'
 import Apriori from './pages/Apriori'
 import ConfigPage from './pages/Config'
+import { SignIn, SignUp } from './pages'
 
 function App() {
     return (
@@ -42,8 +42,8 @@ function App() {
                 </Route>
                 <Route path="/auth/signin" element={<SignIn />} />
                 <Route path="/auth/signup" element={<SignUp />} />
-                <Route path={'*'} element={<Navigate to="/" />} />
                 <Route path="/logout" element={<LogOut />} />
+                <Route path="*" element={<Navigate to="/" />} />
             </Routes>
         </GlobalProvider>
     )

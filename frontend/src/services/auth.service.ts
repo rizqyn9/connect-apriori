@@ -1,49 +1,27 @@
-import api from './index'
+import api from '.'
+import { SignUpSchema, SignInSchema } from '../utils/zod.schema'
 
-export async function signInService(data) {
-    return await api
-        .post('/auth/signin', data)
-        .then((val) => val.data)
-        .catch((err) => {
-            return { error: 'Server error' }
-        })
+const signUp = async (payload: SignUpSchema) => {
+    const { status, data } = await api.post('/auth/signup', payload)
+    if (status === 200) return { success: true, msg: 'Register success' }
+    if (status === 400) return { invalid: true, msg: String(data.msg) }
+    throw new Error('Server error')
 }
 
-export async function signUpService(data) {
-    console.log(data)
-    return await api
-        .post('/auth/signup', data)
-        .then((val) => val.data)
-        .catch((err) => {
-            console.log(err)
-            return { error: 'Server error' }
-        })
+const signIn = async (payload: SignInSchema) => {
+    const { status, data } = await api.post('/auth/signin', payload)
+    if (status == 200)
+        return {
+            token: data.token!,
+            tokenType: 'token',
+            expiresIn: 60 * 60 * 24 * 7,
+            authState: { ...data.payload },
+            msg: `Wellcome ${data.payload.name}`,
+        }
+    else return { invalid: true, msg: data.msg ?? 'Failed to signin' }
 }
 
-export const logout = () => {
-    localStorage.removeItem('user')
-}
-
-export const getToken = () => {
-    return localStorage.getItem('token')
-}
-
-export const getCurrentUser = () => {
-    try {
-        return JSON.parse(localStorage.getItem('user'))
-    } catch (e) {
-        console.log(e)
-        console.log('logout')
-        logout()
-    }
-}
-
-export const validateToken = async () => {
-    try {
-        return await api
-            .post('/auth/validate', { token: getToken() })
-            .then((val) => val.data)
-    } catch (e) {
-        console.log(e)
-    }
+export const authService = {
+    signUp,
+    signIn,
 }

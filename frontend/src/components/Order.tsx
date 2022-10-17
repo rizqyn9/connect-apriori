@@ -1,46 +1,28 @@
 import clsx from 'clsx'
-import React from 'react'
-import { useOrderStore } from '../hooks/useOrder'
-import {
-    useTransactionStore,
-    paymentMethodExist,
-    PaymentMethod,
-} from '../hooks/useTransaction'
-import { OrderCard } from './OrderCard'
+import React, { useState, useEffect, useCallback } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { useOrderStore, useTransactionStore, paymentMethodExist, PaymentMethod } from '@/hooks'
+import { OrderCard } from './OrderCard'
 import { Button } from './Button'
 import { DialogPayment } from './Dialog/DialogPayment'
 import { DialogPromo } from './Dialog/DialogPromo'
 
-type OrderContainerProps = {
-    className: string
-}
+type OrderContainerProps = { className: string }
+
 export default function Order({ className }: OrderContainerProps) {
-    const [isDialogPayment, setIsDialogPayment] = React.useState(false)
-    const [isDialogPromo, setIsDialogPromo] = React.useState(false)
+    const [isDialogPayment, setIsDialogPayment] = useState(false)
+    const [isDialogPromo, setIsDialogPromo] = useState(false)
     const { orders, state: orderState, updateState } = useOrderStore()
 
-    const { props, setProps, state, recalculate } = useTransactionStore()
-
-    React.useEffect(recalculate, [])
+    const { props, state } = useTransactionStore()
 
     return (
         <>
             <DialogPromo isOpen={isDialogPromo} setIsOpen={setIsDialogPromo} />
-            <DialogPayment
-                isOpen={isDialogPayment}
-                setIsOpen={setIsDialogPayment}
-            />
-            <div
-                className={clsx(
-                    'w-full max-h-[calc(100%-5rem)] flex flex-col justify-between text-sm',
-                    className,
-                )}
-            >
+            <DialogPayment isOpen={isDialogPayment} setIsOpen={setIsDialogPayment} />
+            <div className={clsx('w-full max-h-[calc(100%-5rem)] flex flex-col justify-between text-sm', className)}>
                 <div className="flex flex-col">
-                    <Button onClick={() => setIsDialogPromo(true)}>
-                        Gunakan promo
-                    </Button>
+                    <Button onClick={() => setIsDialogPromo(true)}>Gunakan promo</Button>
                     <p className="mt-3 mb-2">Status promo</p>
                 </div>
                 {/*Order Products*/}
@@ -49,34 +31,18 @@ export default function Order({ className }: OrderContainerProps) {
                         <AnimatePresence>
                             {orderState == 'choose product' &&
                                 orders &&
-                                Object.entries(orders).map(([key, val]) => (
-                                    <OrderCard
-                                        key={key}
-                                        {...val}
-                                        orderId={key}
-                                    />
-                                ))}
+                                Object.entries(orders).map(([key, val]) => <OrderCard key={key} {...val} orderId={key} />)}
                         </AnimatePresence>
-                        {orderState == 'choose payment' && (
-                            <Transaction
-                                close={() => updateState('choose product')}
-                            />
-                        )}
+                        {orderState == 'choose payment' && <Transaction close={() => updateState('choose product')} />}
                     </div>
                 </AnimatePresence>
 
-                <div
-                    className={'my-5 text-xs text-white/70 flex flex-col gap-3'}
-                >
+                <div className="my-5 text-xs text-white/70 flex flex-col gap-3">
                     <GridTwoCol left="Diskom" right={props.promo ?? '-'} />
                     <GridTwoCol left="Total Harga" right={props.total} />
-                    <GridTwoCol
-                        left="Metode Pembayaran"
-                        right={props.method ?? '-'}
-                    />
+                    <GridTwoCol left="Metode Pembayaran" right={props.method ?? '-'} />
                 </div>
-                {orderState == 'choose product' &&
-                Object.keys(orders).length != 0 ? (
+                {orderState == 'choose product' && Object.keys(orders).length != 0 ? (
                     <Button
                         className="disabled:cursor-not-allowed disabled:bg-primary/10"
                         disabled={Object.keys(orders).length == 0}
@@ -101,10 +67,10 @@ export default function Order({ className }: OrderContainerProps) {
 function Transaction({ close }: { close: () => void }) {
     const { setProps } = useTransactionStore()
 
-    const handleBack = () => {
+    const handleBack = useCallback(() => {
         setProps('method', null)
         close()
-    }
+    }, [setProps, close])
 
     return (
         <motion.div
@@ -114,11 +80,7 @@ function Transaction({ close }: { close: () => void }) {
             className="flex flex-col gap-5 max-h-full"
         >
             <div className="sticky top-0 bg-dark-2 w-full pb-3">
-                <button
-                    onClick={handleBack}
-                    className="border-2 border-primary px-3 py-2 rounded-md w-full"
-                    children={'back'}
-                />
+                <button onClick={handleBack} className="border-2 border-primary px-3 py-2 rounded-md w-full" children={'back'} />
             </div>
             <div className="grid w-full gap-5 grid-cols-2">
                 {paymentMethodExist.map((val, i) => (
@@ -134,14 +96,11 @@ function TransactionTypeCard({ type }: { type: PaymentMethod }) {
     return (
         <button
             onClick={() => setProps('method', type)}
-            className={clsx(
-                'w-full aspect-w-1 aspect-h-1 border-2 rounded-md flex justify-center items-center',
-                { 'bg-primary': props.method == type },
-            )}
+            className={clsx('w-full aspect-w-1 aspect-h-1 border-2 rounded-md flex justify-center items-center', {
+                'bg-primary': props.method == type,
+            })}
         >
-            <div className="flex items-center justify-center uppercase">
-                {type}
-            </div>
+            <div className="flex items-center justify-center uppercase">{type}</div>
         </button>
     )
 }
@@ -150,9 +109,10 @@ type GridTwoColProps = {
     left: string | React.ReactNode
     right: string | React.ReactNode
 }
+
 function GridTwoCol(props: GridTwoColProps) {
     return (
-        <div className={'flex justify-between'}>
+        <div className="flex justify-between">
             <p>{props.left}</p>
             <p>{props.right}</p>
         </div>

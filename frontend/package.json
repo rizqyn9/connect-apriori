@@ -2,7 +2,7 @@
     "name": "swapper",
     "version": "0.0.0",
     "scripts": {
-        "dev": "vite",
+        "dev": "vite --port 3002",
         "build": "vite build",
         "serve": "vite preview",
         "clear": "rm -rf ./dist",
@@ -13,6 +13,7 @@
         "@hookform/resolvers": "^2.8.8",
         "@tailwindcss/aspect-ratio": "^0.4.0",
         "@tailwindcss/forms": "^0.4.0",
+        "@tanstack/react-query": "^4.10.1",
         "@tanstack/react-table": "^8.2.6",
         "axios": "^0.25.0",
         "clsx": "^1.1.1",
@@ -29,11 +30,13 @@
         "react-use-cookie": "^1.4.0",
         "sass": "^1.48.0",
         "to-regex-range": "^5.0.1",
+        "url": "^0.11.0",
         "zod": "^3.17.3",
         "zustand": "^4.0.0-rc.1"
     },
     "devDependencies": {
         "@savvywombat/tailwindcss-grid-areas": "^2.0.0",
+        "@types/node": "^18.8.5",
         "@types/react": "^18.0.15",
         "@types/react-dom": "^18.0.6",
         "@types/react-table": "^7.7.12",
@@ -50,6 +53,6 @@
         "tabWidth": 4,
         "semi": false,
         "singleQuote": true,
-        "printWidth": 145
+        "printWidth": 150
     }
 }

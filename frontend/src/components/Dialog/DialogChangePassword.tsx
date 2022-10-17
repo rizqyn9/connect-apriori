@@ -1,5 +1,4 @@
-import { Dialog, Transition } from '@headlessui/react'
-import { Fragment } from 'react'
+import { Dialog } from '@headlessui/react'
 import { Button } from '../Button'
 import { H1 } from '../Typography'
 import { DialogContainer, DialogContainerProps } from './DialogContainer'
@@ -25,16 +24,10 @@ export function DialogChangePassword(props: DialogChangePasswordProps) {
                         <input />
                     </label>
                     <div className="flex items-end justify-end gap-5 py-4">
-                        <Button
-                            className="w-1/3"
-                            onClick={() => props.setIsOpen(false)}
-                        >
+                        <Button className="w-1/3" onClick={() => props.setIsOpen(false)}>
                             Cancel
                         </Button>
-                        <Button
-                            className="w-1/3"
-                            onClick={() => props.setIsOpen(false)}
-                        >
+                        <Button className="w-1/3" onClick={() => props.setIsOpen(false)}>
                             Save
                         </Button>
                     </div>

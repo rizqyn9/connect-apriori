@@ -4,7 +4,6 @@ export type ProductProps = {
   menu: string
   price: number
   imageURL: string
-  totalOrdered: number
 }
 
 const ProductSchema = new Schema<ProductProps>({
@@ -18,10 +17,6 @@ const ProductSchema = new Schema<ProductProps>({
   },
   imageURL: {
     type: String,
-  },
-  totalOrdered: {
-    type: Number,
-    default: 0,
   },
 })
 

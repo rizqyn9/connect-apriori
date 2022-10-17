@@ -8,18 +8,10 @@ export type AnalyticsProps = {
 }
 
 const AnalyticsModel = new Schema<AnalyticsProps>({
-  label: {
-    type: String,
-  },
-  products: {
-    type: Array,
-  },
-  transactions: {
-    type: Array,
-  },
-  profit: {
-    type: Number,
-  },
+  label: String,
+  products: Array,
+  transactions: Array,
+  profit: Number,
 })
 
 export default model("Analytics", AnalyticsModel)

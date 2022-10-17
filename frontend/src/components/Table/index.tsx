@@ -10,10 +10,13 @@ const TR = ({ className, ...rest }: TRProps) => <tr {...rest} className={clsx('e
 type TDProps = HTMLAttributes<HTMLTableCellElement> & {
     width?: string | number
     colSpan?: number
+    center?: boolean
 }
-const TD = ({ className, ...rest }: TDProps) => <td {...rest} className={clsx('p-2', className)} />
+const TD = ({ className, center, ...rest }: TDProps) => <td {...rest} className={clsx('p-2', { 'text-center': center }, className)} />
 
 export { TH, TR, TD }
 export * from './TableAnalyticProduct'
 export * from './TableAnalyticPromo'
 export * from './TableAnalyticTransaction'
+
+export * from './Table'

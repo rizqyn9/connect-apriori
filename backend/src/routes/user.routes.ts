@@ -1,6 +1,6 @@
 import { Router } from "express"
-import * as userController from "@/controller/user.controller.js"
-import User from "../models/User.js"
+import { userController } from "@/controller"
+import { UserModel } from "@/models"
 
 const app = Router()
 
@@ -29,7 +29,7 @@ app.get("/user", async (req, res, next) => {
 app.get("/:id", async (req, res) => {
   const { id } = req.params
   try {
-    User.findById(id).then((payload) => {
+    UserModel.findById(id).then((payload) => {
       res.json({ payload })
     })
   } catch (error) {}

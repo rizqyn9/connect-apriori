@@ -1,23 +1,9 @@
 import mongoose from "mongoose"
-import { config } from "./config"
+import { config } from "@/constant/config"
 
-const MongoConnect = async () => {
-  return await mongoose
-    .connect(config.mongo)
-    .then(() => {
-      console.log("Connected to MongoDB")
-    })
-    .catch((e) => {
-      throw new Error(e)
-    })
-}
+const mongoConnect = async () => await mongoose.connect(config.MONGO_URI).then(() => console.log("Connected to MongoDB"))
 
-mongoose.connection.on("error", () => {
-  console.log("MongoDB connection error")
-})
+mongoose.connection.on("error", () => console.log("MongoDB connection error"))
+mongoose.connection.on("disconnect", () => console.log("Disconnected from MongoDB"))
 
-mongoose.connection.on("disconnect", () => {
-  console.log("Disconnected from MongoDB")
-})
-
-export { MongoConnect }
+export { mongoConnect }

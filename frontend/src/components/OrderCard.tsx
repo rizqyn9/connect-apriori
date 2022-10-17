@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useOrderStore } from '../hooks/useOrder'
 import { OrderProps } from '../types'
 import Icon from './Icon'
@@ -24,7 +24,7 @@ function OrderCard(props: OrderProps) {
             <div className={'grid grid-cols-3'}>
                 {/*Product Image*/}
                 <div className="w-[5rem] h-[5rem] rounded-lg border-2 border-primary/70 overflow-hidden col-span-1">
-                    <img src={imageURL} className="" alt={''} />
+                    <img src={imageURL} className="h-full" alt="" />
                 </div>
                 <div className="flex flex-col justify-between">
                     {/*Menu & Type*/}
@@ -43,7 +43,7 @@ function OrderCard(props: OrderProps) {
                     onChange={(e) => setNotes(orderId, e.target.value)}
                 />
                 <button
-                    className="h-8 w-8 p-1 border-2 border-primary rounded-md text-primary hover:text-primary/50"
+                    className="h-8 w-8 p-1 border-2 border-primary rounded-md text-primary hover:text-primary/50 hover:border-primary/50"
                     onClick={() => removeOrder(orderId)}
                 >
                     <Icon.Delete />
@@ -60,15 +60,12 @@ type IncrDcrProps = {
 }
 
 function IncrDcr({ quantity, increment, decrement }: IncrDcrProps) {
+    const className = useMemo(() => 'bg-primary flex-1 h-full grid place-content-center hover:bg-primary/50', [])
     return (
-        <div className="h-6 w-[5rem] bg-red-200 flex overflow-hidden rounded-md">
-            <button onClick={decrement} className={'bg-primary flex-1 h-full grid place-content-center'}>
-                -
-            </button>
+        <div className="h-6 w-[5rem] flex overflow-hidden rounded-md">
+            <button onClick={decrement} className={className} children="-" />
             <p className="bg-dark-2 h-full text-[.7rem] min-w-[1.7rem] grid place-content-center">{quantity}</p>
-            <button onClick={increment} className="bg-primary h-full flex-1 grid place-content-center">
-                +
-            </button>
+            <button onClick={increment} className={className} children="+" />
         </div>
     )
 }
