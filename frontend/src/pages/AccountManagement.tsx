@@ -3,10 +3,15 @@ import { Button } from '../components/Button'
 import { DialogChangePassword } from '../components/Dialog'
 import { GridRow } from '../components/Grid'
 import { H1 } from '../components/Typography'
-import { TableListAdmin, UserProps } from '../components/Table/TableListAdmin'
+import { TableListAdmin } from '../components/Table/TableListAdmin'
 import { TableListUser } from '../components/Table/TableListUser'
+import { useQuery } from '@tanstack/react-query'
+import { axiosPrivate } from '@/services'
+import Table, { TD } from '@/components/Table/Table'
 
+type Res = { email: string; createdAt: string; name: string; isAdmin: boolean }
 export default function AccountManagement() {
+    const query = useQuery(['user-management'], async () => axiosPrivate.get<{ payload: Res[] }>('/user-management'))
     const [isOpenChangePassword, setIsOpenChangePassword] = React.useState<boolean>(false)
 
     return (
@@ -27,67 +32,50 @@ export default function AccountManagement() {
                     </div>
                 </div>
                 <DialogChangePassword isOpen={isOpenChangePassword} setIsOpen={setIsOpenChangePassword} />
-                {/* Admin look all user */}
+
                 <div className="flex flex-col gap-5 py-8">
                     <H1>Admin</H1>
-                    <TableListAdmin />
-                    <H1>User</H1>
-                    <TableListUser />
+                    <Table
+                        headers={['No', 'Username', 'Email', 'Action', 'Created at']}
+                        data={
+                            query.data?.data.payload
+                                .filter((x) => x.isAdmin)
+                                .map((x, i) => {
+                                    return (
+                                        <>
+                                            <TD>{i}</TD>
+                                            <TD>{x.name}</TD>
+                                            <TD>{x.email}</TD>
+                                            <TD>
+                                                <Button children="Demote" />
+                                            </TD>
+                                            <TD>{new Date(x.createdAt).toLocaleString()}</TD>
+                                        </>
+                                    )
+                                }) || []
+                        }
+                    />
+                    <H1 className="mt-8">User</H1>
+                    <Table
+                        headers={['No', 'Username', 'Email', 'Action', 'Created at']}
+                        data={
+                            query.data?.data.payload
+                                .filter((x) => !x.isAdmin)
+                                .map((x, i) => (
+                                    <>
+                                        <TD>{i}</TD>
+                                        <TD>{x.name}</TD>
+                                        <TD>{x.email}</TD>
+                                        <TD>
+                                            <Button children="Promote" />
+                                        </TD>
+                                        <TD>{new Date(x.createdAt).toLocaleString()}</TD>
+                                    </>
+                                )) || []
+                        }
+                    />
                 </div>
             </div>
         </GridRow>
     )
 }
-
-const mockUser: UserProps[] = [
-    {
-        _id: 'asda',
-        username: 'test2',
-        email: 'sadasd@test.com',
-    },
-    {
-        _id: 'asda',
-        username: 'test2',
-        email: 'sadasd@test.com',
-    },
-    {
-        _id: 'asda',
-        username: 'test2',
-        email: 'sadasd@test.com',
-    },
-    {
-        _id: 'asda',
-        username: 'test2',
-        email: 'sadasd@test.com',
-    },
-    {
-        _id: 'asda',
-        username: 'test2',
-        email: 'sadasd@test.com',
-    },
-    {
-        _id: 'asda',
-        username: 'test2',
-        email: 'sadasd@test.com',
-    },
-    {
-        _id: 'asda',
-        username: 'test2',
-        email: 'sadasd@test.com',
-    },
-    {
-        _id: 'asda',
-        username: 'test2',
-        email: 'sadasd@test.com',
-    },
-    {
-        _id: 'asda',
-        username: 'test2',
-        email: 'sadasd@test.com',
-    },
-    {
-        _id: 'asda',
-        username: 'test2',
-        email: 'sadasd@test.com',
-    },
-]

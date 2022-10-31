@@ -2,16 +2,9 @@ import { TD, TH, TR } from '.'
 import { Button } from '../Button'
 import { useEffect, useState } from 'react'
 import { Person } from '../../types/person.schema'
-import { useAxiosPrivate } from '../../hooks/useAxiosPrivate'
-import { useOnce } from '../../hooks/useOnce'
 
 export function TableListAdmin() {
-    const axios = useAxiosPrivate()
     const [data, setData] = useState<Person[]>([])
-
-    useOnce(() => {
-        axios.get<{ payload: Person[] }>('/person/admin').then((res) => setData(res.data.payload))
-    }, [])
 
     return (
         <table className="w-full bg-dark-2 rounded-lg">
@@ -24,14 +17,14 @@ export function TableListAdmin() {
                 </tr>
             </thead>
             <tbody className="border-2 border-white">
-                {data.length == 0 && (
+                {data?.length == 0 && (
                     <TR>
                         <TD className="text-center py-5" colSpan={4}>
                             Data Not Found
                         </TD>
                     </TR>
                 )}
-                {data.map((val, i) => (
+                {data?.map((val, i) => (
                     <TR key={i}>
                         <TD className="p-2 text-center" width={100}>
                             {i + 1}

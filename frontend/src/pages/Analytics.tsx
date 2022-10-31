@@ -54,6 +54,8 @@ export default function Analytics() {
     )
 }
 
+const toCurrency = new Intl.NumberFormat('id-ID')
+
 type ProductsProps = {
     _id: string
     menu: string
@@ -66,7 +68,7 @@ function Products({ data }: { data: ProductsProps[] }) {
             <>
                 <TD center>{i + 1}</TD>
                 <TD>{x.menu}</TD>
-                <TD center>{x.price}</TD>
+                <TD center>{toCurrency.format(x.price)}</TD>
                 <TD center>{x.totalOrdered}</TD>
                 <TD center>{x._id}</TD>
             </>
@@ -80,8 +82,9 @@ type TransactionProps = {
     price: number
     customerId?: string
     promo: null
-    created_at: string
+    createdAt: string
 }
+
 function Transactions({ data }: { data: TransactionProps[] }) {
     const [state, setState] = useState<string | null>(null)
 
@@ -91,7 +94,7 @@ function Transactions({ data }: { data: TransactionProps[] }) {
                 <TD center>{i + 1}</TD>
                 <TD>{x._id}</TD>
                 <TD center>{x.price}</TD>
-                <TD center>{new Date(x.created_at).toDateString()}</TD>
+                <TD center>{new Date(x.createdAt).toLocaleString()}</TD>
                 <TD center>
                     <Button onClick={() => setState(x._id)}>Delete</Button>
                 </TD>

@@ -30,7 +30,7 @@ function OrderCard(props: OrderProps) {
                     {/*Menu & Type*/}
                     <div className={'flex gap-2 align-center'}>
                         <div className="w-5 h-5 flex items-center justify-center">{menuType === 'hot' ? <Icon.Hot /> : <Icon.Ice />}</div>
-                        <h2 className="font-bold text-sm">{menu}</h2>
+                        <h2 className="font-bold text-sm whitespace-nowrap">{menu}</h2>
                     </div>
                     <h2 className="text-xs">Rp. {price * quantity}</h2>
                     <IncrDcr quantity={quantity} decrement={() => updateQuantity(orderId, -1)} increment={() => updateQuantity(orderId, 1)} />

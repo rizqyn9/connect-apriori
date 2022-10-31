@@ -7,7 +7,7 @@ import { H1 } from '../components/Typography'
 import { ProductInputSchema, productInputSchema } from '../utils/zod.schema'
 import { Button } from '../components/Button'
 import { useToastStore } from '../components/Toast'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { FormInput } from '../components/Form/InputProduct'
 import { convertBase64 } from '../utils/base64'
 import { productService } from '../services'
@@ -24,6 +24,7 @@ export function ProductPage() {
 function InputProduct() {
     const { id } = useParams()
     const { addToast } = useToastStore()
+    const queryClient = useQueryClient()
 
     const {
         handleSubmit,
@@ -40,7 +41,9 @@ function InputProduct() {
     const queryId = useQuery([id], () => productService.findId(String(id)), {
         enabled: !!id,
         onSuccess: (product) => {
+            // @ts-expect-error
             Object.entries(product.product).forEach(([key, val]) => setValue(key, val))
+            queryClient.invalidateQueries(['products'])
         },
     })
 
@@ -116,7 +119,13 @@ function ImagePlaceInput(props: ImagePlaceInputProps) {
     return (
         <div className="bg-dark-2 rounded-lg p-6 flex flex-col gap-4">
             <input accept="image/*" type="file" hidden name={name} ref={imageRef} onChange={onChange} />
-            {value ? <Button onClick={removeImage}>Remove</Button> : <Button onClick={(e) => imageRef.current?.click()}>Upload Image</Button>}
+            {value ? (
+                <Button onClick={removeImage}>Remove</Button>
+            ) : (
+                <Button onClick={(e) => imageRef.current?.click()} type="button">
+                    Upload Image
+                </Button>
+            )}
             {errors && <p className="text-red-400">Image required</p>}
             {value && <img src={value ?? undefined} />}
         </div>
