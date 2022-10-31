@@ -1,35 +1,24 @@
 import { Schema, Types, model } from "mongoose"
-import type { TransactionSchema, OrderSchema } from "@/types/transaction.schema"
+import type { TransactionProps, OrderProps } from "@/types/transaction.schema"
 
-const OrderModel = new Schema<OrderSchema>({
-  menuId: {
-    type: Types.ObjectId,
-    ref: "Product",
-  },
-  variants: {
-    ice: { type: Number, default: 0 },
-    hot: { type: Number, default: 0 },
-  },
+const OrderSchema = new Schema<OrderProps>({
+  // @ts-expect-error
+  productId: { type: Types.ObjectId, ref: "product" },
+  ice: { type: Number, default: 0 },
+  hot: { type: Number, default: 0 },
+  quantity: { type: Number, default: 0 },
 })
 
-const TransactionModel = new Schema<TransactionSchema & { created_at?: Date }>(
+const TransactionSchema = new Schema<TransactionProps>(
   {
+    customerId: { type: Types.ObjectId, ref: "customer" },
+    promo: { type: Types.ObjectId, ref: "promo" },
     paymentMethod: { type: String },
     price: { type: Number },
-    customerId: {
-      type: Types.ObjectId,
-      ref: "Customers",
-    },
-    promo: {
-      type: Types.ObjectId,
-      ref: "Promos",
-    },
-    orderList: {
-      type: [OrderModel],
-      default: [],
-    },
+    orders: [OrderSchema],
   },
   { timestamps: true }
 )
 
-export default model("Transactions", TransactionModel)
+export const OrderModel = model("order", OrderSchema)
+export const TransactionModel = model("transaction", TransactionSchema)

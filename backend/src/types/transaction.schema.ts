@@ -1,23 +1,25 @@
 import { z } from "zod"
-import { mongoObject, paymentAllowed } from "./misc.schema"
+import { paymentAllowed } from "./misc.schema"
 
 const menuType = z.enum(["hot", "ice"])
 
 export type MenuType = z.infer<typeof menuType>
 
-const orderSchema = z.object({
-  menuId: mongoObject,
-  variants: z.record(menuType, z.number()),
-})
+const orderProps = z
+  .object({
+    productId: z.string(),
+    quantity: z.number(),
+  })
+  .and(z.record(menuType, z.number()))
 
-export type OrderSchema = z.infer<typeof orderSchema>
+export type OrderProps = z.infer<typeof orderProps>
 
-export const transactionSchema = z.object({
+export const transactionProps = z.object({
   paymentMethod: paymentAllowed,
+  customerId: z.string().nullable(),
   price: z.number(),
   promo: z.object({}).nullable(),
-  customerId: mongoObject.nullable(),
-  orderList: z.array(orderSchema), // Order list
+  orders: z.array(orderProps),
 })
 
-export type TransactionSchema = z.infer<typeof transactionSchema>
+export type TransactionProps = z.infer<typeof transactionProps>

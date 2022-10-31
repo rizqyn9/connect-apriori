@@ -10,11 +10,11 @@ const PromosSchema = new Schema<PromoProps>({
   productsList: [
     {
       type: Types.ObjectId,
-      ref: "Products",
+      ref: "product",
     },
   ],
   discount: Number,
   orderTotal: Number,
 })
 
-export default model("Promos", PromosSchema)
+export default model("promo", PromosSchema)

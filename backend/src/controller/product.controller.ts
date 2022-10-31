@@ -1,4 +1,4 @@
-import ProductModel, { ProductProps } from "../models/Product"
+import { ProductProps, ProductModel } from "../models/product"
 import { imageKitController } from "./imagekit.controller"
 
 const getProductByID = async (id: string) => await ProductModel.findById(id).then((val) => val ?? Promise.reject("Product not found"))

@@ -16,7 +16,7 @@ const filter = async (isAdmin?: string) => {
   return await UserModel.find(filter)
 }
 
-const updateRole = async (id: string, admin: true) => {
+const updateRole = async (id: string, admin: boolean) => {
   const user = await findById(id)
   user.isAdmin = admin
   return await user.save()
@@ -32,4 +32,15 @@ const demoteAdmin = async (id: string) => await UserModel.findByIdAndUpdate(id, 
 
 const promoteAdmin = async (id: string) => await UserModel.findByIdAndUpdate(id, { isAdmin: true })
 
-export const userController = { getAllAdmin, getAllUser, createNewUser, demoteAdmin, promoteAdmin, findByEmail, create, filter, updateRole }
+export const userController = {
+  getAllAdmin,
+  getAllUser,
+  createNewUser,
+  demoteAdmin,
+  promoteAdmin,
+  findByEmail,
+  create,
+  filter,
+  updateRole,
+  db: UserModel,
+}

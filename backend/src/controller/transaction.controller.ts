@@ -1,4 +1,4 @@
-import TransactionModel from "@/models/Transaction"
+import { TransactionModel } from "@/models"
 import { TransactionSchema } from "@/types/transaction.schema"
 import { MongoObject } from "../types/misc.schema"
 import { productController } from "./product.controller"

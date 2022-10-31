@@ -1,34 +1,47 @@
 import { Router } from "express"
 import * as transactionController from "@/controller/transaction.controller"
-import * as productController from "@/controller/product.controller"
-import { transactionSchema } from "@/types/transaction.schema"
+import { transactionProps } from "@/types/transaction.schema"
 import { mongoObject } from "../types/misc.schema"
+import { TransactionModel } from "@/models"
+import { z } from "zod"
 
 const app = Router()
 
-/* -------------------------- Get all transactions -------------------------- */
-app.get("/", async (req, res, next) => {
-  try {
-    await transactionController.getAll().then((payload) => res.json({ payload }))
-  } catch (error) {
-    next(error)
-  }
-})
+const orderListValidation = z.array(
+  z.object({
+    menuId: z.string(),
+    variants: z.object({
+      hot: z.number().optional(),
+      ice: z.number().optional(),
+    }),
+  })
+)
 
 /* ------------------------- Create new transaction ------------------------- */
 app.post("/", async (req, res, next) => {
   try {
-    const parsed = transactionSchema.parse(req.body)
-    const { orderList } = parsed
+    const { orderList, ...rest } = req.body
+    const transactionParse = transactionProps.omit({ orders: true }).parse(rest)
 
-    /* --------------------- Update quantity ordered product -------------------- */
+    const orders = orderListValidation.parse(orderList)
 
-    /* --------------------------- Create transaction --------------------------- */
-    const transaction = await transactionController.create({ ...parsed })
+    const transaction = new TransactionModel({
+      customerId: transactionParse.customerId || null,
+      paymentMethod: transactionParse.paymentMethod,
+      promo: transactionParse.promo || null,
+      price: transactionParse.price,
+      orders: orders.map((order) => ({
+        productId: order.menuId,
+        hot: order.variants.hot,
+        ice: order.variants.ice,
+        quantity: (order.variants.hot || 0) + (order.variants.ice || 0),
+      })),
+    })
+
+    await transaction.save()
 
     res.json({
       msg: "Success create transaction",
-      payload: transaction,
     })
   } catch (error) {
     next(error)

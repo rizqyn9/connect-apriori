@@ -1,5 +1,4 @@
 import { Router } from "express"
-import { UserModel } from "@/models"
 // import responses from "../utils/responses.js"
 
 const app = Router()

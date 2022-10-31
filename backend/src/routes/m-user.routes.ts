@@ -5,7 +5,8 @@ const router = Router()
 
 router.get("/", async (req, res, next) => {
   try {
-    res.json({ payload: await userController.filter(req.query.isAdmin as string) })
+    const payload = await userController.db.find({}).select(["-password"])
+    res.json({ payload })
   } catch (error) {
     next(error)
   }
@@ -17,7 +18,7 @@ router.post("/update-role", async (req, res, next) => {
     const payload = await userController.updateRole(id, admin)
     // @ts-expect-error
     delete payload.password
-    res.json({ payload })
+    res.json({ msg: "Success" })
   } catch (error) {
     next(error)
   }
