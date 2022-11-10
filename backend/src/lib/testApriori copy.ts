@@ -15,7 +15,7 @@ class Apriori {
     this.getFirst()
     this.get2()
 
-    console.log({ transanctin: this.totalTransaction, k1: this.k1, k2: this.k2 })
+    // console.log({ transanctin: this.totalTransaction, k1: this.k1, k2: this.k2 })
   }
 
   getFirst() {

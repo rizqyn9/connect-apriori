@@ -1,25 +1,36 @@
 import { Router } from "express"
 import * as transactionController from "@/controller/transaction.controller"
-import * as productController from "@/controller/product.controller"
 import { AprioriMining, Itemset, ItemsetCollection } from "@/lib/apriori"
 
 const router = Router()
 
 router.get("/", async (req, res, next) => {
   try {
-    const { confidence = 50, support = 10 } = req.query
+    const { confidence = 100, support = 30 } = req.query
     // Get all transactions
-    const transactions = await transactionController.getAll().then((data) => {
-      return Promise.all(
-        data.map((val) => {
-          return Promise.all(val.orderList.map((order) => productController.getProductByID(order.menuId).then((val) => val.menu)))
-        })
-      )
-    })
+    const transactions = await transactionController.TransactionModel.aggregate([
+      {
+        $lookup: {
+          from: "products",
+          localField: "orders.productId",
+          foreignField: "_id",
+          as: "products",
+        },
+      },
+    ])
 
+    const products = transactions.reduce<unknown[][]>((prev, curr) => {
+      // @ts-expect-error
+      const productsInTransaction = curr.products.reduce((prev1, curr1) => {
+        return [...prev1, curr1.menu]
+      }, [])
+      return [...prev, productsInTransaction]
+    }, [])
+
+    // console.log(products)
     const db = new ItemsetCollection()
 
-    transactions.forEach((x) => db.push(Itemset.from(x)))
+    products.forEach((x) => db.push(Itemset.from(x)))
 
     const apriori = AprioriMining.doApriori(db, Number(support))
 
@@ -27,7 +38,7 @@ router.get("/", async (req, res, next) => {
 
     res.json({
       payload: {
-        transactions,
+        transactions: products,
         apriori: apriori.toDataJSON(),
         confidence: resultConfidence,
       },

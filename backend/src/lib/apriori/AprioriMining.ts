@@ -31,7 +31,7 @@ export class AprioriMining {
         }
       }
 
-      console.log({ Li, L, Ci })
+      // console.log({ Li, L, Ci })
 
       // Set Ci for next iteration (find supersets of Li)
       Ci.clear()

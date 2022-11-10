@@ -24,4 +24,4 @@ const remove = async (id: MongoObject) => {
   }
 }
 
-export { getAll, getById, create, remove }
+export { getAll, getById, create, remove, TransactionModel }
