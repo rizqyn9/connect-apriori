@@ -25,6 +25,8 @@ app.use("/auth", AuthRouter)
 // app.use(VerifyToken)
 
 app.use((req, res, next) => {
+  console.log(req.url)
+
   if (!req.headers.authorization)
     return res.status(501).json({
       msg: "invalid token",
