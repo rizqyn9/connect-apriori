@@ -1,4 +1,4 @@
-import CustomerModel, { CustomerProps } from "@/models/customer.js"
+import CustomerModel, { CustomerProps } from "@/models/customer"
 
 const getById = async (id: string) => await CustomerModel.findById(id).then((val) => val ?? Promise.reject("Customer not found"))
 

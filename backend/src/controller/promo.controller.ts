@@ -1,4 +1,4 @@
-import PromoModel, { PromoProps } from "@/models/promo.js"
+import PromoModel, { PromoProps } from "@/models/promo"
 import { Types } from "mongoose"
 
 const getAll = async () => await PromoModel.find().then((val) => val ?? Promise.reject("Something error"))
