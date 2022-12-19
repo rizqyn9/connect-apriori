@@ -35,7 +35,8 @@ export default function Catalog() {
           </Button>
           <div className="grid grid-cols-2">
             {productPromoQuery.data?.products.map((x, idx) => (
-              <div className="p-5 rounded-lg bg-dark-2" key={idx}>
+              <div className="p-5 rounded-lg bg-dark-2 relative overflow-hidden" key={idx}>
+                <img src={x.imageUrl} className="absolute w-[180] opacity-20 left-0 top-0" />
                 <p>{x.menu}</p>
                 <ul className="ml-3 py-2">
                   {x.productsList.map((y, i) => (
