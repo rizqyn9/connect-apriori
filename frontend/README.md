@@ -1,4 +1,4 @@
 #TODO
 
--   Order input promo field
--   Order with customer data
+- Order input promo field
+- Order with customer data

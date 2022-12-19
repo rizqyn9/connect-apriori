@@ -4,8 +4,8 @@
 @tailwind components;
 
 body {
-    // font-family: "Montserrat", sans-serif;
-    font-family: 'Inter', sans-serif;
+  // font-family: "Montserrat", sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 // Additional styles
 @import './additional-styles/range-slider';
@@ -15,39 +15,39 @@ body {
 // @import "additional-styles/theme.scss";
 
 @layer components {
-    .catalog {
-        //background-color: red;
-        height: 100%;
-        width: 100%;
+  .catalog {
+    //background-color: red;
+    height: 100%;
+    width: 100%;
 
-        display: flex;
+    display: flex;
 
-        .catalog-main {
-            flex-grow: 1;
-        }
-
-        .catalog-order {
-            width: 35rem;
-            //display: none;
-            transition: all 0.5s ease-in-out;
-        }
+    .catalog-main {
+      flex-grow: 1;
     }
 
-    input[type='number'] {
-        -moz-appearance: textfield;
-        appearance: textfield;
-        margin: 0;
+    .catalog-order {
+      width: 35rem;
+      //display: none;
+      transition: all 0.5s ease-in-out;
     }
+  }
 
-    input[type='number']::-webkit-inner-spin-button,
-    input[type='number']::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
+  input[type='number'] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+    margin: 0;
+  }
 
-    .flex-center {
-        @apply flex items-center justify-center;
-    }
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .flex-center {
+    @apply flex items-center justify-center;
+  }
 }
 
 @tailwind utilities;

@@ -1,45 +1,45 @@
 .spinner {
-    svg {
-        width: 100%;
-        max-width: 10rem;
-    }
+  svg {
+    width: 100%;
+    max-width: 10rem;
+  }
 
+  circle {
+    fill: none;
+    stroke-width: 12px;
+    stroke-dasharray: 300;
+    opacity: 0;
+    width: 0;
+    transition: all 2s ease-in-out;
+  }
+
+  &.start {
+    animation: rotate 3.6s linear infinite;
     circle {
-        fill: none;
-        stroke-width: 12px;
-        stroke-dasharray: 300;
-        opacity: 0;
-        width: 0;
-        transition: all 2s ease-in-out;
+      width: unset;
+      opacity: 1;
+      animation: outline 2s cubic-bezier(0.77, 0, 0.18, 1) infinite;
     }
-
-    &.start {
-        animation: rotate 3.6s linear infinite;
-        circle {
-            width: unset;
-            opacity: 1;
-            animation: outline 2s cubic-bezier(0.77, 0, 0.18, 1) infinite;
-        }
-    }
+  }
 }
 
 @keyframes outline {
-    0% {
-        stroke-dashoffset: 0;
-    }
-    50% {
-        stroke-dashoffset: 300;
-    }
-    100% {
-        stroke-dashoffset: 600;
-    }
+  0% {
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dashoffset: 300;
+  }
+  100% {
+    stroke-dashoffset: 600;
+  }
 }
 
 @keyframes rotate {
-    from {
-        transform: rotate(0turn);
-    }
-    to {
-        transform: rotate(-1turn);
-    }
+  from {
+    transform: rotate(0turn);
+  }
+  to {
+    transform: rotate(-1turn);
+  }
 }
