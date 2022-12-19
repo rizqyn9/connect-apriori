@@ -16,17 +16,10 @@ import UserManagement from "./m-user.routes"
 
 const app = Router()
 
-let dataKTP = { id: 123123, isNewUser: true }
-app.get("/test", (req, res) => res.json({ payload: { ...dataKTP } }))
-
-app.get("/another-test", (req, res) => res.status(403).json({}))
-
 app.use("/auth", AuthRouter)
-// app.use(VerifyToken)
 
 app.use((req, res, next) => {
-  console.log(req.url)
-
+  // Hardcode
   if (!req.headers.authorization)
     return res.status(501).json({
       msg: "invalid token",

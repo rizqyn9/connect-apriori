@@ -41,6 +41,8 @@ export class AprioriMining {
     }
     console.log("/* ---------------------------End Mining----------------------------------------------- */")
 
+    // console.log({ L, I })
+
     return L
   }
 

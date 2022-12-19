@@ -6,18 +6,22 @@ export type ProductProps = {
   imageURL: string
 }
 
-const ProductSchema = new Schema<ProductProps>({
-  menu: {
-    unique: true,
-    type: String,
+const ProductSchema = new Schema<ProductProps>(
+  {
+    menu: {
+      unique: true,
+      type: String,
+      index: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
+    imageURL: {
+      type: String,
+    },
   },
-  price: {
-    type: Number,
-    required: true,
-  },
-  imageURL: {
-    type: String,
-  },
-})
+  { timestamps: true }
+)
 
 export const ProductModel = model("product", ProductSchema)

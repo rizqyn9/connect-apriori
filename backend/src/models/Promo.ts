@@ -2,19 +2,34 @@ import { Schema, model, Types } from "mongoose"
 
 export type PromoProps = {
   productsList: Types.ObjectId[]
-  discount: number
-  orderTotal: number
+  imageUrl: string
+  price: number
+  menu: string
 }
 
-const PromosSchema = new Schema<PromoProps>({
-  productsList: [
-    {
-      type: Types.ObjectId,
-      ref: "product",
+const PromoSchema = new Schema<PromoProps>(
+  {
+    productsList: [
+      {
+        type: Types.ObjectId,
+        ref: "product",
+      },
+    ],
+    imageUrl: {
+      type: String,
     },
-  ],
-  discount: Number,
-  orderTotal: Number,
-})
+    price: {
+      type: Number,
+      required: true,
+    },
+    menu: {
+      type: String,
+      required: true,
+    },
+  },
+  { timestamps: true }
+)
 
-export default model("promo", PromosSchema)
+const PromoModel = model("promo", PromoSchema)
+
+export { PromoModel }

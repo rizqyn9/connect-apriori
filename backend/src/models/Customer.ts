@@ -2,13 +2,18 @@ import { Schema, Types, model } from "mongoose"
 
 export type CustomerProps = {
   name: string
-  id_customer?: string
+  cardId?: string
   transactions?: Types.ObjectId[]
 }
 
 const CustomerModel = new Schema<CustomerProps>({
   name: String,
-  id_customer: String,
+  cardId: {
+    type: String,
+    required: true,
+    unique: true,
+    index: true,
+  },
   transactions: [
     {
       type: Types.ObjectId,

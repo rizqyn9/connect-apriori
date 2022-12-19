@@ -11,7 +11,7 @@ const OrderSchema = new Schema<OrderProps>({
 
 const TransactionSchema = new Schema<TransactionProps>(
   {
-    customerId: { type: Types.ObjectId, ref: "customer" },
+    customerId: { type: Types.ObjectId, ref: "customer", default: null },
     promo: { type: Types.ObjectId, ref: "promo" },
     paymentMethod: { type: String },
     price: { type: Number },

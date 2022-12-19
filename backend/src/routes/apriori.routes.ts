@@ -32,7 +32,11 @@ router.get("/", async (req, res, next) => {
 
     products.forEach((x) => db.push(Itemset.from(x)))
 
+    // console.log({ db })
+
     const apriori = AprioriMining.doApriori(db, Number(support))
+
+    console.log({ apriori })
 
     const resultConfidence = AprioriMining.mine(db, apriori, Number(confidence))
 
