@@ -1,13 +1,12 @@
 import { Router } from "express"
 import { productController } from "@/controller"
-import { getAll as getAllPromos } from "@/controller/promo.controller"
 import { getAll as getAllTransactions } from "@/controller/transaction.controller"
 
 const app = Router()
 
 app.get("/", async (req, res, next) => {
   try {
-    const [products, transactions, promos] = await Promise.all([productController.getAllProduts(), getAllTransactions(), getAllPromos()])
+    const [products, transactions] = await Promise.all([productController.getAllProduts(), getAllTransactions()])
 
     const orders = transactions.map((x) => x.orders).flat()
     const summary = orders.reduce<Map<string, number>>((prev, curr) => {
@@ -30,7 +29,7 @@ app.get("/", async (req, res, next) => {
       ]
     }, [])
 
-    const payload = { products: calc, transactions, promos }
+    const payload = { products: calc, transactions }
     return res.json({ payload })
   } catch (error) {
     next(error)
