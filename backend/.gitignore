@@ -1,6 +1,6 @@
 ./node_modules
 docker
-.env
+# .env
 
 public/*
 dist
