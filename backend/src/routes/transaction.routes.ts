@@ -4,6 +4,7 @@ import { transactionProps } from "@/types/transaction.schema"
 import { mongoObject } from "../types/misc.schema"
 import { TransactionModel } from "@/models"
 import { z } from "zod"
+import { createNewCustomer } from "@/controller/customer.controller"
 
 const app = Router()
 
@@ -25,8 +26,17 @@ app.post("/", async (req, res, next) => {
 
     const orders = orderListValidation.parse(orderList)
 
+    let customer = null
+    if (transactionParse.cardId) {
+      console.log("New Promo")
+
+      customer = await createNewCustomer({
+        cardId: transactionParse.cardId,
+      })
+    }
+
     const transaction = new TransactionModel({
-      customerId: transactionParse.customerId || null,
+      customerId: customer?._id || null,
       paymentMethod: transactionParse.paymentMethod,
       promo: transactionParse.promo || null,
       price: transactionParse.price,

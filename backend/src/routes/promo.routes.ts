@@ -13,11 +13,15 @@ router.post("/", async (req, res, next) => {
       menu: { $in: req.body.menu },
     })
 
-    const imagekit = await imageKitController.upload(image, Date.now().toString())
+    console.log({
+      menu,
+    })
+
+    const imagekit = image ? await imageKitController.upload(image, Date.now().toString()) : null
 
     const newPacket = await PromoModel.create({
       price,
-      imageUrl: imagekit.url,
+      imageUrl: imagekit?.url || null,
       productsList: menu.map((x) => x._id),
       menu: packetName,
     })

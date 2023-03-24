@@ -1,14 +1,17 @@
 import { Router } from "express"
-import CustomerModel from "@/models/customer"
+import { findByCardId } from "@/controller/customer.controller"
 
 const app = Router()
 
 app.get("/check-exist", async (req, res, next) => {
   try {
     const { cardId } = req.query
-    const isCustomerExist = await CustomerModel.exists({ cardId })
+    const isCustomerExist = findByCardId(String(cardId))
+      .then(() => true)
+      .catch(() => false)
+
     res.json({
-      isCustomerExist,
+      payload: { isCustomerExist },
     })
   } catch (error) {
     next(error)

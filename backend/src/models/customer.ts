@@ -1,25 +1,30 @@
 import { Schema, Types, model } from "mongoose"
+import { z } from "zod"
 
-export type CustomerProps = {
-  name: string
-  cardId?: string
-  transactions?: Types.ObjectId[]
-}
+const DB_CUSTOMER = "customer"
 
-const CustomerModel = new Schema<CustomerProps>({
-  name: String,
+const customerSchema = new Schema({
+  name: {
+    type: String,
+    default: null,
+  },
   cardId: {
     type: String,
     required: true,
     unique: true,
-    index: true,
   },
   transactions: [
     {
       type: Types.ObjectId,
-      ref: "Transactions",
+      default: [],
+      required: false,
     },
   ],
 })
 
-export default model("Customers", CustomerModel)
+export const Customer = model(DB_CUSTOMER, customerSchema, DB_CUSTOMER)
+
+export const validatorCustomer = z.object({
+  name: z.string().optional().catch(undefined),
+  cardId: z.string().min(1),
+})

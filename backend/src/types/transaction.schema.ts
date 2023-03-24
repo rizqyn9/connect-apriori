@@ -16,7 +16,7 @@ export type OrderProps = z.infer<typeof orderProps>
 
 export const transactionProps = z.object({
   paymentMethod: paymentAllowed,
-  customerId: z.string().nullable(),
+  cardId: z.string().optional().nullable(),
   price: z.number(),
   promo: z.object({}).nullable(),
   orders: z.array(orderProps),

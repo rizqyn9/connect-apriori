@@ -27,17 +27,11 @@ router.get("/", async (req, res, next) => {
       return [...prev, productsInTransaction]
     }, [])
 
-    // console.log(products)
     const db = new ItemsetCollection()
 
     products.forEach((x) => db.push(Itemset.from(x)))
 
-    // console.log({ db })
-
     const apriori = AprioriMining.doApriori(db, Number(support))
-
-    console.log({ apriori })
-
     const resultConfidence = AprioriMining.mine(db, apriori, Number(confidence))
 
     res.json({
