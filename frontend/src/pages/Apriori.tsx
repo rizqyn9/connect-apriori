@@ -4,6 +4,11 @@ import { useState } from 'react'
 import { axiosPrivate } from '../services'
 import React from 'react'
 import { TableTransactions, TableSupport, TableConfidence } from '../components/Table/Apriori'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import qs from 'query-string'
+import { useToastStore } from '@/components/Toast'
 
 export type ResponseApriori = {
   payload: {
@@ -18,29 +23,57 @@ export type ResponseApriori = {
   }
 }
 
+const schema = z.object({
+  confidence: z.preprocess((x) => Number(x), z.number().min(1).max(100)),
+  support: z.preprocess((x) => Number(x), z.number().min(1).max(100)),
+})
+
+type Schema = z.infer<typeof schema>
+
 export default function Apriori() {
+  const { handleSubmit, register } = useForm<Schema>({
+    resolver: zodResolver(schema),
+  })
+  const { addToast } = useToastStore()
   const [promoState, setPromoState] = React.useState<NewPromo>({ isActive: false, price: 0, menuId: null })
   const [apriori, setApriori] = useState<ResponseApriori['payload'] | null>(null)
-  const handleGenerate = () => {
-    axiosPrivate.get<ResponseApriori>('/apriori').then((val) => {
-      console.log(val.data.payload)
-
+  const handleGenerate = (data: Schema) => {
+    axiosPrivate.get<ResponseApriori>('/apriori?' + qs.stringify(data)).then((val) => {
       setApriori(val.data.payload)
+      addToast({
+        msg: 'Success generated apriori data',
+      })
     })
   }
 
   const handleOpenNewPromo = () => setPromoState({ ...promoState, isActive: true })
 
+  const handleOnSubmit = handleSubmit((data) => {
+    handleGenerate(data)
+  })
+
   return (
     <GridRow className="px-5 w-full flex-auto overflow-x-scroll text-sm" title="Analitycs">
       <div className="py-8 overflow-x-scroll">
-        <div className="mb-5">
-          {promoState.isActive ? (
-            <AddNewPromoCard promoState={promoState} setPromoState={setPromoState} />
-          ) : (
-            <Button onClick={handleOpenNewPromo}>Add new promo</Button>
-          )}
-        </div>
+        <form className="flex gap-4 flex-col p-4" onClick={handleOnSubmit}>
+          <div className="flex gap-4">
+            <input
+              {...register('confidence')}
+              placeholder="Confidence"
+              type="number"
+              className="py-2 px-3 rounded-md text-white bg-form outline-2 border-2 border-dark-line outline-offset-5 outline-red-200 "
+            />
+            <input
+              {...register('support')}
+              placeholder="Support"
+              type="number"
+              className="py-2 px-3 rounded-md text-white bg-form outline-2 border-2 border-dark-line outline-offset-5 outline-red-200 "
+            />
+          </div>
+          <Button size="sm" type="submit">
+            Generate
+          </Button>
+        </form>
         <h3 className="text-lg font-bold mb-3">Get Promo Recomendation</h3>
         <div className="bg-pimary flex flex-col gap-5">
           <div className="overflow-hidden rounded-md flex flex-col gap-5">
@@ -51,9 +84,7 @@ export default function Apriori() {
             <h4>List Confidence</h4>
             <TableConfidence data={apriori?.confidence ?? []} />
           </div>
-          <Button onClick={handleGenerate}>Generate</Button>
         </div>
-        <div className="flex flex-col gap-8 text-white mb-6"></div>
       </div>
     </GridRow>
   )

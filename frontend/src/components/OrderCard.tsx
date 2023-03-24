@@ -33,7 +33,9 @@ function OrderCard(props: OrderProps) {
             <h2 className="font-bold text-sm whitespace-nowrap">{menu}</h2>
           </div>
           <h2 className="text-xs">Rp. {price * quantity}</h2>
-          <IncrDcr quantity={quantity} decrement={() => updateQuantity(orderId, -1)} increment={() => updateQuantity(orderId, 1)} />
+          {menuType == 'promo' ? null : (
+            <IncrDcr quantity={quantity} decrement={() => updateQuantity(orderId, -1)} increment={() => updateQuantity(orderId, 1)} />
+          )}
         </div>
       </div>
       <div className="flex gap-3">

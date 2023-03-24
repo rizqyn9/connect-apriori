@@ -33,7 +33,7 @@ export function TableConfidence(props: TableConfidenceProps) {
     async () => {
       console.log({ state })
 
-      const { data } = await axiosPrivate.post('/promo/', state)
+      const { data } = await axiosPrivate.post('/promo', state)
       console.log({ data })
     },
     {

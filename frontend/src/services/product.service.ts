@@ -37,6 +37,7 @@ type ResProductsPromo = {
   price: number
   menu: string
   imageUrl: string
+  _id: string
 }
 const productPromo = async () => {
   const { data } = await axiosPrivate.get<{ products: ResProductsPromo[] }>('/promo')

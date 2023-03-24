@@ -1,6 +1,6 @@
 import { useState, memo } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { useProductStore, useAuth } from '@/hooks'
+import { useProductStore, useAuth, useOrderStore } from '@/hooks'
 import { productService } from '@/services'
 import Card from './Card'
 import Order from './Order'
@@ -12,6 +12,7 @@ import { toIDR } from '@/utils/base64'
 export default function Catalog() {
   const { addToast } = useToastStore()
   const { products } = useProductStore()
+  const { cardId, addOrder, orders } = useOrderStore()
   const [activeCard, setActiveCard] = useState('')
 
   const productsQuery = useQuery(['products'], productService.getAll, {
@@ -19,7 +20,11 @@ export default function Catalog() {
     refetchOnMount: false,
   })
 
-  const productPromoQuery = useQuery(['products-promo'], productService.productPromo)
+  const productPromoQuery = useQuery(['products-promo'], productService.productPromo, {
+    onSuccess: (data) => {
+      console.log({ data })
+    },
+  })
 
   const refresh = () => {
     productsQuery.refetch()
@@ -33,20 +38,40 @@ export default function Catalog() {
           <Button className="w-max" onClick={refresh}>
             Refresh
           </Button>
-          <div className="grid grid-cols-2">
-            {productPromoQuery.data?.products.map((x, idx) => (
-              <div className="p-5 rounded-lg bg-dark-2 relative overflow-hidden" key={idx}>
-                <img src={x.imageUrl} className="absolute w-[180] opacity-20 left-0 top-0" />
-                <p>{x.menu}</p>
-                <ul className="ml-3 py-2">
-                  {x.productsList.map((y, i) => (
-                    <li key={i}>{y.menu}</li>
-                  ))}
-                </ul>
-                <p>{toIDR(x.price)}</p>
-              </div>
-            ))}
-          </div>
+          {!!cardId && (
+            <div className="grid grid-cols-2">
+              {productPromoQuery.data?.products.map((x, idx) => {
+                const name = `packet-` + x._id
+                const alreadyAdded = Object.keys(orders).includes(name)
+                return (
+                  <button
+                    className="p-5 rounded-lg bg-dark-2 relative overflow-hidden"
+                    key={idx}
+                    disabled={alreadyAdded}
+                    onClick={() => {
+                      addOrder(name, {
+                        _id: x._id,
+                        imageURL: x.imageUrl,
+                        menu: x.menu,
+                        price: x.price,
+                        orderId: '',
+                        menuType: 'promo',
+                      })
+                    }}
+                  >
+                    <img src={x.imageUrl} className="absolute w-[180] opacity-20 left-0 top-0t" />
+                    <p>{x.menu}</p>
+                    <ul className="ml-3 py-2">
+                      {x.productsList.map((y, i) => (
+                        <li key={i}>{y.menu}</li>
+                      ))}
+                    </ul>
+                    <p>{toIDR(x.price)}</p>
+                  </button>
+                )
+              })}
+            </div>
+          )}
           <div className="flex-auto flex flex-wrap gap-2 align-start justify-start overflow-y-scroll h-full max-h-[75vh] p-1">
             {products?.map((val, i) => (
               <Card activeCard={activeCard == val._id} setActiveCard={setActiveCard} key={i} {...val} />

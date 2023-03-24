@@ -15,7 +15,7 @@ export type CardProductProps = ProductProps & {
   setActiveCard: (id: string) => void
 }
 
-export type MenuType = 'hot' | 'ice'
+export type MenuType = 'hot' | 'ice' | 'promo'
 
 export type OrderProps = ProductProps & {
   orderId: string

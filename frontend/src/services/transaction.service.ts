@@ -5,7 +5,7 @@ import { OrderSchema } from '@/types'
 
 const create = async () => {
   const props = useTransactionStore.getState().props
-  const orders = useOrderStore.getState().orders
+  const { cardId, orders } = useOrderStore.getState()
 
   console.log({ orders })
   const parsed = Object.values(orders).reduce((prev, curr) => {
@@ -19,11 +19,9 @@ const create = async () => {
     paymentMethod: props.method,
     price: props.total,
     promo: props.promo,
-    customerId: null, // TODO
+    cardId: cardId || null,
     orderList: [...parsed.values()],
   }
-
-  console.log({ payload })
 
   const { status, data } = await axiosPrivate.post('/transaction', { ...payload })
 

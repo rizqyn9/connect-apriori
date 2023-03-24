@@ -5,6 +5,10 @@ import { OrderProps } from '../types'
 export type KeyUIState = 'choose product' | 'choose payment' | 'payment'
 
 export type OrderStore = {
+  cardId?: string | null
+  setCardId: (cardId: string) => void
+  removeCardId: () => void
+  isPromoExist: () => boolean
   orders: Record<string, OrderProps>
   addOrder(id: string, order: Omit<OrderProps, 'quantity'>): void
   removeOrder(id: string): void
@@ -19,6 +23,18 @@ const useOrderStore = create<OrderStore>()(
   devtools(
     persist(
       (set, get) => ({
+        cardId: null,
+        setCardId(cardId) {
+          set({ cardId })
+        },
+        removeCardId() {
+          set({ cardId: null })
+        },
+        isPromoExist() {
+          const { orders } = get()
+
+          return false
+        },
         orders: {},
         addOrder(id, orderProps) {
           const { orders, updateQuantity } = get()
@@ -26,6 +42,8 @@ const useOrderStore = create<OrderStore>()(
             const order = { ...orderProps, quantity: 1 }
             set({ orders: { ...orders, [id]: order } })
           } else updateQuantity(id, +1)
+
+          console.log({ orders: Object.keys(orders) })
         },
         removeOrder(id) {
           const { orders } = get()

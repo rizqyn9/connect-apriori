@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useCallback } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useOrderStore, useTransactionStore, paymentMethodExist, PaymentMethod } from '@/hooks'
 import { OrderCard } from './OrderCard'
@@ -12,7 +12,7 @@ type OrderContainerProps = { className: string }
 export default function Order({ className }: OrderContainerProps) {
   const [isDialogPayment, setIsDialogPayment] = useState(false)
   const [isDialogPromo, setIsDialogPromo] = useState(false)
-  const { orders, state: orderState, updateState } = useOrderStore()
+  const { orders, state: orderState, updateState, cardId, removeCardId, clearOrders } = useOrderStore()
 
   const { props, state } = useTransactionStore()
 
@@ -22,7 +22,16 @@ export default function Order({ className }: OrderContainerProps) {
       <DialogPayment isOpen={isDialogPayment} setIsOpen={setIsDialogPayment} />
       <div className={clsx('w-full max-h-[calc(100%-5rem)] flex flex-col justify-between text-sm', className)}>
         <div className="flex flex-col">
-          <Button onClick={() => setIsDialogPromo(true)}>Gunakan promo</Button>
+          <Button
+            onClick={() => {
+              if (!!cardId) {
+                removeCardId()
+                clearOrders()
+              } else setIsDialogPromo(true)
+            }}
+          >
+            {cardId ? 'Batalkan' : 'Gunakan promo'}
+          </Button>
           <p className="mt-3 mb-2">Status promo</p>
         </div>
         {/*Order Products*/}
