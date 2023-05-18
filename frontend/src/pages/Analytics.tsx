@@ -3,13 +3,15 @@ import { ButtonTab, Tab } from '../components/Tabs'
 import { useToastStore } from '../components/Toast'
 import { TableAnalyticPromo } from '../components/Table'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { anaylyticService, transactionService } from '@/services'
-import Table, { TD } from '@/components/Table/Table'
-import { useMemo, useState } from 'react'
+import { GetAnalyticsData, anaylyticService, transactionService } from '@/services'
 import { DialogContainer } from '@/components/Dialog/DialogContainer'
 import { Dialog } from '@headlessui/react'
 import { H1 } from '@/components/Typography'
 import { Button } from '@/components/Button'
+
+import { DataTable } from 'primereact/datatable'
+import { Column } from 'primereact/column'
+import { toIDR } from '@/utils/base64'
 
 export default function Analytics() {
   const { addToast } = useToastStore()
@@ -17,7 +19,7 @@ export default function Analytics() {
   const analytics = useQuery(['analytics'], anaylyticService.getAnalyticsData, {
     onSuccess: () => addToast({ msg: 'Success update analytics' }),
     onError: () => addToast({ msg: 'Server error' }),
-    refetchOnMount: false,
+    refetchOnMount: true,
   })
 
   return (
@@ -32,21 +34,17 @@ export default function Analytics() {
               <ButtonTab label="Promo" />
             </Tab.List>
 
-            <div className="border-2 border-white rounded-xl max-h-[70vh] overflow-auto">
-              {analytics.isSuccess && (
-                <>
-                  <Tab.Panel>
-                    <Products data={analytics.data?.payload?.products ?? []} />
-                  </Tab.Panel>
-                  <Tab.Panel>
-                    <Transactions data={analytics.data?.payload?.transactions ?? []} />
-                  </Tab.Panel>
-                  <Tab.Panel>
-                    <TableAnalyticPromo data={analytics.data?.payload?.promos ?? []} />
-                  </Tab.Panel>
-                </>
-              )}
-            </div>
+            {analytics.isSuccess && analytics.data && (
+              <>
+                <Tab.Panel>
+                  <Products data={analytics.data.products} />
+                </Tab.Panel>
+                <Tab.Panel>
+                  <Transactions data={analytics.data?.transactions} />
+                </Tab.Panel>
+                <Tab.Panel>{/* <TableAnalyticPromo data={analytics.data?.promos ?? []} /> */}</Tab.Panel>
+              </>
+            )}
           </Tab.Group>
         </div>
       </div>
@@ -54,58 +52,34 @@ export default function Analytics() {
   )
 }
 
-const toCurrency = new Intl.NumberFormat('id-ID')
-
-type ProductsProps = {
-  _id: string
-  menu: string
-  totalOrdered: number
-  price: number
-}
-function Products({ data }: { data: ProductsProps[] }) {
-  const dataContent = useMemo(() => {
-    return data.map((x, i) => (
-      <>
-        <TD center>{i + 1}</TD>
-        <TD>{x.menu}</TD>
-        <TD center>{toCurrency.format(x.price)}</TD>
-        <TD center>{x.totalOrdered}</TD>
-        <TD center>{x._id}</TD>
-      </>
-    ))
-  }, [data])
-  return <Table headers={['No', 'Menu', 'Price', 'Order', 'ID']} data={dataContent} />
+function Products({ data }: { data: GetAnalyticsData['products'] }) {
+  return (
+    <DataTable value={data} paginator={true} rows={20} rowsPerPageOptions={[5, 10, 20, 50]} dataKey="_id">
+      <Column header="#" body={(_, props) => props.rowIndex + 1} />
+      <Column field="_id" header="ID Produk" />
+      <Column field="menu" header="Menu" sortable />
+      <Column field="price" header="Harga" body={(field: GetAnalyticsData['products'][number]) => toIDR(field.price)} sortable />
+      <Column field="totalOrdered" align="center" header="Total order" sortable />
+    </DataTable>
+  )
 }
 
-type TransactionProps = {
-  _id: string
-  price: number
-  customerId?: string
-  promo: null
-  createdAt: string
-}
-
-function Transactions({ data }: { data: TransactionProps[] }) {
-  const [state, setState] = useState<string | null>(null)
-
-  const dataContent = useMemo(() => {
-    return data.map((x, i) => (
-      <>
-        <TD center>{i + 1}</TD>
-        <TD>{x._id}</TD>
-        <TD center>{x.price}</TD>
-        <TD center>{new Date(x.createdAt).toLocaleString()}</TD>
-        <TD center>
-          <Button onClick={() => setState(x._id)}>Delete</Button>
-        </TD>
-      </>
-    ))
-  }, [data])
-
+const date = new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Jakarta' })
+function Transactions({ data }: { data: GetAnalyticsData['transactions'] }) {
   return (
     <>
-      <DialogDelete id={state} close={() => setState(null)} />
-      <Table headers={['No', 'ID', 'Price', 'Created at', 'Action']} data={dataContent} />
+      <DataTable value={data} paginator={true} rows={20} rowsPerPageOptions={[5, 10, 20, 50]} dataKey="_id">
+        <Column header="#" body={(_, props) => props.rowIndex + 1} />
+        <Column field="_id" header="ID Transaksi" />
+        <Column field="price" header="Total Pembayaran" sortable body={(field: typeof data[number]) => toIDR(field.price)} align="center" />
+        <Column
+          field="createdAt"
+          header="Tgl Pembelian"
+          body={(field: typeof data[number]) => date.format(new Date(field.createdAt))}
+          sortable
+          align="right"
+        />
+      </DataTable>
     </>
   )
 }

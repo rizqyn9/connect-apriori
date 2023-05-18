@@ -35,10 +35,10 @@ export default function Apriori() {
     resolver: zodResolver(schema),
   })
   const { addToast } = useToastStore()
-  const [promoState, setPromoState] = React.useState<NewPromo>({ isActive: false, price: 0, menuId: null })
   const [apriori, setApriori] = useState<ResponseApriori['payload'] | null>(null)
   const handleGenerate = (data: Schema) => {
     axiosPrivate.get<ResponseApriori>('/apriori?' + qs.stringify(data)).then((val) => {
+      console.log(val.data.payload)
       setApriori(val.data.payload)
       addToast({
         msg: 'Success generated apriori data',
@@ -46,14 +46,12 @@ export default function Apriori() {
     })
   }
 
-  const handleOpenNewPromo = () => setPromoState({ ...promoState, isActive: true })
-
   const handleOnSubmit = handleSubmit((data) => {
     handleGenerate(data)
   })
 
   return (
-    <GridRow className="px-5 w-full flex-auto overflow-x-scroll text-sm" title="Analitycs">
+    <GridRow className="px-5 w-full flex-auto overflow-x-scroll text-sm" title="Proses Apriori">
       <div className="py-8 overflow-x-scroll">
         <form className="flex gap-4 flex-col p-4" onClick={handleOnSubmit}>
           <div className="flex gap-4">

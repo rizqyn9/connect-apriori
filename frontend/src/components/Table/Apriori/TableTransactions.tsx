@@ -1,28 +1,17 @@
-import { TD, TH, TR } from '..'
+import { DataTable } from 'primereact/datatable'
+import { Column } from 'primereact/column'
 
 type TableTransactionsProps = {
   data: string[][]
 }
 
 export function TableTransactions(props: TableTransactionsProps) {
+  const { data } = props
   return (
-    <div className="w-full overflow-x-auto border md:border-4 rounded-xl border-white">
-      <table className="w-max min-w-full bg-dark-2 rounded-lg">
-        <thead>
-          <tr className="bg-primary">
-            <TH>No</TH>
-            <TH>Menu</TH>
-          </tr>
-        </thead>
-        <tbody className="border-2 border-white">
-          {props.data.map((menu, i) => (
-            <TR key={i}>
-              <TD className="text-center">{i + 1}</TD>
-              <TD>{Array.isArray(menu) ? menu.join(', ') : JSON.stringify(menu)}</TD>
-            </TR>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <DataTable value={data} paginator={true} rows={10} rowsPerPageOptions={[5, 10, 20, 50]}>
+      <Column header="#" body={(_, opts) => opts.rowIndex + 1} />
+      <Column header="Menu" body={(field: typeof data[number]) => field.join(', ')} />
+      <Column header="Total Kombinasi" body={(field: typeof data[number]) => field.length} sortable />
+    </DataTable>
   )
 }

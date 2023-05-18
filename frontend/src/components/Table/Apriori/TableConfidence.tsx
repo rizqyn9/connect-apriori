@@ -2,7 +2,8 @@ import { Button } from '@/components/Button'
 import { DialogContainer } from '@/components/Dialog/DialogContainer'
 import { Dialog } from '@headlessui/react'
 import { useRef, useState } from 'react'
-import { TD, TH, TR } from '..'
+import { DataTable } from 'primereact/datatable'
+import { Column } from 'primereact/column'
 import { ResponseApriori } from '../../../pages/Apriori'
 import { useMutation } from '@tanstack/react-query'
 import { axiosPrivate } from '@/services'
@@ -27,12 +28,11 @@ const initialState = {
 }
 
 export function TableConfidence(props: TableConfidenceProps) {
+  const { data } = props
   const [state, setState] = useState<State>(initialState)
   const [dialog, setDialog] = useState(false)
   const mutate = useMutation(
     async () => {
-      console.log({ state })
-
       const { data } = await axiosPrivate.post('/promo', state)
       console.log({ data })
     },
@@ -47,7 +47,7 @@ export function TableConfidence(props: TableConfidenceProps) {
   const inputRef = useRef<HTMLInputElement>(null)
 
   return (
-    <div className="w-full overflow-x-auto border md:border-4 rounded-xl border-white">
+    <>
       <DialogContainer isOpen={dialog} setIsOpen={setDialog}>
         <Dialog.Panel className="bg-dark-2 border-2 border-white p-5 text-white rounded-lg w-[50vw] z-[100] h-max flex flex-col gap-5">
           <p className="text-lg font-semibold">Tambahkan Kombinasi Menu ke Promo</p>
@@ -86,41 +86,14 @@ export function TableConfidence(props: TableConfidenceProps) {
           </Button>
         </Dialog.Panel>
       </DialogContainer>
-      <table className="w-max min-w-full bg-dark-2 rounded-lg">
-        <thead>
-          <tr className="bg-primary">
-            <TH>No</TH>
-            <TH>X</TH>
-            <TH>Y</TH>
-            <TH>Support</TH>
-            <TH>Confidence</TH>
-            <TH>Action</TH>
-          </tr>
-        </thead>
-        <tbody className="border-2 border-white">
-          {props.data.map((data, i) => (
-            <TR key={i}>
-              <TD className="text-center">{i + 1}</TD>
-              <TD>{data.X.join(', ')}</TD>
-              <TD>{data.Y.join(', ')}</TD>
-              <TD>{data.Support}</TD>
-              <TD className="text-center">{data.Confidence}</TD>
-              <TD>
-                <Button
-                  onClick={() => {
-                    setDialog(true)
-                    setState((x) => {
-                      return { ...x, menu: Array(data.X, data.Y).flat() }
-                    })
-                  }}
-                >
-                  Add Promo
-                </Button>
-              </TD>
-            </TR>
-          ))}
-        </tbody>
-      </table>
-    </div>
+      <DataTable value={data} paginator={true} rows={10} rowsPerPageOptions={[5, 10, 20, 50]} sortMode="multiple">
+        <Column header="#" body={(_, opts) => opts.rowIndex + 1} />
+        <Column header="Kombinasi" body={(field: typeof data[number]) => [...field.Y, ...field.X].join(', ')} />
+        {/* <Column header="X" field="X" body={(field: typeof data[number]) => field.X.join(' - ')} />
+        <Column header="Y" field="Y" body={(field: typeof data[number]) => field.Y.join(' - ')} /> */}
+        <Column header="Support" field="Support" sortable />
+        <Column header="Confidence" field="Confidence" sortable />
+      </DataTable>
+    </>
   )
 }
