@@ -10,7 +10,7 @@ export class AprioriMining {
     let Li = new ItemsetCollection() // Large itemset in each iteration
     let Ci = new ItemsetCollection() // Pruned itemset in each iteration
 
-    console.log("/* -------------------------------------------------------------------------- */")
+    // console.log("/* -------------------------------------------------------------------------- */")
 
     // First iteration (1-item itemsets)
     for (var i = 0; i < I.length; i += 1) {
@@ -39,7 +39,7 @@ export class AprioriMining {
       subsets.forEach((set) => Ci.push(set))
       k += 1
     }
-    console.log("/* ---------------------------End Mining----------------------------------------------- */")
+    // console.log("/* ---------------------------End Mining----------------------------------------------- */")
 
     // console.log({ L, I })
 

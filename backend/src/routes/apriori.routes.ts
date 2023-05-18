@@ -34,6 +34,8 @@ router.get("/", async (req, res, next) => {
     const apriori = AprioriMining.doApriori(db, Number(support))
     const resultConfidence = AprioriMining.mine(db, apriori, Number(confidence))
 
+    console.log({ resultConfidence: JSON.stringify(resultConfidence, null, 2) })
+
     res.json({
       payload: {
         transactions: products,

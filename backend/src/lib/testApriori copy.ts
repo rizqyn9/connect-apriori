@@ -50,19 +50,19 @@ class Apriori {
         c && a.push(c)
       }
     }
-    console.log({ a })
+    // console.log({ a })
   }
 }
 
-const transactions = [
-  ["Americano", "Cappucino", "test"],
-  ["Americano"],
-  ["Americano", "Cappucino", "test"],
-  ["Americano", "Cappucino", "test"],
-  ["Americano"],
-  ["Cappucino"],
-]
+// const transactions = [
+//   ["Americano", "Cappucino", "test"],
+//   ["Americano"],
+//   ["Americano", "Cappucino", "test"],
+//   ["Americano", "Cappucino", "test"],
+//   ["Americano"],
+//   ["Cappucino"],
+// ]
 
 //https://lodash.com/docs/4.17.15#intersection
 
-new Apriori(0.5, transactions)
+// new Apriori(0.5, transactions)
