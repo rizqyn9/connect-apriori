@@ -86,13 +86,43 @@ export function TableConfidence(props: TableConfidenceProps) {
           </Button>
         </Dialog.Panel>
       </DialogContainer>
-      <DataTable value={data} paginator={true} rows={10} rowsPerPageOptions={[5, 10, 20, 50]} sortMode="multiple">
+      <DataTable
+        value={data.filter((x) => [...x.X, ...x.Y].length > 2)}
+        paginator={true}
+        multiSortMeta={[
+          {
+            field: 'Support',
+            order: -1,
+          },
+          {
+            field: 'Confidence',
+            order: -1,
+          },
+        ]}
+        rows={10}
+        rowsPerPageOptions={[5, 10, 20, 50]}
+        sortMode="multiple"
+      >
         <Column header="#" body={(_, opts) => opts.rowIndex + 1} />
         <Column header="Kombinasi" body={(field: typeof data[number]) => [...field.Y, ...field.X].join(', ')} />
-        {/* <Column header="X" field="X" body={(field: typeof data[number]) => field.X.join(' - ')} />
-        <Column header="Y" field="Y" body={(field: typeof data[number]) => field.Y.join(' - ')} /> */}
         <Column header="Support" field="Support" sortable />
         <Column header="Confidence" field="Confidence" sortable />
+        <Column
+          header="Action"
+          body={(field: typeof data[number]) => (
+            <Button
+              onClick={() => {
+                setState((old) => ({
+                  ...old,
+                  menu: [...field.X, ...field.Y],
+                }))
+                setDialog(true)
+              }}
+            >
+              Promo
+            </Button>
+          )}
+        />
       </DataTable>
     </>
   )

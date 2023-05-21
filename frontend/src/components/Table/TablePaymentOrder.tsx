@@ -1,3 +1,4 @@
+import { toIDR } from '@/utils/base64'
 import { TD, TH, TR } from '.'
 import { OrderProps } from '../../types'
 
@@ -21,7 +22,7 @@ export function TablePaymentOrder({ orders }: TablePaymentOrderProps) {
             <TD className="p-2 text-center">{val.menuType}</TD>
             <TD>{val.menu}</TD>
             <TD className="text-center">{val.quantity}</TD>
-            <TD className="text-right">{val.price * val.quantity}</TD>
+            <TD className="text-right">{toIDR(val.price * val.quantity)}</TD>
           </TR>
         ))}
       </tbody>

@@ -17,12 +17,20 @@ export type OrderStore = {
   clearOrders(): void
   state: KeyUIState
   updateState(state: KeyUIState): void
+  reset(): void
 }
 
 const useOrderStore = create<OrderStore>()(
   devtools(
     persist(
       (set, get) => ({
+        reset() {
+          set({
+            state: 'choose product',
+            cardId: null,
+            orders: {},
+          })
+        },
         cardId: null,
         setCardId(cardId) {
           set({ cardId })

@@ -14,7 +14,7 @@ export default function Order({ className }: OrderContainerProps) {
   const [isDialogPromo, setIsDialogPromo] = useState(false)
   const { orders, state: orderState, updateState, cardId, removeCardId, clearOrders } = useOrderStore()
 
-  const { props, state } = useTransactionStore()
+  const { props } = useTransactionStore()
 
   return (
     <>
@@ -60,7 +60,7 @@ export default function Order({ className }: OrderContainerProps) {
         ) : (
           <Button
             className="disabled:cursor-not-allowed disabled:bg-primary/10"
-            disabled={props.method == null || state == 'create'}
+            disabled={props.method == null}
             onClick={() => setIsDialogPayment(true)}
           >
             Buat order

@@ -23,25 +23,32 @@ export function DialogPromo(props: DialogContainerProps) {
   const { setIsOpen } = props
   const { addToast } = useToastStore()
   const { setCardId } = useOrderStore()
-  const { handleSubmit, register } = useForm<Schema>({
+  const { handleSubmit, register, reset } = useForm<Schema>({
     resolver: zodResolver(schema),
   })
 
   const mutate = useMutation(
     async (cardId?: string) => {
       const {
-        data: { isCustomerExist },
-      } = await axiosPrivate.get<{ isCustomerExist: boolean }>('/customer/check-exist?' + qs.stringify({ cardId }))
+        data: { payload },
+      } = await axiosPrivate.get<{ payload: { isCustomerExist: boolean } }>('/customer/check-exist?' + qs.stringify({ cardId }))
+
+      const { isCustomerExist } = payload
       return {
         isCustomerExist,
         cardId,
       }
     },
     {
-      onSuccess: ({ cardId }) => {
-        addToast({ msg: 'Pengguna dapat menggunakan promo ' + cardId })
-        setCardId(cardId!)
+      onSuccess: ({ cardId, isCustomerExist }) => {
+        if (isCustomerExist) {
+          addToast({ msg: 'Pengguna sudah terdaftar, tidak dapat menggunakan promo' })
+        } else {
+          addToast({ msg: 'Pengguna dapat menggunakan promo ' + cardId })
+          setCardId(cardId!)
+        }
         setIsOpen(false)
+        reset()
       },
     },
   )
@@ -64,19 +71,6 @@ export function DialogPromo(props: DialogContainerProps) {
           <form className="m-auto w-auto md:w-80 flex items-center flex-col gap-3" onSubmit={handleOnSubmit}>
             <p className="font-semibold">User</p>
             <input className="border bg-dark-1 px-4 py-1 rounded-lg" placeholder="Card id" {...register('cardId')} />
-            <div className="flex gap-5">
-              {/* <Button
-                type="submit"
-                className="px-5 w-36"
-                // onClick={() => mutate.mutate(inputRef.current?.value)}
-                disabled={mutate.isLoading}
-              >
-                {isLoading ? 'Loading ...' : 'Check'}
-              </Button> */}
-              {/* <Button className="px-5 w-36" disabled={mutate.isLoading || !Boolean(!mutate.data?.isCustomerExist)}>
-              Gunakan
-            </Button> */}
-            </div>
             {mutate.isSuccess ? mutate.data?.isCustomerExist ? <p>Exist</p> : <p>New</p> : null}
           </form>
         </fieldset>

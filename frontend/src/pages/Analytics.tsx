@@ -31,7 +31,6 @@ export default function Analytics() {
             <Tab.List className="flex space-x-1 rounded-xl bg-dark-2 p-1 w-full border-2 border-white">
               <ButtonTab label="Product" />
               <ButtonTab label="Transaction" />
-              <ButtonTab label="Promo" />
             </Tab.List>
 
             {analytics.isSuccess && analytics.data && (
@@ -42,7 +41,6 @@ export default function Analytics() {
                 <Tab.Panel>
                   <Transactions data={analytics.data?.transactions} />
                 </Tab.Panel>
-                <Tab.Panel>{/* <TableAnalyticPromo data={analytics.data?.promos ?? []} /> */}</Tab.Panel>
               </>
             )}
           </Tab.Group>

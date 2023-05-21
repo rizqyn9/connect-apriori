@@ -10,16 +10,22 @@ import { useOrderStore } from '../../hooks/useOrder'
 import { useTransactionStore } from '../../hooks/useTransaction'
 import { useOnce } from '../../hooks/useOnce'
 import { transactionService } from '../../services'
+import { toIDR } from '@/utils/base64'
 
 type DialogPaymentProps = DialogContainerProps & {}
 
 export function DialogPayment(props: DialogPaymentProps) {
   const { addToast } = useToastStore()
-  const { props: transaction } = useTransactionStore()
-  const { orders, updateState } = useOrderStore()
+  const { props: transaction, clearTransaction } = useTransactionStore()
+  const { orders, updateState, reset } = useOrderStore()
 
   const paidMutation = useMutation(transactionService.create, {
-    onSuccess: () => addToast({ msg: 'Transaction success' }),
+    onSuccess: () => {
+      handleCancel()
+      clearTransaction()
+      reset()
+      addToast({ msg: 'Transaction success' })
+    },
     onError: () => addToast({ msg: 'Transaction failed', type: 'error' }),
   })
 
@@ -45,7 +51,7 @@ export function DialogPayment(props: DialogPaymentProps) {
               <div className="flex flex-col gap-4">
                 <p className="text-md font-bold">Transaction details</p>
                 <p className="text-md font-bold">Total</p>
-                <p className="self-end text-lg">{transaction.total}</p>
+                <p className="self-end text-lg">{toIDR(transaction.total)}</p>
                 <div className="flex justify-end gap-5">
                   <Button className="w-1/4" onClick={handleCancel}>
                     Cancel

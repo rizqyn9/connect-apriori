@@ -34,6 +34,7 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
         total: 0,
         promo: null,
       },
+      state: 'create',
     })
   },
   async create() {},

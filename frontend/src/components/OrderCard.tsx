@@ -9,7 +9,7 @@ import Icon from './Icon'
  */
 
 function OrderCard(props: OrderProps) {
-  const { orderId, _id, menu, imageURL, price, menuType, quantity } = props
+  const { orderId, menu, imageURL, price, menuType, quantity } = props
   const { removeOrder, setNotes, updateQuantity } = useOrderStore()
 
   return (
@@ -24,7 +24,11 @@ function OrderCard(props: OrderProps) {
       <div className={'grid grid-cols-3'}>
         {/*Product Image*/}
         <div className="w-[5rem] h-[5rem] rounded-lg border-2 border-primary/70 overflow-hidden col-span-1">
-          <img src={imageURL} className="h-full" alt="" />
+          {imageURL ? (
+            <img src={imageURL} className="h-full" alt="" />
+          ) : (
+            <p className="flex w-full h-full justify-center items-center text-primary bg-dark-2 font-bold text-2xl">CC</p>
+          )}
         </div>
         <div className="flex flex-col justify-between">
           {/*Menu & Type*/}
