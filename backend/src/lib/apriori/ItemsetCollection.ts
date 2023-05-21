@@ -30,7 +30,7 @@ export class ItemsetCollection extends Array {
       }
     }
 
-    console.log({ itemset, matchCount })
+    // console.log({ itemset, matchCount })
 
     let support = (matchCount / this.length) * 100.0
     return support

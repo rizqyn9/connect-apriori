@@ -19,8 +19,8 @@ app.use(routes)
 
 // Error handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  if (err instanceof ZodError) return res.status(401).json({ msg: err.flatten().fieldErrors })
   console.log({ err })
+  if (err instanceof ZodError) return res.status(401).json({ msg: err.flatten().fieldErrors })
 
   if (err instanceof Error) return res.status(400).json({ msg: err.message })
   else return res.status(400).json({ msg: err })

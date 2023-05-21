@@ -4,7 +4,7 @@ import { transactionProps } from "@/types/transaction.schema"
 import { mongoObject } from "../types/misc.schema"
 import { TransactionModel } from "@/models"
 import { z } from "zod"
-import { createNewCustomer } from "@/controller/customer.controller"
+import { createNewCustomer, findByCardId } from "@/controller/customer.controller"
 
 const app = Router()
 
@@ -14,58 +14,58 @@ const orderListValidation = z.array(
     variants: z.object({
       hot: z.number().optional(),
       ice: z.number().optional(),
+      promo: z.number().optional(),
     }),
   })
 )
 
 /* ------------------------- Create new transaction ------------------------- */
-app.post("/", async (req, res, next) => {
-  try {
-    const { orderList, ...rest } = req.body
-    const transactionParse = transactionProps.omit({ orders: true }).parse(rest)
+app.post("/", async (req, res) => {
+  const { orderList, ...rest } = req.body
+  const transactionParse = transactionProps.omit({ orders: true }).parse(rest)
 
-    const orders = orderListValidation.parse(orderList)
+  const orders = orderListValidation.parse(orderList)
 
-    let customer = null
-    if (transactionParse.cardId) {
-      console.log("New Promo")
+  let customer = null
+  if (transactionParse.cardId) {
+    console.log("New Promo")
 
-      customer = await createNewCustomer({
-        cardId: transactionParse.cardId,
-      })
-    }
+    if (
+      await findByCardId(transactionParse.cardId)
+        .then(Boolean)
+        .catch(() => false)
+    )
+      throw new Error("Customer already registered")
 
-    const transaction = new TransactionModel({
-      customerId: customer?._id || null,
-      paymentMethod: transactionParse.paymentMethod,
-      promo: transactionParse.promo || null,
-      price: transactionParse.price,
-      orders: orders.map((order) => ({
-        productId: order.menuId,
-        hot: order.variants.hot,
-        ice: order.variants.ice,
-        quantity: (order.variants.hot || 0) + (order.variants.ice || 0),
-      })),
+    customer = await createNewCustomer({
+      cardId: transactionParse.cardId,
     })
-
-    await transaction.save()
-
-    res.json({
-      msg: "Success create transaction",
-    })
-  } catch (error) {
-    next(error)
   }
+
+  const transaction = new TransactionModel({
+    customerId: customer?._id || null,
+    paymentMethod: transactionParse.paymentMethod,
+    promo: transactionParse.promo || null,
+    price: transactionParse.price,
+    orders: orders.map((order) => ({
+      productId: order.menuId,
+      hot: order.variants.hot,
+      ice: order.variants.ice,
+      quantity: (order.variants.hot || 0) + (order.variants.ice || 0),
+    })),
+  })
+
+  await transaction.save()
+
+  res.json({
+    msg: "Success create transaction",
+  })
 })
 
 /* --------------------------- Remove Transaction --------------------------- */
 app.delete("/:id", async (req, res, next) => {
-  try {
-    const id = mongoObject.parse(req.params.id)
-    await transactionController.remove(id).then((val) => res.json({ payload: val }))
-  } catch (error) {
-    next(error)
-  }
+  const id = mongoObject.parse(req.params.id)
+  await transactionController.remove(id).then((val) => res.json({ payload: val }))
 })
 
 export default app
