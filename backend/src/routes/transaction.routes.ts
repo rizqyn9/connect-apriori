@@ -28,7 +28,7 @@ app.post("/", async (req, res) => {
 
   let customer = null
   if (transactionParse.cardId) {
-    console.log("New Promo")
+    // console.log("New Promo")
 
     if (
       await findByCardId(transactionParse.cardId)
