@@ -87,7 +87,7 @@ export function TableConfidence(props: TableConfidenceProps) {
         </Dialog.Panel>
       </DialogContainer>
       <DataTable
-        value={data.filter((x) => [...x.X, ...x.Y].length > 2)}
+        value={data.filter((x) => [...x.X, ...x.Y].length == 2)}
         paginator={true}
         multiSortMeta={[
           {
