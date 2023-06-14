@@ -5,6 +5,8 @@ services:
     image: rizqyn88/connect:latest
     ports:
       - 28000:28000
+    networks:
+      - server_load_balancer
 
 networks:
   server_load_balancer:
