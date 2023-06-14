@@ -39,6 +39,7 @@ jobs:
           host: 103.174.114.33
           username: tabe
           password: Benagin10
+          port: 22
           script: |
             cd /home/tabe/connect-apriori/backend
             docker compose kill
