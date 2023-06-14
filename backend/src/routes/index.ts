@@ -11,19 +11,26 @@ import PromoRouter from "./promo.routes"
 import AnalyticsRouter from "./analytics.routes"
 import AprioriRouter from "./apriori.routes"
 import UserManagement from "./m-user.routes"
-
-// import { VerifyToken } from "../../middleware/token"
+import jwt from "jsonwebtoken"
 
 const app = Router()
 
 app.use("/auth", AuthRouter)
 
 app.use((req, res, next) => {
-  // Hardcode
-  if (!req.headers.authorization)
+  const { authorization } = req.headers
+  if (!authorization || !jwt.verify(authorization, "secret"))
     return res.status(501).json({
       msg: "invalid token",
     })
+  else {
+    const { id, role } = jwt.decode(authorization) as { id: string; role: "admin" | "casheer" }
+    req.user = {
+      id,
+      isAdmin: true,
+      role,
+    }
+  }
   next()
 })
 

@@ -1,10 +1,9 @@
 import { Router } from "express"
 import { userController } from "@/controller"
 import { UserModel } from "@/models"
+import { z } from "zod"
 
 const app = Router()
-
-app.get("/", (req, res) => {})
 
 app.get("/admin", async (req, res, next) => {
   try {
@@ -17,22 +16,44 @@ app.get("/admin", async (req, res, next) => {
 })
 
 app.get("/user", async (req, res, next) => {
-  try {
-    await userController.getAllUser().then((payload) => {
-      res.json({ payload })
-    })
-  } catch (error) {
-    next(error)
-  }
+  await userController.getAllUser().then((payload) => {
+    res.json({ payload })
+  })
+})
+
+app.get("/me", async (req, res) => {
+  const user = await UserModel.findById(req.user.id)
+  if (!user) throw new Error()
+  const { _id: id, name, email, isAdmin } = user
+  res.json({ id, name, email, role: isAdmin ? "admin" : "casheer" })
 })
 
 app.get("/:id", async (req, res) => {
   const { id } = req.params
-  try {
-    UserModel.findById(id).then((payload) => {
-      res.json({ payload })
+  UserModel.findById(id).then((payload) => {
+    res.json({ payload })
+  })
+})
+
+app.put("/update", async (req, res) => {
+  const { id, ...rest } = z
+    .object({
+      name: z.string().min(3),
+      email: z.string().email(),
+      isAdmin: z.boolean(),
+      password: z.string().min(5),
     })
-  } catch (error) {}
+    .deepPartial()
+    .merge(z.object({ id: z.string() }))
+    .parse(req.body)
+
+  const user = await UserModel.findById(id)
+  if (!user) throw new Error("Not found")
+
+  Object.assign(user, rest)
+  await user.save()
+
+  res.json({ user: user._id })
 })
 
 export default app

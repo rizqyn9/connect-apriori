@@ -22,7 +22,7 @@ app.post("/signin", async (req, res, next) => {
     const user = (await userController.findByEmail(req.body.email)).toJSON()
 
     if (user.password != req.body.password) throw new Error("Wrong password")
-    const token = jwt.sign({ email: user.email, id: user._id }, "secret")
+    const token = jwt.sign({ email: user.email, id: user._id, role: user.isAdmin ? "admin" : "casheer" }, "secret")
 
     // @ts-expect-error
     delete user.password
