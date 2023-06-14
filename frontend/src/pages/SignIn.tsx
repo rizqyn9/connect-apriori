@@ -1,6 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
 import { FormInput } from '../components/Form'
 import { AuthLayout } from '../components/Layout'
 import { SignInSchema, signInSchema } from '../utils/zod.schema'
@@ -36,9 +35,9 @@ export function SignIn() {
         <button type={'submit'} className={'py-2 mt-8 rounded-lg bg-primary hover:bg-primary/80 cursor-pointer'}>
           Sign In
         </button>
-        <Link to={'/auth/signup'} className={'text-sm text-white hover:text-white/80 italic mt-3'}>
+        {/* <Link to={'/auth/signup'} className={'text-sm text-white hover:text-white/80 italic mt-3'}>
           Create new account ?
-        </Link>
+        </Link> */}
       </form>
     </AuthLayout>
   )

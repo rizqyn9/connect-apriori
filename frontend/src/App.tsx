@@ -7,11 +7,9 @@ import Catalog from './components/Catalog'
 import AccountManagement from './pages/AccountManagement'
 import Analytics from './pages/Analytics'
 import { RequireAuth } from './components/WithAuth'
-import { ROLES } from './hooks/useAuth'
 import { AuthProvider } from 'react-auth-kit'
 import { ToastContainer } from './components/Toast'
 import Apriori from './pages/Apriori'
-import ConfigPage from './pages/Config'
 import { SignIn, SignUp } from './pages'
 
 function App() {
@@ -21,7 +19,7 @@ function App() {
         <Route
           path="/"
           element={
-            <RequireAuth allowedRoles={[ROLES.ADMIN, ROLES.USER]}>
+            <RequireAuth allowedRoles={['admin', 'casheer']}>
               <DashboardLayout />
             </RequireAuth>
           }
@@ -29,16 +27,22 @@ function App() {
           <Route
             index
             element={
-              <RequireAuth allowedRoles={[ROLES.ADMIN, ROLES.USER]}>
+              <RequireAuth allowedRoles={['admin', 'casheer']}>
                 <Catalog />
               </RequireAuth>
             }
           />
-          <Route path={'product/*'} element={<ProductPage />} />
-          <Route path={'product-management'} element={<Analytics />} />
+          <Route
+            path={'product/*'}
+            element={
+              <RequireAuth allowedRoles={['admin']}>
+                <ProductPage />
+              </RequireAuth>
+            }
+          />
+          <Route path={'analytics'} element={<Analytics />} />
           <Route path={'admin/account-management'} element={<AccountManagement />} />
           <Route path={'apriori'} element={<Apriori />} />
-          <Route path={'config'} element={<ConfigPage />} />
         </Route>
         <Route path="/auth/signin" element={<SignIn />} />
         <Route path="/auth/signup" element={<SignUp />} />

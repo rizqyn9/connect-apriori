@@ -7,7 +7,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 import 'primereact/resources/themes/viva-dark/theme.css' //theme
 import 'primereact/resources/primereact.min.css' //core css
-// import 'primeicons/primeicons.css' //icons
+import 'primeicons/primeicons.css'
 // import 'primeflex/primeflex.css' // flex
 import './static/css/index.scss'
 

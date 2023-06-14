@@ -1,3 +1,4 @@
+import { ROLE } from '@/hooks'
 import api from '.'
 import { SignUpSchema, SignInSchema } from '../utils/zod.schema'
 
@@ -15,7 +16,7 @@ const signIn = async (payload: SignInSchema) => {
       token: data.token!,
       tokenType: 'token',
       expiresIn: 60 * 60 * 24 * 7,
-      authState: { ...data.payload },
+      authState: { ...data.payload, role: data.payload.isAdmin ? ROLE.Enum.admin : ROLE.Enum.casheer },
       msg: `Wellcome ${data.payload.name}`,
     }
   else return { invalid: true, msg: data.msg ?? 'Failed to signin' }

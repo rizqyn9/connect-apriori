@@ -7,7 +7,8 @@
     "serve": "vite preview",
     "clear": "rm -rf ./dist",
     "build:css": "tailwindcss ",
-    "format:write": "prettier --write ."
+    "format:write": "prettier --write .",
+    "emit": "tsc --noEmit"
   },
   "dependencies": {
     "@headlessui/react": "^1.6.6",
@@ -22,6 +23,7 @@
     "framer-motion": "^6.4.3",
     "jotai": "^1.5.3",
     "nookies": "^2.5.2",
+    "primeicons": "^6.0.1",
     "primereact": "^9.4.0",
     "query-string": "^8.0.3",
     "react": "^18.3.0-next-e61fd91f5-20220630",

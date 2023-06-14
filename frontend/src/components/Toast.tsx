@@ -37,7 +37,7 @@ function ToastContainer() {
   return (
     document.body &&
     createPortal(
-      <div className="absolute top-0 w-full flex flex-col gap-2 items-center pt-5 z-[200]">
+      <div className="absolute top-0 w-full flex flex-col gap-2 items-center pt-5 z-[200] pointer-events-none">
         <AnimatePresence>
           {Object.entries(toasts).map(([key, val]) => (
             <Toast key={key} {...val} id={Number(key)} />

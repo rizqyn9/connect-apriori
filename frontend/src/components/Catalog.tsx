@@ -8,6 +8,7 @@ import { GridRow } from './Grid'
 import { useToastStore } from './Toast'
 import { Button } from './Button'
 import { toIDR } from '@/utils/base64'
+import { useUser } from '@/pages/DashboardLayout'
 
 export default function Catalog() {
   const { addToast } = useToastStore()
@@ -98,7 +99,12 @@ function Title() {
 const UserMemo = memo(User)
 
 function User() {
-  const { signOut, authUser } = useAuth()
+  const { signOut } = useAuth()
+  const { user } = useUser()
+
+  if (!user) return null
+
+  const { name, role } = user
 
   return (
     <div className="h-full w-full flex items-center gap-6 text-sm bg-dark-2">
@@ -106,8 +112,8 @@ function User() {
         <img src="./src/static/images/dummy.jpg" alt="pics" />
       </div>
       <div className={'flex flex-1 flex-col gap-2'}>
-        <h1 className="text-md font-bold">{authUser()?.name}</h1>
-        <p className="text-xs font-thin opacity-70">{authUser()?.isAdmin ? 'Admin' : 'Casheer'}</p>
+        <h1 className="text-md font-bold capitalize">{name}</h1>
+        <p className="text-xs font-thin opacity-70 capitalize">{role}</p>
       </div>
       <Button className="justify-self-end py-1" onClick={signOut}>
         Sign Out
