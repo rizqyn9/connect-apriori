@@ -1,0 +1,9 @@
+version: "3.8"
+
+services:
+  c_api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 28000:28000
