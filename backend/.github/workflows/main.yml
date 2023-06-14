@@ -1,0 +1,47 @@
+name: Build & Publish
+
+on:
+  workflow_dispatch: # Manually run the workflow
+
+jobs:
+  build:
+    name: 🐳 Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v2
+
+      - name: 🐳 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: 🔑 Docker Registry Auth
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: 🐳 Docker build
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/:latest
+
+  deploy:
+    name: 🚀 Deploy
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - name: 🚀 Deploy compose
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: 103.174.114.33
+          username: tabe
+          password: Benagin10
+          script: |
+            cd /home/tabe/connect-apriori/backend
+            docker compose kill
+            docker compose rm -f
+            docker compose pull
+            docker compose up -d
