@@ -38,7 +38,7 @@ jobs:
         with:
           host: 103.174.114.33
           username: tabe
-          password: Benagin10
+          password: Benangin10
           port: 22
           script: |
             cd /home/tabe/connect-apriori/backend
