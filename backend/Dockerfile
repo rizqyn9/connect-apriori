@@ -4,7 +4,7 @@ WORKDIR /app
 
 FROM base as builder
 
-COPY . .
+COPY ./backend .
 
 RUN yarn install
 
