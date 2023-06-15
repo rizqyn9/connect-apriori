@@ -34,7 +34,7 @@ export function useAuth() {
 
   const authUser = () => {
     const authData = auth() as UserData | null
-    if (!authData || typeof authData.isAdmin === 'undefined') {
+    if (!authData || typeof authData.isAdmin === 'undefined' || !authData.role ) {
       signOut()
     } else return authData
   }
