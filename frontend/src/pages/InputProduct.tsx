@@ -1,5 +1,5 @@
-import React, { useRef } from 'react'
-import { Routes, Route, useParams } from 'react-router-dom'
+import React, { useRef, useState } from 'react'
+import { Routes, Route, useParams, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { GridRow } from '../components/Grid'
@@ -11,6 +11,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { FormInput } from '../components/Form/InputProduct'
 import { convertBase64 } from '../utils/base64'
 import { productService } from '../services'
+import { Button as PrimeButton } from 'primereact/button'
 
 export function ProductPage() {
   return (
@@ -23,6 +24,8 @@ export function ProductPage() {
 
 function InputProduct() {
   const { id } = useParams()
+  const [isEdit] = useState<boolean>(!!id)
+  const navigate = useNavigate()
   const { addToast } = useToastStore()
   const queryClient = useQueryClient()
 
@@ -49,50 +52,60 @@ function InputProduct() {
 
   const mutation = useMutation(productService.create, {
     onSuccess: () => {
-      addToast({ msg: 'Success created new menu' })
+      addToast({ msg: 'Berhasil membuat menu' })
       reset()
+      queryClient.invalidateQueries(['products'])
     },
     onError: () => addToast({ msg: 'Failed', type: 'error' }),
   })
 
   const editMutation = useMutation(productService.edit, {
     onSuccess: () => {
-      addToast({ msg: 'Success update new menu' })
-      reset()
+      addToast({ msg: 'Berhasil memperbarui menu' })
+      navigate('/analytics')
+      queryClient.invalidateQueries(['products'])
     },
     onError: () => addToast({ msg: 'Failed', type: 'error' }),
+  })
+
+  const removeMutation = useMutation(productService.remove, {
+    onSuccess: () => {
+      addToast({ msg: 'Berhasil menghapus menu' })
+      navigate('/analytics')
+    },
+    onError: () => addToast({ msg: 'Gagal menghapus menu', type: 'error' }),
   })
 
   const onSubmit = async (data: ProductInputSchema) => (!!id ? editMutation.mutate({ ...data, id: id }) : mutation.mutate(data))
 
   if (queryId.isLoading && !!id) return null
   return (
-    <>
-      <GridRow className="px-5 w-full flex-auto text-sm overflow-y-scroll" title={<Title />}>
-        <fieldset disabled={mutation.isLoading}>
-          <form onSubmit={handleSubmit(onSubmit, (err) => console.log({ err }))} className="h-full flex gap-2 py-8 flex-col lg:flex-row">
-            <div className="lg:h-full w-full lg:flex-[1_1_55%]">
-              <ImagePlaceInput
-                name="image"
-                // @ts-ignore
-                setValue={(file) => setValue('imageURL', file)}
-                value={watch('imageURL')}
-                errors={errors?.imageURL?.message}
-              />
-            </div>
-
-            {/*Form Input*/}
-            <div className="w-full flex-auto p-5 bg-dark-2 col-start-2 col-end-4 rounded-lg overflow-scroll">
-              <FormInput control={control} name="menu" label="Nama Menu" defaultValue="" type="text" />
-              <FormInput control={control} name="price" label="Harga" defaultValue="" type="number" />
-              <Button className="w-full" type="submit">
-                Tambahkan
-              </Button>
-            </div>
-          </form>
-        </fieldset>
-      </GridRow>
-    </>
+    <GridRow className="px-5 w-full flex-auto text-sm overflow-y-scroll" title={<Title />}>
+      <fieldset disabled={mutation.isLoading}>
+        <form onSubmit={handleSubmit(onSubmit, (err) => console.log({ err }))} className="h-full flex gap-2 py-8 flex-col lg:flex-row">
+          <div className="lg:h-full w-full lg:flex-[1_1_55%] flex flex-col">
+            <ImagePlaceInput
+              name="image"
+              // @ts-ignore
+              setValue={(file) => setValue('imageURL', file)}
+              value={watch('imageURL')}
+              errors={errors?.imageURL?.message}
+            />
+            {isEdit && (
+              <PrimeButton label="Hapus menu" severity="danger" style={{ margin: '1rem auto' }} onClick={() => removeMutation.mutate(id!)} />
+            )}
+          </div>
+          {/*Form Input*/}
+          <div className="w-full flex-auto p-5 bg-dark-2 col-start-2 col-end-4 rounded-lg overflow-scroll">
+            <FormInput control={control} name="menu" label="Nama Menu" defaultValue="" type="text" />
+            <FormInput control={control} name="price" label="Harga" defaultValue="" type="number" />
+            <Button className="w-full" type="submit">
+              Tambahkan
+            </Button>
+          </div>
+        </form>
+      </fieldset>
+    </GridRow>
   )
 }
 
@@ -120,10 +133,10 @@ function ImagePlaceInput(props: ImagePlaceInputProps) {
     <div className="bg-dark-2 rounded-lg p-6 flex flex-col gap-4">
       <input accept="image/*" type="file" hidden name={name} ref={imageRef} onChange={onChange} />
       {value ? (
-        <Button onClick={removeImage}>Remove</Button>
+        <Button onClick={removeImage}>Hapus Gambar</Button>
       ) : (
         <Button onClick={(e) => imageRef.current?.click()} type="button">
-          Upload Image
+          Unggah Foto
         </Button>
       )}
       {errors && <p className="text-red-400">Image required</p>}

@@ -6,7 +6,7 @@ import Icon from './Icon'
 import { useUser } from '@/pages/DashboardLayout'
 
 const routes: (NavItemProps & { isAdmin?: boolean })[] = [
-  { to: '/', title: 'Dashboard', icon: Icon.Home },
+  { to: '/', title: 'Dashboard', icon: Icon.Home, exact: true },
   { to: '/product', title: 'Input', icon: Icon.History, isAdmin: true },
   { to: '/analytics', title: 'Product Management', icon: Icon.Setting },
   { to: '/admin/account-management', title: 'Account Management', icon: Icon.AccountManager },
@@ -36,14 +36,15 @@ export default function Sidebar() {
 type NavItemProps = {
   to: string
   title?: string
+  exact?: boolean
   icon: () => React.ReactNode
 }
 
-function NavItem({ to, title, icon }: NavItemProps) {
+function NavItem({ to, title, icon, exact }: NavItemProps) {
   const location = useLocation()
   const { pathname } = location
 
-  let isActive = pathname === to
+  let isActive = exact ? pathname === to : pathname.includes(to)
 
   return (
     <NavLink

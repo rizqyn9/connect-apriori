@@ -47,14 +47,10 @@ app.get("/:id", async (req, res, next) => {
 
 /* -------------------------- Delete Product By ID -------------------------- */
 app.delete("/:id", async (req, res, next) => {
-  try {
-    const { id } = req.params
+  const { id } = req.params
+  const payload = await productController.remove(id)
 
-    const payload = await productController.remove(id)
-    res.json({ payload })
-  } catch (error) {
-    next(error)
-  }
+  res.json({ payload })
 })
 
 export default app

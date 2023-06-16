@@ -7,13 +7,9 @@ import { DialogContainer } from '@/components/Dialog/DialogContainer'
 import { Dialog } from '@headlessui/react'
 import { H1 } from '@/components/Typography'
 import { Button } from '@/components/Button'
-import { Button as PrimeButton } from 'primereact/button'
-
 import { DataTable } from 'primereact/datatable'
 import { Column } from 'primereact/column'
 import { toIDR } from '@/utils/base64'
-import { useNavigate } from 'react-router-dom'
-import { useCallback } from 'react'
 
 export default function Analytics() {
   const { addToast } = useToastStore()
@@ -53,15 +49,6 @@ export default function Analytics() {
 }
 
 function Products({ data }: { data: GetAnalyticsData['products'] }) {
-  const navigate = useNavigate()
-
-  const handleOnEdit = useCallback(
-    (id: string) => {
-      navigate(`/product/${id}`)
-    },
-    [navigate],
-  )
-
   return (
     <DataTable value={data} paginator={true} rows={20} rowsPerPageOptions={[5, 10, 20, 50]} dataKey="_id">
       <Column header="#" body={(_, props) => props.rowIndex + 1} />
@@ -69,13 +56,6 @@ function Products({ data }: { data: GetAnalyticsData['products'] }) {
       <Column field="menu" header="Menu" sortable />
       <Column field="price" header="Harga" body={(field: GetAnalyticsData['products'][number]) => toIDR(field.price)} sortable />
       <Column field="totalOrdered" align="center" header="Total order" sortable />
-      <Column
-        align="center"
-        header="Aksi"
-        body={(field: GetAnalyticsData['products'][number]) => (
-          <PrimeButton label="Edit" severity="success" size="small" onClick={() => handleOnEdit(field._id)} />
-        )}
-      />
     </DataTable>
   )
 }

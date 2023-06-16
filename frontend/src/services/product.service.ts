@@ -44,4 +44,9 @@ const productPromo = async () => {
   return { products: data.products }
 }
 
-export const productService = { getAll, create, findId, edit, productPromo }
+const remove = async (productId: string) => {
+  const { data } = await axiosPrivate.delete('/products/' + productId)
+  return data
+}
+
+export const productService = { getAll, create, findId, edit, productPromo, remove }
