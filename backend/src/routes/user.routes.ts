@@ -41,7 +41,7 @@ app.put("/update", async (req, res) => {
       name: z.string().min(3),
       email: z.string().email(),
       isAdmin: z.boolean(),
-      password: z.string().min(5),
+      password: z.string(),
     })
     .deepPartial()
     .merge(z.object({ id: z.string() }))

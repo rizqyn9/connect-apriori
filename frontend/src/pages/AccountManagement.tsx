@@ -8,23 +8,23 @@ import { z } from 'zod'
 import { useUser } from './DashboardLayout'
 import { updateData } from '@/services/user.service'
 import clsx from 'clsx'
-import { DataTable } from 'primereact/datatable'
-import { Column } from 'primereact/column'
+import { DataTable, DataTableRowEditCompleteEvent } from 'primereact/datatable'
+import { Column, ColumnEditorOptions } from 'primereact/column'
 import { Dialog } from 'primereact/dialog'
 import { InputText } from 'primereact/inputtext'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown'
+import { ROLE } from '../hooks/useAuth'
+import { Tag } from 'primereact/tag'
 
 const date = new Intl.DateTimeFormat('id', {
   weekday: 'long',
   day: 'numeric',
   month: 'long',
   year: 'numeric',
-  hour: 'numeric',
-  minute: 'numeric',
-  timeZoneName: 'short',
 })
 
-type Res = { email: string; createdAt: string; name: string; isAdmin: boolean }
+type Res = { email: string; createdAt: string; name: string; isAdmin: boolean; _id: string }
 
 export default function AccountManagement() {
   const { user } = useUser()
@@ -39,19 +39,83 @@ export default function AccountManagement() {
 }
 
 function TableUserManagement() {
-  const { data } = useQuery(['user-management'], async () => {
+  const [active, setActive] = useState<string | null>(null)
+  const { data, refetch } = useQuery(['user-management'], async () => {
     const { data } = await axiosPrivate.get<{ payload: Res[] }>('/user-management')
     return data?.payload
   })
+  const { mutateAsync } = useMutation(updateData)
+
+  const onRowEditComplete = (e: DataTableRowEditCompleteEvent) => {
+    const { email, field_3, name, _id } = e.newData
+    const isAdmin = field_3 ? (field_3 === 'admin' ? true : false) : e.data.isAdmin
+
+    mutateAsync({
+      id: _id,
+      email,
+      isAdmin,
+      name,
+    }).then(() => refetch())
+  }
+
+  const textEditor = (options: ColumnEditorOptions) => {
+    return (
+      <InputText
+        style={{ width: '100%' }}
+        type="text"
+        value={options.value}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => options.editorCallback?.(e.target.value)}
+      />
+    )
+  }
+
+  const roleEditor = (options: ColumnEditorOptions) => {
+    return (
+      <Dropdown
+        value={options.value}
+        options={ROLE.options}
+        onChange={(e: DropdownChangeEvent) => options.editorCallback?.(e.value)}
+        placeholder="Select a Status"
+        itemTemplate={(option) => {
+          return <Tag value={option} severity={option == ROLE.Enum.admin ? 'success' : 'warning'}></Tag>
+        }}
+      />
+    )
+  }
+
+  const handleSetActive = (arg: boolean) => {
+    setActive(null)
+  }
 
   return (
-    <DataTable value={data || []}>
-      <Column header="#" body={(_, opts) => opts.rowIndex + 1} />
-      <Column header="Nama" field="name" />
-      <Column header="Email" field="email" />
-      <Column header="Role" body={({ isAdmin }: NonUndefined<typeof data>[number]) => (isAdmin ? 'Admin' : 'Kasir')} />
-      <Column header="Tgl registrasi" body={(field: NonUndefined<typeof data>[number]) => date.format(new Date(field.createdAt))} />
-    </DataTable>
+    <>
+      <DialogChangePassword active={!!active} setActive={handleSetActive} id={active!} />
+      <DataTable value={data || []} editMode="row" tableStyle={{ minWidth: '50rem' }} dataKey="_id" onRowEditComplete={onRowEditComplete}>
+        <Column header="#" body={(_, opts) => opts.rowIndex + 1} />
+        <Column header="Nama" field="name" editor={(options) => textEditor(options)} />
+        <Column header="Email" field="email" editor={(options) => textEditor(options)} style={{ width: '20%' }} />
+        <Column
+          header="Role"
+          body={({ isAdmin }: NonUndefined<typeof data>[number]) => (
+            <Tag
+              style={{ textTransform: 'capitalize' }}
+              value={isAdmin ? ROLE.Enum.admin : ROLE.Enum.casheer}
+              severity={isAdmin ? 'success' : 'warning'}
+            ></Tag>
+          )}
+          editor={(options) => roleEditor(options)}
+        />
+        <Column header="Tgl registrasi" body={(field: NonUndefined<typeof data>[number]) => date.format(new Date(field.createdAt))} />
+        <Column rowEditor headerStyle={{ width: '10%', minWidth: '8rem' }} bodyStyle={{ textAlign: 'center' }} />
+        <Column
+          headerStyle={{ width: '10%', minWidth: '8rem' }}
+          bodyStyle={{ textAlign: 'center' }}
+          body={(field: NonUndefined<typeof data>[number]) => (
+            <PrimeButton type="button" size="small" severity="help" label="Ganti Password" onClick={() => setActive(field._id)} />
+          )}
+        />
+      </DataTable>
+    </>
   )
 }
 
@@ -151,7 +215,7 @@ type DialogChangePasswordProps = {
 }
 
 const validatePassword = z.object({
-  password: z.string().min(5, 'Minimal 5 huruf'),
+  password: z.string().min(1, 'Minimal 1 huruf'),
 })
 
 function DialogChangePassword(props: DialogChangePasswordProps) {
@@ -168,12 +232,17 @@ function DialogChangePassword(props: DialogChangePasswordProps) {
     mutateAsync({ id, password: data.password }).then(() => setActive(false))
   }, console.error)
 
+  const handleClose = useCallback(() => {
+    if (isLoading) return
+    setActive(false)
+  }, [setActive, isLoading])
+
   useEffect(() => {
     reset()
   }, [reset, active])
 
   return (
-    <Dialog visible={active} onHide={() => setActive(false)} header={'Ganti password'}>
+    <Dialog visible={active} onHide={handleClose} header={'Ganti password'}>
       <form className="py-4 flex flex-col gap-5" onSubmit={handleOnSubmit}>
         <InputText placeholder="Password baru" {...register('password')} type="password" />
         {errors.password?.message && <small className="p-error">{errors.password?.message}</small>}
