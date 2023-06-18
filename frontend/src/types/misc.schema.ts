@@ -1,5 +1,5 @@
 import { z } from 'zod'
 
-export const paymentAllowed = z.enum(['gopay', 'ovo', 'tunai', 'dana'])
+export const paymentAllowed = z.enum(['tunai', 'non-tunai'])
 
 export type PaymentAllowed = z.infer<typeof paymentAllowed>

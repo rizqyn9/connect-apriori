@@ -3,7 +3,7 @@ import { axiosPrivate } from '../services'
 import { useOrderStore } from './useOrder'
 import { TransactionStore, OrderSchema } from '../types'
 
-export const paymentMethodExist = ['dana', 'ovo', 'gopay', 'tunai'] as const
+export const paymentMethodExist = ['non-tunai', 'tunai'] as const
 
 export type PaymentMethod = typeof paymentMethodExist[number]
 
