@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Button as PrimeButton } from 'primereact/button'
+import { Button, Button as PrimeButton } from 'primereact/button'
 import { GridRow } from '../components/Grid'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { axiosPrivate } from '@/services'
-import { NonUndefined, useForm } from 'react-hook-form'
+import { authService, axiosPrivate } from '@/services'
+import { Controller, NonUndefined, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { useUser } from './DashboardLayout'
 import { updateData } from '@/services/user.service'
@@ -16,6 +16,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown'
 import { ROLE } from '../hooks/useAuth'
 import { Tag } from 'primereact/tag'
+import { SignUpSchema, signUpSchema } from '../utils/zod.schema'
+import { useToastStore } from '@/components/Toast'
 
 const date = new Intl.DateTimeFormat('id', {
   weekday: 'long',
@@ -32,9 +34,51 @@ export default function AccountManagement() {
     <GridRow className="px-5 w-full flex-auto flex" title="Account Management">
       <div className="py-8 overflow-x-scroll flex flex-col gap-5">
         <Account />
+        {user.role == 'admin' && <AccountCreator />}
         {user.role == 'admin' && <TableUserManagement />}
       </div>
     </GridRow>
+  )
+}
+
+const newAccount = z.object({
+  name: z.string().min(1),
+  email: z.string().email(),
+  password: z.string().min(1),
+})
+
+export function AccountCreator() {
+  const [visible, setVisible] = useState(false)
+  const { addToast } = useToastStore()
+  const { control, handleSubmit } = useForm<z.infer<typeof newAccount>>({
+    resolver: zodResolver(newAccount),
+  })
+
+  const { mutateAsync } = useMutation((data: SignUpSchema) => authService.signUp(data), {
+    onSuccess: ({ success, msg }) => {
+      addToast({ msg, type: success ? 'success' : 'error' })
+      refetch()
+    },
+  })
+
+  const { refetch } = useQuery(['user-management'], async () => axiosPrivate.get<{ payload: Res[] }>('/user-management').then((x) => x.data.payload))
+
+  const handleOnSubmit = handleSubmit((data) => {
+    mutateAsync(data)
+  }, console.error)
+
+  return (
+    <div className="flex">
+      <Button label="Tambah Akun" severity="info" onClick={() => setVisible(true)} />
+      <Dialog visible={visible} onHide={() => setVisible(false)} header="Akun baru">
+        <form onSubmit={handleOnSubmit} className="flex flex-col gap-4">
+          <Controller control={control} name="name" render={({ field }) => <InputText placeholder="Nama" {...field} />} />
+          <Controller control={control} name="email" render={({ field }) => <InputText placeholder="Email" type="email" {...field} />} />
+          <Controller control={control} name="password" render={({ field }) => <InputText placeholder="Password" type="password" {...field} />} />
+          <Button label="Tambah" />
+        </form>
+      </Dialog>
+    </div>
   )
 }
 
