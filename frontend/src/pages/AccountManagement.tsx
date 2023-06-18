@@ -56,6 +56,7 @@ export function AccountCreator() {
 
   const { mutateAsync } = useMutation((data: SignUpSchema) => authService.signUp(data), {
     onSuccess: ({ success, msg }) => {
+      setVisible(false)
       addToast({ msg, type: success ? 'success' : 'error' })
       refetch()
     },
@@ -69,7 +70,7 @@ export function AccountCreator() {
 
   return (
     <div className="flex">
-      <Button label="Tambah Akun" severity="info" onClick={() => setVisible(true)} />
+      <Button label="Tambah Akun" className="ml-auto" onClick={() => setVisible(true)} />
       <Dialog visible={visible} onHide={() => setVisible(false)} header="Akun baru">
         <form onSubmit={handleOnSubmit} className="flex flex-col gap-4">
           <Controller control={control} name="name" render={({ field }) => <InputText placeholder="Nama" {...field} />} />
@@ -84,11 +85,20 @@ export function AccountCreator() {
 
 function TableUserManagement() {
   const [active, setActive] = useState<string | null>(null)
+  const { addToast } = useToastStore()
+
   const { data, refetch } = useQuery(['user-management'], async () => {
     const { data } = await axiosPrivate.get<{ payload: Res[] }>('/user-management')
     return data?.payload
   })
+
   const { mutateAsync } = useMutation(updateData)
+  const { mutate } = useMutation((id: string) => axiosPrivate.delete('/user/' + id), {
+    onSuccess() {
+      refetch()
+      addToast({ msg: 'Sukses menhapus akun' })
+    },
+  })
 
   const onRowEditComplete = (e: DataTableRowEditCompleteEvent) => {
     const { email, field_3, name, _id } = e.newData
@@ -152,10 +162,13 @@ function TableUserManagement() {
         <Column header="Tgl registrasi" body={(field: NonUndefined<typeof data>[number]) => date.format(new Date(field.createdAt))} />
         <Column rowEditor headerStyle={{ width: '10%', minWidth: '8rem' }} bodyStyle={{ textAlign: 'center' }} />
         <Column
-          headerStyle={{ width: '10%', minWidth: '8rem' }}
+          headerStyle={{ minWidth: '15rem' }}
           bodyStyle={{ textAlign: 'center' }}
           body={(field: NonUndefined<typeof data>[number]) => (
-            <PrimeButton type="button" size="small" severity="help" label="Ganti Password" onClick={() => setActive(field._id)} />
+            <span className="p-buttonset">
+              <PrimeButton type="button" size="small" severity="help" label="Ganti" onClick={() => setActive(field._id)} />
+              <PrimeButton type="button" size="small" severity="danger" label="Hapus" onClick={() => mutate(field._id)} />
+            </span>
           )}
         />
       </DataTable>

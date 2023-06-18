@@ -56,4 +56,12 @@ app.put("/update", async (req, res) => {
   res.json({ user: user._id })
 })
 
+app.delete("/:userId", async (req, res) => {
+  const acc = await UserModel.findByIdAndRemove(req.params.userId)
+  if (!acc) throw new Error("Not found")
+  res.json({
+    account: acc,
+  })
+})
+
 export default app
