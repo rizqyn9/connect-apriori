@@ -1,18 +1,14 @@
 import { Router } from "express"
 import { userController } from "@/controller"
-import { UserModel } from "@/models"
+import { User as UserModel } from "@/models"
 import { z } from "zod"
 
 const app = Router()
 
 app.get("/admin", async (req, res, next) => {
-  try {
-    await userController.getAllAdmin().then((payload) => {
-      res.json({ payload })
-    })
-  } catch (error) {
-    next(error)
-  }
+  await userController.getAllAdmin().then((payload) => {
+    res.json({ payload })
+  })
 })
 
 app.get("/user", async (req, res, next) => {

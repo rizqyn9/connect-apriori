@@ -1,56 +1,23 @@
 import { Router } from "express"
-import { productController } from "@/controller"
+import { createProduct, handleProductDetails, handleRemoveProduct, handleUpdate, productController } from "@/controller"
 
 const app = Router()
 
 /* ---------------------------- Get all products ---------------------------- */
-app.get("/", async (_, res, next) => {
-  try {
-    const payload = await productController.getAllProduts()
-    res.json({ payload })
-  } catch (error) {
-    next(error)
-  }
+app.get("/", async (_, res) => {
+  res.json({ payload: await productController.getAllProduts() })
 })
 
 /* ---------------------------- Added new product --------------------------- */
-app.post("/", async (req, res, next) => {
-  try {
-    const payload = await productController.create(req.body)
-    res.json({ payload })
-  } catch (error) {
-    next(error)
-  }
-})
+app.post("/", createProduct)
 
 /* ------------------------ Update data product by id ----------------------- */
-app.post("/:id", async (req, res, next) => {
-  try {
-    const { id } = req.params
-    const payload = await productController.update(id, req.body)
-    res.json({ payload })
-  } catch (error) {
-    next(error)
-  }
-})
+app.post("/:id", handleUpdate)
 
 /* --------------------------- Get a product by id -------------------------- */
-app.get("/:id", async (req, res, next) => {
-  try {
-    const { id } = req.params
-    const payload = await productController.getProductByID(id)
-    res.json({ payload })
-  } catch (error) {
-    next(error)
-  }
-})
+app.get("/:id", handleProductDetails)
 
 /* -------------------------- Delete Product By ID -------------------------- */
-app.delete("/:id", async (req, res, next) => {
-  const { id } = req.params
-  const payload = await productController.remove(id)
-
-  res.json({ payload })
-})
+app.delete("/:id", handleRemoveProduct)
 
 export default app

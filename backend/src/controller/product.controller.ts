@@ -1,19 +1,50 @@
-import { ProductProps, ProductModel } from "../models/product"
+import { Request, Response } from "express"
+import { ProductModel, productValidator, Product } from "../models/product"
 import { imageKitController } from "./imagekit.controller"
+import { NotFound } from "@/lib/error"
 
-const getProductByID = async (id: string) => await ProductModel.findById(id).then((val) => val ?? Promise.reject("Product not found"))
-
-const getAllProduts = async () => await ProductModel.find().then((val) => val)
-
-const create = async (data: ProductProps) => {
-  const image = await imageKitController.upload(data.imageURL, Date.now().toString())
-  return await ProductModel.create({ ...data, imageURL: image.url }).then((val) => val)
+export async function getAllProduts() {
+  return ProductModel.find({})
 }
 
-const update = async (id: string, data: ProductProps) =>
-  await ProductModel.findByIdAndUpdate(id, { ...data }).then((val) => val ?? Promise.reject("Product not found"))
+export async function getProductById(id: string) {
+  const product = await Product.findById(id)
+  if (!product) throw new NotFound()
+  return product
+}
 
-const remove = async (id: string) => await ProductModel.findByIdAndRemove(id).then((val) => val ?? Promise.reject("Product not found"))
+export async function createProduct(req: Request, res: Response) {
+  const { menu, price, imageURL } = productValidator.parse(req.body)
+
+  const product = new Product({ menu, price })
+  if (imageURL) await imageKitController.upload(imageURL, Date.now().toString()).then((x) => (product.imageURL = x.url))
+  await product.save()
+  res.json({ payload: product })
+}
+
+export async function handleUpdate(req: Request, res: Response) {
+  const product = await Product.findByIdAndUpdate(req.params.id, productValidator.deepPartial().parse(req.body))
+  res.json({
+    payload: product,
+  })
+}
+
+export async function handleProductDetails(req: Request, res: Response) {
+  res.json({
+    payload: await getProductByID(req.params.id),
+  })
+}
+
+export async function handleRemoveProduct(req: Request, res: Response) {
+  const product = await Product.findByIdAndRemove(req.params.id)
+  if (!product) throw new NotFound()
+
+  res.json({
+    payload: product,
+  })
+}
+
+const getProductByID = async (id: string) => await ProductModel.findById(id).then((val) => val ?? Promise.reject("Product not found"))
 
 const incrementOrderById = async (id: string, increment: number) =>
   await ProductModel.findByIdAndUpdate(id, {
@@ -22,4 +53,4 @@ const incrementOrderById = async (id: string, increment: number) =>
 
 const decrementOrderById = async (id: string, decrement: number) => await incrementOrderById(id, decrement * -1)
 
-export const productController = { getProductByID, getAllProduts, create, update, remove, incrementOrderById, decrementOrderById }
+export const productController = { getProductByID, getAllProduts, incrementOrderById, decrementOrderById }

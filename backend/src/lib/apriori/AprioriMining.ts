@@ -10,8 +10,6 @@ export class AprioriMining {
     let Li = new ItemsetCollection() // Large itemset in each iteration
     let Ci = new ItemsetCollection() // Pruned itemset in each iteration
 
-    // console.log("/* -------------------------------------------------------------------------- */")
-
     // First iteration (1-item itemsets)
     for (var i = 0; i < I.length; i += 1) {
       Ci.push(Itemset.from([I[i]]))
@@ -30,8 +28,6 @@ export class AprioriMining {
           L.push(itemset)
         }
       }
-
-      // console.log({ Li, L, Ci })
 
       // Set Ci for next iteration (find supersets of Li)
       Ci.clear()

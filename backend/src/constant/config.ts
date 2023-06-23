@@ -1,13 +1,16 @@
 import dotenv from "dotenv"
+import { z } from "zod"
 
 dotenv.config()
-const config = {
-  MONGO_URI: String(process.env.MONGO_URI),
-  PORT: Number(process.env.PORT),
-  IMAGEKIT_PRIVATE: String(process.env.IMAGEKIT_PRIVATE),
-  IMAGEKIT_PUBLIC: String(process.env.IMAGEKIT_PUBLIC),
-  IMAGEKIT_ENDPOINT: String(process.env.IMAGEKIT_ENDPOINT),
-}
+const config = z
+  .object({
+    MONGO_URI: z.coerce.string(),
+    PORT: z.coerce.number(),
+    IMAGEKIT_PRIVATE: z.coerce.string(),
+    IMAGEKIT_PUBLIC: z.coerce.string(),
+    IMAGEKIT_ENDPOINT: z.coerce.string(),
+  })
+  .parse(process.env)
 
 console.log({ config })
 

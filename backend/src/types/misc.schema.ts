@@ -5,5 +5,3 @@ import { z } from "zod"
 export const mongoObject = z.preprocess((val) => new mongo.ObjectId(String(val)), z.instanceof(mongo.ObjectId))
 
 export type MongoObject = z.infer<typeof mongoObject>
-
-export const paymentAllowed = z.enum(["gopay", "ovo", "tunai", "dana"])

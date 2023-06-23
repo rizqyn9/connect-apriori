@@ -1,28 +1,21 @@
 import { Request, NextFunction, Response } from "express"
 import jwt from "jsonwebtoken"
-import { config } from "@/lib/config"
 
-export const VerifyToken = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    if (req.cookies["c_connect"]) {
-      jwt.verify(
-        String(req.cookies["c_connect"]),
-        config.secretToken,
-        (err, validate) => {
-          if (err) throw new Error("Token not valid")
-          // @ts-ignore
-          req.user = validate
-          next()
-        }
-      )
-    } else throw new Error("User dont have authorization for this action")
-  } catch (error) {
-    return res.status(401).json({
-      msg: "Token not valid, please login",
-    })
+export function verifyToken() {
+  return function (req: Request, res: Response, next: NextFunction) {
+    const { authorization } = req.headers
+    if (!authorization || !jwt.verify(authorization, "secret"))
+      return res.status(501).json({
+        msg: "invalid token",
+      })
+    else {
+      const { id, role } = jwt.decode(authorization) as { id: string; role: "admin" | "casheer" }
+      req.user = {
+        id,
+        isAdmin: true,
+        role,
+      }
+    }
+    next()
   }
 }

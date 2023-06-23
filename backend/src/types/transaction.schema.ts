@@ -1,5 +1,4 @@
 import { z } from "zod"
-import { paymentAllowed } from "./misc.schema"
 
 const menuType = z.enum(["hot", "ice"])
 
@@ -15,7 +14,7 @@ const orderProps = z
 export type OrderProps = z.infer<typeof orderProps>
 
 export const transactionProps = z.object({
-  paymentMethod: paymentAllowed,
+  paymentMethod: z.string(),
   cardId: z.string().optional().nullable(),
   price: z.number(),
   promo: z.object({}).nullable(),

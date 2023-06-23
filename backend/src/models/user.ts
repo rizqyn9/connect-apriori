@@ -1,8 +1,9 @@
 import { Schema, model } from "mongoose"
-import { UserProps } from "@/types"
 import { z } from "zod"
 
-const UserSchema = new Schema<UserProps>(
+const DB_USER = "user"
+
+const user = new Schema(
   {
     name: { type: String, required: true },
     email: { type: String, required: true },
@@ -19,8 +20,8 @@ const UserSchema = new Schema<UserProps>(
 export const userValidator = z.object({
   name: z.string(),
   email: z.string().email(),
-  password: z.string().min(3),
+  password: z.string().min(1),
   isAdmin: z.boolean(),
 })
 
-export const UserModel = model("Users", UserSchema)
+export const User = model(DB_USER, user, DB_USER)

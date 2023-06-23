@@ -1,9 +1,14 @@
 import mongoose from "mongoose"
 import { config } from "@/constant/config"
+import cache from "ts-cache-mongoose"
 
-const mongoConnect = async () => await mongoose.connect(config.MONGO_URI).then(() => console.log("Connected to MongoDB"))
-
-mongoose.connection.on("error", () => console.log("MongoDB connection error"))
-mongoose.connection.on("disconnect", () => console.log("Disconnected from MongoDB"))
+cache.init(mongoose, {
+  engine: "memory",
+  defaultTTL: "5m",
+})
+async function mongoConnect() {
+  await mongoose.connect(config.MONGO_URI)
+  console.log("Connected to MongoDB")
+}
 
 export { mongoConnect }

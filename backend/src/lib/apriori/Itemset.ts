@@ -1,5 +1,3 @@
-// Itemset.js
-
 export class Itemset extends Array {
   public Support: number
   constructor() {
