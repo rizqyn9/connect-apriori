@@ -24,42 +24,13 @@ export default function Analytics() {
   return (
     <GridRow className="px-5 w-full flex-auto overflow-x-scroll text-sm" title="Analitycs">
       <div className="py-8 overflow-x-scroll">
-        {/*Tabs Container*/}
         <div className={'flex flex-col gap-8 text-white mb-6'}>
-          <Tab.Group>
-            {/* <Tab.List className="flex space-x-1 rounded-xl bg-dark-2 p-1 w-full border-2 border-white">
-              <ButtonTab label="Product" />
-              <ButtonTab label="Transaction" />
-            </Tab.List> */}
-            {analytics.isSuccess && analytics.data && <Transactions data={analytics.data?.transactions} />}
-            {/* 
-            {analytics.isSuccess s&& analytics.data && (
-              <>
-                <Tab.Panel>
-                  <Products data={analytics.data.products} />
-                </Tab.Panel>
-                <Tab.Panel>
-                </Tab.Panel>
-              </>
-            )} */}
-          </Tab.Group>
+          <Tab.Group>{analytics.isSuccess && analytics.data && <Transactions data={analytics.data?.transactions} />}</Tab.Group>
         </div>
       </div>
     </GridRow>
   )
 }
-
-// function Products({ data }: { data: GetAnalyticsData['products'] }) {
-//   return (
-//     <DataTable value={data} paginator={true} rows={20} rowsPerPageOptions={[5, 10, 20, 50]} dataKey="_id">
-//       <Column header="#" body={(_, props) => props.rowIndex + 1} />
-//       <Column field="_id" header="ID Produk" />
-//       <Column field="menu" header="Menu" sortable />
-//       <Column field="price" header="Harga" body={(field: GetAnalyticsData['products'][number]) => toIDR(field.price)} sortable />
-//       <Column field="totalOrdered" align="center" header="Total order" sortable />
-//     </DataTable>
-//   )
-// }
 
 const date = new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Jakarta' })
 
