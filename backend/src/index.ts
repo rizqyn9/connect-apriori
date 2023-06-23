@@ -14,7 +14,7 @@ app.use(bodyParser.json({ limit: "50mb" }))
 
 app.use(routes)
 
-app.use(errorHandler)
+app.use(errorHandler())
 
 const server = () => app.listen(config.PORT, () => console.log(`Server listening on http://localhost:${config.PORT}`))
 

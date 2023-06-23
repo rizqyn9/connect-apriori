@@ -35,9 +35,6 @@ export class AprioriMining {
       subsets.forEach((set) => Ci.push(set))
       k += 1
     }
-    // console.log("/* ---------------------------End Mining----------------------------------------------- */")
-
-    // console.log({ L, I })
 
     return L
   }

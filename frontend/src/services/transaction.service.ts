@@ -7,7 +7,6 @@ const create = async () => {
   const props = useTransactionStore.getState().props
   const { cardId, orders } = useOrderStore.getState()
 
-  console.log({ orders })
   const parsed = Object.values(orders).reduce((prev, curr) => {
     let exist: OrderSchema | undefined = prev.get(curr._id)
 

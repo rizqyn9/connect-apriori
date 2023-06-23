@@ -38,7 +38,6 @@ export default function Apriori() {
   const [apriori, setApriori] = useState<ResponseApriori['payload'] | null>(null)
   const handleGenerate = (data: Schema) => {
     axiosPrivate.get<ResponseApriori>('/apriori?' + qs.stringify(data)).then((val) => {
-      console.log(val.data.payload)
       setApriori(val.data.payload)
       addToast({
         msg: 'Success generated apriori data',

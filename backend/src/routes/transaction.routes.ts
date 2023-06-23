@@ -37,8 +37,6 @@ async function validateCardId(cardId: string) {
 app.post("/", async (req, res) => {
   const { cardId, paymentMethod, orderList, price } = requestValidator.parse(req.body)
 
-  console.log(orderList)
-
   let customer = null
   if (cardId) {
     customer = await validateCardId(cardId)

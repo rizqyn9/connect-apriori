@@ -21,11 +21,7 @@ export default function Catalog() {
     refetchOnMount: false,
   })
 
-  const productPromoQuery = useQuery(['products-promo'], productService.productPromo, {
-    onSuccess: (data) => {
-      console.log({ data })
-    },
-  })
+  const productPromoQuery = useQuery(['products-promo'], productService.productPromo)
 
   const refresh = () => {
     productsQuery.refetch()

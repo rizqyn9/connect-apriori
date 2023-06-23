@@ -42,7 +42,6 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
     const { props } = get()
     const orders = useOrderStore.getState().orders
 
-    console.log({ orders })
     const parsed = Object.values(orders).reduce((prev, curr) => {
       let exist: OrderSchema | undefined = prev.get(curr._id)
 
@@ -57,8 +56,6 @@ const useTransactionStore = create<TransactionStore>((set, get) => ({
       customerId: null, // TODO
       orderList: [...parsed.values()],
     }
-
-    console.log({ payload })
 
     return await axiosPrivate.post('/transaction', { ...payload }).then((val) => val.data)
   },

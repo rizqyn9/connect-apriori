@@ -14,8 +14,6 @@ function deleteAllCookies() {
 
 const SERVER_ENDPOINT = String(import.meta.env.VITE_SERVER) ?? 'http://localhost:5000'
 
-console.log(SERVER_ENDPOINT)
-
 const api = axios.create({
   baseURL: SERVER_ENDPOINT,
   validateStatus: (status) => status < 500,

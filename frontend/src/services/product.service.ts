@@ -15,7 +15,6 @@ const getAll = async () => {
 const create = async (payload: ProductInputSchema) => {
   const { status, data } = await axiosPrivate.post('/products', payload)
   if (status !== 200) return { invalid: true }
-  console.log({ payload })
   return data
 }
 
@@ -28,7 +27,6 @@ const findId = async (id: string) => {
 const edit = async (payload: ProductInputSchema & { id: string }) => {
   const { status, data } = await axiosPrivate.post(`/products/${payload.id}`, payload)
   if (status !== 200) throw new Error('Failed to update')
-  console.log({ data })
   return data
 }
 

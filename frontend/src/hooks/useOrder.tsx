@@ -50,8 +50,6 @@ const useOrderStore = create<OrderStore>()(
             const order = { ...orderProps, quantity: 1 }
             set({ orders: { ...orders, [id]: order } })
           } else updateQuantity(id, +1)
-
-          console.log({ orders: Object.keys(orders) })
         },
         removeOrder(id) {
           const { orders } = get()

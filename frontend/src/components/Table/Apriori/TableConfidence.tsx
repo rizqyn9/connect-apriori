@@ -33,8 +33,7 @@ export function TableConfidence(props: TableConfidenceProps) {
   const [dialog, setDialog] = useState(false)
   const mutate = useMutation(
     async () => {
-      const { data } = await axiosPrivate.post('/promo', state)
-      console.log({ data })
+      return (await axiosPrivate.post('/promo', state)).data
     },
     {
       onSuccess: () => {
