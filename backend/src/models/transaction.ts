@@ -24,6 +24,8 @@ const OrderSchema = new Schema({
   hot: { type: Number, default: 0 },
   quantity: { type: Number, default: 0 },
   type: { type: String, enum: productOrderValidator.shape.type.options, required: true },
+  priceAmount: { type: Number, default: 0 },
+  price: { type: Number, default: 0 },
 })
 
 const TransactionSchema = new Schema(

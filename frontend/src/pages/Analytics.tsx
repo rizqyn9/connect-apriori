@@ -32,7 +32,7 @@ export default function Analytics() {
   )
 }
 
-const date = new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Jakarta' })
+const date = new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium', timeZone: 'Asia/Jakarta' })
 
 function Transactions({ data }: { data: GetAnalyticsData['transactions'] }) {
   const [expandedRows, setExpandedRows] = useState<DataTableValueArray | DataTableExpandedRows | undefined>(undefined)
@@ -43,9 +43,9 @@ function Transactions({ data }: { data: GetAnalyticsData['transactions'] }) {
         <h5>Detail transaksi #_{trx._id}</h5>
         <DataTable value={trx.orders}>
           <Column field="menu" header="Menu" sortable></Column>
-          <Column field="hot" header="Hot" sortable></Column>
-          <Column field="ice" header="Ice" sortable></Column>
-          <Column field="type" header="Kode" sortable></Column>
+          <Column field="quantity" header="Total" sortable></Column>
+          <Column field="price" header="Harga Satuan" sortable></Column>
+          <Column field="priceAmount" header="Total Harga" sortable></Column>
         </DataTable>
       </div>
     )
@@ -67,6 +67,13 @@ function Transactions({ data }: { data: GetAnalyticsData['transactions'] }) {
         <Column header="#" body={(_, props) => props.rowIndex + 1} />
         <Column field="_id" header="ID Transaksi" />
         <Column field="price" header="Total Pembayaran" sortable body={(field: typeof data[number]) => toIDR(field.price)} align="center" />
+        <Column
+          field="paymentMethod"
+          header="Metode Pembayaran"
+          sortable
+          body={(field: typeof data[number]) => <p className="capitalize">{field.paymentMethod}</p>}
+          align="center"
+        />
         <Column
           field="createdAt"
           header="Tgl Pembelian"

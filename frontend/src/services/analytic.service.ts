@@ -8,6 +8,8 @@ const productOrderValidator = z.object({
   hot: z.number(),
   quantity: z.number(),
   type: z.enum(['regular', 'promo']),
+  priceAmount: z.number(),
+  price: z.number(),
 })
 
 export const transactionValidator = z.object({
