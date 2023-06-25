@@ -14,7 +14,7 @@ router.get("/", async (req, res, next) => {
   const transactions = await transactionController.TransactionModel.aggregate([
     {
       $lookup: {
-        from: "products",
+        from: "product",
         localField: "orders.productId",
         foreignField: "_id",
         as: "products",
